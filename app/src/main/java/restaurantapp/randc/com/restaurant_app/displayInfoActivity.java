@@ -1,5 +1,5 @@
 package restaurantapp.randc.com.restaurant_app;
-
+//This is a commit
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
