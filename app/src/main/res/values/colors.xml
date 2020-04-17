@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="tomato">#FF6347</color>
+    <color name="lightBlue">#66AFF3</color>
+    <color name="lightGreen">#96FF68</color>
+    <color name="lightGray">#CCD3C9</color>
+    <color name="red">#FF0000</color>
+    <color name="blue">#0032FF</color>
+    <color name="gray">#757575</color>
+    <color name="green">#2BD583</color>
+    <color name="gradStart">#63C9FF</color>
+    <color name="followersBg">#65DCE5</color>
+    <color name="address">#2F7092</color>
+    <color name="followers">#0D5D98</color>
+    <color name="headings">#3797CF</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="circleBorder">#50FFFFFF</color>
+    <color name="gradEnd">#67EFC8</color>
+    <color name="followingBg">#49BEFF</color>
+    <color name="grey">#E5E5E5</color>
+
+    <color name="white">#FFFFFF</color>
+
+
+    <color name="bgBackSideColor">#f4f0ff</color>
+    <color name="bgTitleLeft">#594691</color>
+    <color name="bgTitleRight">#ffffff</color>
+    <color name="bgContentTop">#594691</color>
+    <color name="bgContent">#ffffff</color>
+    <color name="contentDividerLine">#e0e0e0</color>
+    <color name="contentBadgeTitle">#a9a9a9</color>
+    <color name="titleBadgeTitle">#adafb1</color>
+    <color name="titleBadgeText">#adafb1</color>
+    <color name="mainTextColor">#343d43</color>
+    <color name="btnRequest">#ffbf12</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+
+
+    <color name="colorWhite">#FFF</color>
+    <color name="colorGrey">#AAA</color>
+    <color name="colorBlack">#000</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorRipple">#44FFFFFF</color>
+    <color name="greenBack">#416C6E</color>
+    <color name="greenText">#89B6B7</color>
+
+    <color name="white2">#ECF0F1 </color>
+
+
+    <color name="colorPaleBlue">#436892</color>
+    <color name="colorPaleBlueLight">#c3d3e6</color>
+
+    <color name="blueWebsite">#0000cc</color>
+
+    <color name="blueviolet">#8A2BE2</color>
+
+    <color name="phoneColor">#018B95</color>
+    <color name="whatsappColor">#1AD13F</color>
+    <color name="smsColor">#6F2677</color>
+    <color name="facebookColor">#3A559B</color>
+    <color name="emailColor">#F9C627</color>
+
+    <color name="button1">#305F5F</color>
+
+    <color name="crimson">#DC143C</color>
+
+    <color name="back_filter">#305F5F</color>
+
+
+</resources>
