@@ -32,4 +32,87 @@
         <item>@color/smsColor</item>
     </array>
 
+    <string-array name="common_fruits">
+        <item>Apple</item>
+        <item>Bannana</item>
+        <item>Mango</item>
+        <item>Pineapple</item>
+        <item>Watermelon</item>
+        <item>Lemon</item>
+        <item>Strawberries</item>
+        <item>Orange</item>
+        <item>Grapes</item>
+        <item>Avocado</item>
+
+    </string-array>
+
+    <integer-array name="fruits_img">
+        <item>@drawable/circle_apple</item>
+        <item>@drawable/circle_banana</item>
+        <item>@drawable/mango_img</item>
+        <item>@drawable/pineapple</item>
+        <item>@drawable/watermellon_img</item>
+        <item>@drawable/lemon</item>
+        <item>@drawable/strawberry</item>
+        <item>@drawable/orange</item>
+        <item>@drawable/grapes</item>
+        <item>@drawable/avacado_img</item>
+
+    </integer-array>
+
+    <string-array name="common_veg">
+        <item>Brocolli</item>
+        <item>Carrot</item>
+        <item>Onion</item>
+        <item>Tomato</item>
+        <item>Lettuce</item>
+        <item>Potato</item>
+        <item>Cucumber</item>
+        <item>Garlic</item>
+        <item>Mushrooms</item>
+        <item>Green beans</item>
+        <item>Spinach</item>
+        <item>Cabbage</item>
+        <item>Corn</item>
+        <item>Capsicum</item>
+
+
+    </string-array>
+
+
+
+
+    <string-array name="common_meat">
+        <item>Chicken</item>
+        <item>Fish</item>
+        <item>Lamb</item>
+        <item>Beef</item>
+        <item>Pork</item>
+        <item>Mutton</item>
+
+    </string-array>
+
+    <string-array name="common_grains">
+        <item>Rice</item>
+        <item>Wheat</item>
+        <item>Oats</item>
+        <item>Millets</item>
+        <item>Dal</item>
+        <item>Barley</item>
+
+
+    </string-array>
+
+    <string-array name="common_dairy">
+        <item>Milk</item>
+        <item>Paneer</item>
+        <item>Butter</item>
+        <item>Cheese</item>
+        <item>Tofu</item>
+        <item>Curd</item>
+
+
+
+    </string-array>
+
 </resources>

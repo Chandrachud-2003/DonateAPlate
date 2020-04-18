@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingRight="50dp"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:background="@drawable/addbutton_bg"
+    >
+
+    <TextView
+        android:id="@+id/foodName2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apples"
+        android:textSize="20sp"
+        android:layout_marginLeft="7dp"
+        android:textColor="@color/white"
+        android:layout_marginTop="7dp"
+
+
+
+        />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+    <TextView
+        android:id="@+id/foodWeight2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5kg"
+        android:textColor="@color/white"
+        android:textSize="27sp"
+        android:layout_marginBottom="10dp"
+    android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        />
+
+</LinearLayout>

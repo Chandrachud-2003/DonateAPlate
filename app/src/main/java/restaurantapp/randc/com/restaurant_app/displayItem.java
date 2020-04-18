@@ -5,10 +5,10 @@ import android.media.Image;
 public class displayItem {
 
     private String itemName;
-    private String itemWeight;
+    private float itemWeight;
     private int itemImage;
 
-    public displayItem(String itemName, String itemWeight, int itemImage) {
+    public displayItem(String itemName, float itemWeight, int itemImage) {
         this.itemName = itemName;
         this.itemWeight = itemWeight;
         this.itemImage = itemImage;
@@ -22,11 +22,11 @@ public class displayItem {
         this.itemName = itemName;
     }
 
-    public String getItemWeight() {
+    public float getItemWeight() {
         return itemWeight;
     }
 
-    public void setItemWeight(String itemWeight) {
+    public void setItemWeight(float itemWeight) {
         this.itemWeight = itemWeight;
     }
 

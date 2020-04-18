@@ -152,32 +152,32 @@ public class displayInfoActivity extends AppCompatActivity {
 
         mFruitItemsList = new displayItem[] {
 
-          new displayItem("Banana", "2 kg", R.drawable.icons8_banana),
-                new displayItem("Apple", "1 kg", R.drawable.icons8_apple)  ,
-                new displayItem("Mango", "3 kg", R.drawable.icons8_mango)
+          new displayItem("Banana", 2, R.drawable.icons8_banana),
+                new displayItem("Apple", 1, R.drawable.icons8_apple)  ,
+                new displayItem("Mango", 3, R.drawable.icons8_mango)
 
         };
 
         mDairyItemsList = new displayItem[] {
 
-                new displayItem("Cheese", "2 kg", R.drawable.icons8_cheese),
-                new displayItem("Butter", "1 kg", R.drawable.icons8_butter)
+                new displayItem("Cheese", 2, R.drawable.icons8_cheese),
+                new displayItem("Butter", 1, R.drawable.icons8_butter)
 
         };
 
         mVegetablesItemsList = new displayItem[] {
 
-                new displayItem("Carrot", "2 kg", R.drawable.icons8_carrot),
-                new displayItem("Cauliflower", "1 kg", R.drawable.icons8_cauliflower)  ,
-                new displayItem("Brocolli", "3 kg", R.drawable.icons8_broccoli)
+                new displayItem("Carrot", 2, R.drawable.icons8_carrot),
+                new displayItem("Cauliflower", 1, R.drawable.icons8_cauliflower)  ,
+                new displayItem("Brocolli", 3, R.drawable.icons8_broccoli)
 
         };
 
         mMeatItemsList = new displayItem[] {
 
-                new displayItem("Chicken", "2 kg", R.drawable.icons8_friedchicken),
-                new displayItem("Fish", "1 kg", R.drawable.icons8_fishskeleton)  ,
-                new displayItem("Turkey", "3 kg", R.drawable.icons8_thanksgivingturkey)
+                new displayItem("Chicken", 2, R.drawable.icons8_friedchicken),
+                new displayItem("Fish", 1, R.drawable.icons8_fishskeleton)  ,
+                new displayItem("Turkey", 3, R.drawable.icons8_thanksgivingturkey)
 
 
 
@@ -185,8 +185,8 @@ public class displayInfoActivity extends AppCompatActivity {
 
         mGrainsItemsList = new displayItem[] {
 
-                new displayItem("Rice", "5 kg", R.drawable.icons8_ricebowl),
-                new displayItem("Wheat", "3 kg", R.drawable.icons8_wheat)
+                new displayItem("Rice", 2, R.drawable.icons8_ricebowl),
+                new displayItem("Wheat", 3, R.drawable.icons8_wheat)
 
         };
 

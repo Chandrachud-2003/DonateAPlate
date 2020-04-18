@@ -10,13 +10,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".loginpage"></activity>
+        <activity android:name=".loginpage"/>
         <activity android:name=".profile" />
-        <activity android:name=".displayInfoActivity" />
+        <activity android:name=".Main_Activity" />
         <activity android:name=".SearchClass" />
         <activity android:name=".resetpassword" />
         <activity android:name=".registration1" />
-        <activity android:name=".Main_Activity">
+        <activity android:name=".displayInfoActivity"/>
+        <activity android:name=".categoryAdd"/>
+        <activity android:name=".addClass">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

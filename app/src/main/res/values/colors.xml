@@ -53,11 +53,15 @@
 
     <color name="white2">#ECF0F1 </color>
 
+    <color name="greenAdd">#0CC2BF</color>
+
 
     <color name="colorPaleBlue">#436892</color>
     <color name="colorPaleBlueLight">#c3d3e6</color>
 
     <color name="blueWebsite">#0000cc</color>
+
+    <color name="category_bg">#7EA2FB</color>
 
     <color name="blueviolet">#8A2BE2</color>
 

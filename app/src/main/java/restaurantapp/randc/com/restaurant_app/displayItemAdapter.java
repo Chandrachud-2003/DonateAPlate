@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+
 public class displayItemAdapter extends RecyclerView.Adapter<displayItemAdapter.ViewHolder>{
     private displayItem[] listdata;
 
@@ -30,13 +31,16 @@ public class displayItemAdapter extends RecyclerView.Adapter<displayItemAdapter.
         final displayItem myListData = listdata[position];
         holder.textView.setText(listdata[position].getItemName());
         holder.imageView.setImageResource(listdata[position].getItemImage());
-        holder.itemWeight.setText(listdata[position].getItemWeight());
+        holder.itemWeight.setText(listdata[position].getItemWeight()+" kg");
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(),"click on item: "+myListData.getItemName(),Toast.LENGTH_LONG).show();
             }
         });
+
+
+
     }
 
 
@@ -55,7 +59,7 @@ public class displayItemAdapter extends RecyclerView.Adapter<displayItemAdapter.
             this.imageView = (ImageView) itemView.findViewById(R.id.item_Image);
             this.textView = (TextView) itemView.findViewById(R.id.itemName);
             this.itemWeight = itemView.findViewById(R.id.itemWeight);
-            relativeLayout = (RelativeLayout)itemView.findViewById(R.id.displayItemRelativeLayout);
+            this.relativeLayout = (RelativeLayout)itemView.findViewById(R.id.displayItemRelativeLayout);
         }
     }
 }

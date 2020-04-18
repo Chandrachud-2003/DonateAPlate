@@ -96,7 +96,7 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    implementation 'com.github.kishan2612:Material-Backdrop-Android:v1.1.0'
+
 }
 
 
