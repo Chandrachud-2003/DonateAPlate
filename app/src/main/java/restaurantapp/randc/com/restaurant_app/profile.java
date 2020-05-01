@@ -65,7 +65,7 @@ public class profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_profile);
+        //setContentView(R.layout.activity_profile);
         emailView = findViewById(R.id.emailView);
         phnoView = findViewById(R.id.phoneView);
         AddressView = findViewById(R.id.addressView);

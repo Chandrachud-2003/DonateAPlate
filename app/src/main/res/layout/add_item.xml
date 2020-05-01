@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/categoryLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dishes_cateogry_bg"
+    android:layout_margin="10dp"
+    android:paddingBottom="20dp"
+    android:paddingTop="20dp"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp"
+    >
+
+    <ImageView
+        android:id="@+id/categoryImage"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:background="@color/colorTransparent"
+        android:src="@drawable/icons8_category_dishes"
+        android:layout_gravity="center_horizontal|center_vertical"
+
+        />
+
+    <TextView
+        android:id="@+id/categoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dishes"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+
+
+
+        />
+
+
+
+
+
+</LinearLayout>

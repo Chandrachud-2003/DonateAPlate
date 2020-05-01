@@ -115,4 +115,37 @@
 
     </string-array>
 
+    <string-array name="category_items">
+        <item>Fruits</item>
+        <item>Veggies</item>
+        <item>Dairy</item>
+        <item>Meat</item>
+        <item>Grains</item>
+        <item>Dishes</item>
+
+
+
+
+    </string-array>
+
+    <integer-array name="category_bg">
+        <item>@drawable/fruit_category_bg</item>
+        <item>@drawable/veg_category_bg</item>
+        <item>@drawable/dairy_category_bg</item>
+        <item>@drawable/meat_category_bg</item>
+        <item>@drawable/grains_category_bg</item>
+        <item>@drawable/dishes_cateogry_bg</item>
+
+    </integer-array>
+
+    <integer-array name="category_img">
+        <item>@drawable/icons8_fruit_category</item>
+        <item>@drawable/icons8_category_veg</item>
+        <item>@drawable/icons8_category_dairy</item>
+        <item>@drawable/icons8_category_meat</item>
+        <item>@drawable/icons8_category_grains</item>
+        <item>@drawable/icons8_category_dishes</item>
+
+    </integer-array>
+
 </resources>
