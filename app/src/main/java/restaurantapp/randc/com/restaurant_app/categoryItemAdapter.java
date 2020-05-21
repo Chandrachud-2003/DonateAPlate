@@ -18,6 +18,23 @@ public class categoryItemAdapter
         extends RecyclerView.Adapter<categoryItemAdapter.MyView> {
 
     // List with String type
+
+    // Override onBindViewHolder which deals
+    // with the setting of different data
+    // and methods related to clicks on
+    // particular items of the RecyclerView.
+    @Override
+    public void onBindViewHolder(final MyView holder,
+                                 final int position)
+        {
+
+                if (list.get(position).getFoodItem()!=null && list.get(position).getFoodWeight()!=0.0f) {
+                    holder.foodName.setText(list.get(position).getFoodItem());
+                    holder.foodWeight.setText(Float.toString(list.get(position).getFoodWeight()));
+                }
+
+
+    }
     private List<categoryItem> list;
 
     private View mView;
@@ -69,23 +86,6 @@ public class categoryItemAdapter
 
         // return itemView
         return new MyView(itemView);
-    }
-
-    // Override onBindViewHolder which deals
-    // with the setting of different data
-    // and methods related to clicks on
-    // particular items of the RecyclerView.
-    @Override
-    public void onBindViewHolder(final MyView holder,
-                                 final int position)
-        {
-
-                if (list.get(position).getFoodItem()!=null && list.get(position).getFoodWeight()!=0.0f) {
-                    holder.foodName.setText(list.get(position).getFoodItem());
-                    holder.foodWeight.setText(Float.toString(list.get(position).getFoodWeight()));
-                }
-
-
     }
 
     // Override getItemCount which Returns

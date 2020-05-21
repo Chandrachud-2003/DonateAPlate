@@ -233,7 +233,7 @@ public class Main_Activity extends AppCompatActivity {
 
             case 4:
             {
-                Intent intent = new Intent(Main_Activity.this, profile.class);
+                Intent intent = new Intent(Main_Activity.this, profileClass.class);
                 startActivity(intent);
                 break;
             }

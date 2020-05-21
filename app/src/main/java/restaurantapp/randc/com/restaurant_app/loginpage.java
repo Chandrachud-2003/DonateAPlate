@@ -34,7 +34,7 @@ public class loginpage extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if(user!=null){
-            Intent intent = new Intent(loginpage.this, MainActivity.class);
+            Intent intent = new Intent(loginpage.this, Main_Activity.class);
             startActivity(intent);
         }
         setContentView(R.layout.activity_loginpage);
@@ -89,7 +89,7 @@ public class loginpage extends AppCompatActivity {
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Intent intent = new Intent(loginpage.this, MainActivity.class);
+                                                Intent intent = new Intent(loginpage.this, Main_Activity.class);
                                                 startActivity(intent);
                                             }
                                         }, 1000);

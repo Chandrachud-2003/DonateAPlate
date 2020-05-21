@@ -604,6 +604,7 @@
             </org.apmem.tools.layouts.FlowLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bottomRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorTransparent"

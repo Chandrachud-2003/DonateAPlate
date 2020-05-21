@@ -27,6 +27,10 @@ public class addClass extends AppCompatActivity {
 
     private RecyclerView selectCategory;
 
+    private RecyclerView bottomRecycler;
+    private donationBottomAdapter donationBottomAdapter;
+    private ArrayList<donationBottomItem> donationBottomItems;
+
     private PieChart mPieChart;
     private PieDataSet mPieDataSet;
     private PieData mPieData;
@@ -137,10 +141,15 @@ public class addClass extends AppCompatActivity {
         mPieChart.setData(mPieData);
         mPieChart.highlightValues(null);
         mPieChart.invalidate();
+        bottomRecycler = findViewById(R.id.bottomRecycler);
+        donationBottomItems = new ArrayList<>();
+        donationBottomItems.add(new donationBottomItem("food","5kgs"));
+        donationBottomItems.add(new donationBottomItem("errwerwer","65kgs"));
+        donationBottomItems.add(new donationBottomItem("fooerereed","5k0gs"));
 
-
-
-
+        donationBottomAdapter = new donationBottomAdapter(donationBottomItems);
+        bottomRecycler.setLayoutManager(new LinearLayoutManager(this));
+        bottomRecycler.setAdapter(donationBottomAdapter);
     }
 
     private void AddValuesToEntry(){

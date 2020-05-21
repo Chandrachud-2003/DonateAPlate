@@ -60,7 +60,7 @@ public class registration3 extends AppCompatActivity {
                 note.put("Phone Number",getIntent().getStringExtra("phno"));
                 note.put("Pincode",getIntent().getStringExtra("pincode"));
                 note.put("Url","");
-                db.collection("Restaurant").document(getIntent().getStringExtra("name").trim()).set(note)
+                db.collection("Restaurant").document(user.getUid()).set(note)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -69,7 +69,7 @@ public class registration3 extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Intent intent = new Intent(registration3.this, MainActivity.class);
+                                        Intent intent = new Intent(registration3.this, Main_Activity.class);
                                         startActivity(intent);
                                     }
                                 }, 1000);
