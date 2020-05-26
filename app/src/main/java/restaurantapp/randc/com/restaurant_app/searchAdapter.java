@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -116,13 +118,17 @@ public class searchAdapter  extends RecyclerView.Adapter<searchAdapter.MyView>{
 
         int height = (int) ((width*2)/3);
 
-        Bitmap bm = BitmapFactory.decodeResource( mContext.getResources(), list.get(position).getImage());
-
-      //  holder.mainImage.setImageBitmap(new Bitmap.createScaledBitmap(bm, width, height, false));
 
 
+        Picasso.get()
+                .load(list.get(position).getImage())
+                .resize(width, height)
 
-        if(list.get(position).getType().equals("ngo")) {
+                .centerCrop()
+                .into(holder.mainImage);
+
+
+        if(list.get(position).getType().equals("NGO")) {
             holder.typeImage.setImageResource(R.drawable.icons8_ngo);
             holder.typeLayout.setBackgroundResource(R.drawable.ngo_bg);
         }

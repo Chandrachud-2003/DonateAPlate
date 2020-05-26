@@ -12,14 +12,14 @@
         android:theme="@style/AppTheme">
         <activity android:name=".loginpage"/>
         <activity android:name=".profile" />
-        <activity android:name=".Main_Activity" />
+        <activity android:name=".addClass" />
         <activity android:name=".SearchClass" />
         <activity android:name=".resetpassword" />
         <activity android:name=".registration1" />
 
         <activity android:name=".displayInfoActivity"/>
         <activity android:name=".categoryAdd"/>
-        <activity android:name=".addClass">
+        <activity android:name=".Main_Activity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

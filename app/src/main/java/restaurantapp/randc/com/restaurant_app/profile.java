@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -77,10 +78,6 @@ public class profile extends AppCompatActivity {
         emailView.setText(user.getEmail());
 //        nameView.setText(user.getDisplayName());
         lbar = new ProgressDialog(this);
-
-
-
-
 
         db.collection("Restaurant").document(user.getDisplayName()).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

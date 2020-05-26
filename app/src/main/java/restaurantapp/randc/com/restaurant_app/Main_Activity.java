@@ -59,6 +59,11 @@ public class Main_Activity extends AppCompatActivity {
     private LinearLayoutManager HorizontalLayout;
     private ListView theListView;
 
+    private RecyclerView searchRecycler;
+    private ArrayList<searchItem> searchList;
+    private searchAdapter searchAdapter;
+    private LinearLayoutManager verticalLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +73,31 @@ public class Main_Activity extends AppCompatActivity {
         filterView = findViewById(R.id.filterView);
         menuButton = findViewById(R.id.menuButton);
         searchButton = findViewById(R.id.searchButton);
+
+        searchRecycler = findViewById(R.id.searchRecycler);
+
+        searchList = new ArrayList<>();
+
+        searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
+        searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
+        searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
+        searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
+
+        searchAdapter = new searchAdapter(searchList, Main_Activity.this);
+
+        verticalLayout = new LinearLayoutManager(
+                Main_Activity.this,
+                LinearLayoutManager.VERTICAL,
+                false);
+
+        searchRecycler.setLayoutManager(verticalLayout);
+        searchRecycler.setAdapter(searchAdapter);
+
+
+
+
+
+
 
         theListView = findViewById(R.id.mainListView);
 
