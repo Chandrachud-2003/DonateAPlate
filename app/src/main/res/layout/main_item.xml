@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <ImageView
+            android:id="@+id/mainImage"
+            android:layout_width="match_parent"
+            android:layout_height="280.5dp"
+            android:background="@color/colorTransparent"
+            android:src="@drawable/restaurant2"
+            />
+
+
+        <TextView
+            android:id="@+id/mainListAddr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Yelahanka, Bangalore"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat"
+            android:background="@drawable/main_item_bg"
+            android:layout_alignBottom="@id/mainImage"
+            android:layout_alignEnd="@id/mainImage"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
+            />
+
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTransparent"
+            android:src="@drawable/rest_type"
+            android:layout_gravity="center_vertical"
+            />
+        <TextView
+            android:id="@+id/typeMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grayList"
+            android:fontFamily="@font/montserrat"
+            android:textSize="14sp"
+            android:layout_gravity="center_vertical"
+            android:text="ITALIAN"
+            android:textStyle="bold"
+            android:layout_marginLeft="7dp"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTransparent"
+            android:src="@drawable/truck_time"
+            android:layout_marginLeft="15sp"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:id="@+id/timeMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grayList"
+            android:fontFamily="@font/montserrat"
+            android:textSize="14sp"
+            android:layout_gravity="center_vertical"
+            android:text="45 MIN"
+            android:textStyle="bold"
+
+            android:layout_marginLeft="7dp"
+            />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/mainListName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/black"
+
+        android:layout_gravity="left"
+        android:layout_marginTop="5dp"
+        android:text="McDonalds"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTransparent"
+            android:src="@drawable/followers_main"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:id="@+id/mainFollowers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="1.5 K "
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/followersBlue"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:text="·"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat"
+            android:layout_gravity="center_vertical"
+
+            android:layout_marginLeft="7dp"
+            />
+
+        <TextView
+            android:id="@+id/mainType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:textSize="15sp"
+            android:textColor="@color/gray"
+            android:textStyle="bold"
+            android:text="Restaurant"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="Weight"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:text="|"
+            android:fontFamily="@font/montserrat"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat"
+            android:text="15 kg"
+            android:textColor="@color/weightGreen2"
+            android:textSize="18sp"
+            android:layout_marginLeft="10dp"
+            />
+
+
+    </LinearLayout>
+
+    
+    <com.nex3z.flowlayout.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+        app:flChildSpacingForLastRow="align"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/category_main_bg"
+            android:text="Fruits"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/category_main_bg"
+            android:text="Vegetables"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
+
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/category_main_bg"
+            android:text="Meat"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18sp"
+
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
+
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/category_main_bg"
+            android:text="Dairy"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
+
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/category_main_bg"
+            android:text="Dishes"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
+
+
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/category_main_bg"
+            android:text="Grains"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18sp"
+            android:layout_marginTop="7dp"
+
+            />
+
+
+
+
+    </com.nex3z.flowlayout.FlowLayout>
+
+   
+
+
+
+    
+
+
+
+
+
+
+
+</LinearLayout>

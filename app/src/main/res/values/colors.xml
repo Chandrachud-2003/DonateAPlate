@@ -89,5 +89,11 @@
 
     <color name="totalWeightColor">#DAB1A0</color>
 
+    <color name="followersBlue">#3498DB</color>
+
+    <color name="weightGreen2">#2ECC71</color>
+
+    <color name="grayList">#95A5A6</color>
+
 
 </resources>
