@@ -34,7 +34,7 @@
             android:layout_alignBottom="@id/mainImage"
             android:layout_alignEnd="@id/mainImage"
             android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="5dp"
             />
 
 
@@ -137,17 +137,17 @@
             />
 
         <TextView
+            android:id="@+id/idk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/gray"
-            android:text="·"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat"
             android:layout_gravity="center_vertical"
-
             android:layout_marginLeft="7dp"
-            />
+            android:fontFamily="@font/montserrat"
+            android:text="·"
+            android:textColor="@color/gray"
+
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/mainType"
@@ -203,15 +203,15 @@
             />
 
         <TextView
+            android:id="@+id/MainWeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
             android:fontFamily="@font/montserrat"
             android:text="15 kg"
             android:textColor="@color/weightGreen2"
             android:textSize="18sp"
-            android:layout_marginLeft="10dp"
-            />
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -227,83 +227,85 @@
         >
 
         <TextView
+            android:id="@+id/fruitsPop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/category_main_bg"
+            android:fontFamily="@font/montserrat"
             android:text="Fruits"
             android:textColor="@color/black"
-            android:fontFamily="@font/montserrat"
-            android:textSize="18sp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="7dp"
-            />
+            android:textSize="18sp" />
+
         <TextView
+            android:id="@+id/vegetablesPop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/category_main_bg"
+            android:fontFamily="@font/montserrat"
             android:text="Vegetables"
             android:textColor="@color/black"
-            android:fontFamily="@font/montserrat"
-            android:textSize="18sp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="7dp"
 
 
-            />
+            android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/meatPop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/category_main_bg"
+            android:fontFamily="@font/montserrat"
+
             android:text="Meat"
             android:textColor="@color/black"
-            android:fontFamily="@font/montserrat"
-            android:textSize="18sp"
-
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="7dp"
 
 
-            />
+            android:textSize="18sp" />
+
         <TextView
+            android:id="@+id/dairyPop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/category_main_bg"
+            android:fontFamily="@font/montserrat"
             android:text="Dairy"
             android:textColor="@color/black"
-            android:fontFamily="@font/montserrat"
-            android:textSize="18sp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="7dp"
 
 
-            />
+            android:textSize="18sp" />
+
         <TextView
+            android:id="@+id/dishesPop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/category_main_bg"
+            android:fontFamily="@font/montserrat"
             android:text="Dishes"
             android:textColor="@color/black"
-            android:fontFamily="@font/montserrat"
-            android:textSize="18sp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="7dp"
 
 
-
-            />
+            android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/grainsPop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
             android:background="@drawable/category_main_bg"
+            android:fontFamily="@font/montserrat"
             android:text="Grains"
             android:textColor="@color/black"
-            android:fontFamily="@font/montserrat"
-            android:textSize="18sp"
-            android:layout_marginTop="7dp"
 
-            />
+            android:textSize="18sp" />
 
 
 

@@ -44,7 +44,7 @@ public class Main_Activity extends AppCompatActivity {
     private Drawable[] screenIcons;
 
     private ImageButton menuButton;
-    private ImageButton searchButton;
+
 
     private Button settingsButton;
 
@@ -57,23 +57,27 @@ public class Main_Activity extends AppCompatActivity {
     private RecyclerView.LayoutManager RecyclerViewLayoutManager;
 
     private LinearLayoutManager HorizontalLayout;
-    private ListView theListView;
 
     private RecyclerView searchRecycler;
     private ArrayList<searchItem> searchList;
     private searchAdapter searchAdapter;
     private LinearLayoutManager verticalLayout;
 
+    private  RecyclerView mainRecycler;
+    private ArrayList<MainItem> mainList;
+    private MainAdapter mainAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_layout);
+        setContentView(R.layout.main_activity);
 
 
         filterView = findViewById(R.id.filterView);
         menuButton = findViewById(R.id.menuButton);
-        searchButton = findViewById(R.id.searchButton);
 
+        mainRecycler = findViewById(R.id.mainRecycler);
         searchRecycler = findViewById(R.id.searchRecycler);
 
         searchList = new ArrayList<>();
@@ -90,16 +94,30 @@ public class Main_Activity extends AppCompatActivity {
                 LinearLayoutManager.VERTICAL,
                 false);
 
-        searchRecycler.setLayoutManager(verticalLayout);
-        searchRecycler.setAdapter(searchAdapter);
+       // searchRecycler.setLayoutManager(verticalLayout);
+       // searchRecycler.setAdapter(searchAdapter);
+
+
+        mainRecycler = findViewById(R.id.mainRecycler);
+        //mainRecycler.setNestedScrollingEnabled(false);
+        mainList = new ArrayList<>();
+
+        mainList.add(new MainItem("Bangalore, Karnataka", "Fast-Food", "Resaurant","15 Mins","10.5K","3 kg","McDonalds",false,false ,true,true,true,false,R.drawable.restaurant2));
+        mainList.add(new MainItem("Bangalore, Karnataka", "Mexican", "Resaurant","45 Mins","1.5K","0.2 kg","Chilli's",true,true ,false,true,false,true,R.drawable.restaurant3));
+        mainAdapter = new MainAdapter(mainList, Main_Activity.this);
+
+        verticalLayout = new LinearLayoutManager(
+                Main_Activity.this,
+                LinearLayoutManager.VERTICAL,
+                false);
+
+        mainRecycler.setLayoutManager(verticalLayout);
+        mainRecycler.setAdapter(mainAdapter);
 
 
 
 
 
-
-
-        theListView = findViewById(R.id.mainListView);
 
         RecyclerViewLayoutManager
                 = new LinearLayoutManager(
@@ -190,29 +208,6 @@ public class Main_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "DEFAULT HANDLER FOR ALL BUTTONS", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // set elements to adapter
-        theListView.setAdapter(adapter);
-
-        // set on click event listener to list view
-        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-                // toggle clicked cell state
-                ((FoldingCell) view).toggle(false);
-                // register in adapter that state for selected cell is toggled
-                adapter.registerToggle(pos);
-            }
-        });
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Main_Activity.this, SearchClass.class);
-                startActivity(intent);
             }
         });
 
