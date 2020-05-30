@@ -109,7 +109,14 @@ public class Main_Activity extends AppCompatActivity {
         verticalLayout = new LinearLayoutManager(
                 Main_Activity.this,
                 LinearLayoutManager.VERTICAL,
-                false);
+                false)
+        {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+
 
         mainRecycler.setLayoutManager(verticalLayout);
         mainRecycler.setAdapter(mainAdapter);
