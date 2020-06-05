@@ -3,15 +3,13 @@
 
     <string-array name="ld_activityScreenTitles">
         <item>Dashboard</item>
-        <item>My Account</item>
-        <item>Messages</item>
-        <item>Cart</item>
+        <item>Notifications</item>
+        <item>Add Donation</item>
         <item>Profile</item>
     </string-array>
 
     <array name="ld_activityScreenIcons">
         <item>@drawable/icon8_home</item>
-        <item>@drawable/icons8_search</item>
         <item>@drawable/icons8_order</item>
         <item>@drawable/icons8_plus</item>
         <item>@drawable/icons8_contacts</item>
@@ -43,7 +41,6 @@
         <item>Orange</item>
         <item>Grapes</item>
         <item>Avocado</item>
-
     </string-array>
 
     <integer-array name="fruits_img">
@@ -61,47 +58,75 @@
     </integer-array>
 
     <string-array name="common_veg">
-        <item>Brocolli</item>
+
         <item>Carrot</item>
-        <item>Onion</item>
         <item>Tomato</item>
-        <item>Lettuce</item>
         <item>Potato</item>
+        <item>Onion</item>
+        <item>Corn</item>
         <item>Cucumber</item>
+        <item>Capsicum</item>
         <item>Garlic</item>
         <item>Mushrooms</item>
         <item>Green beans</item>
+        <item>Lettuce</item>
         <item>Spinach</item>
+        <item>Broccoli</item>
         <item>Cabbage</item>
-        <item>Corn</item>
-        <item>Capsicum</item>
-
-
     </string-array>
 
+    <integer-array name="vegge_img">
+        <item>@drawable/carrot</item>
+        <item>@drawable/tomato</item>
+        <item>@drawable/potato</item>
+        <item>@drawable/onion</item>
+        <item>@drawable/corn</item>
+        <item>@drawable/cucumber</item>
+        <item>@drawable/capsicum</item>
+        <item>@drawable/garlic</item>
+        <item>@drawable/mushrooms</item>
+        <item>@drawable/greenbeans</item>
+        <item>@drawable/lettuce</item>
+        <item>@drawable/spinach</item>
+        <item>@drawable/broccoli</item>
+        <item>@drawable/cabbage</item>
+    </integer-array>
 
 
 
     <string-array name="common_meat">
         <item>Chicken</item>
-        <item>Fish</item>
-        <item>Lamb</item>
-        <item>Beef</item>
-        <item>Pork</item>
         <item>Mutton</item>
-
+        <item>Fish</item>
+        <item>Pork</item>
+        <item>Beef</item>
     </string-array>
+
+    <integer-array name="meat_img">
+        <item>@drawable/chicken</item>
+        <item>@drawable/lamb</item>
+        <item>@drawable/fish</item>
+        <item>@drawable/pork</item>
+        <item>@drawable/beef</item>
+    </integer-array>
 
     <string-array name="common_grains">
         <item>Rice</item>
         <item>Wheat</item>
+        <item>Dal</item>
         <item>Oats</item>
         <item>Millets</item>
-        <item>Dal</item>
         <item>Barley</item>
-
-
     </string-array>
+
+    <integer-array name="grains_img">
+        <item>@drawable/rice</item>
+        <item>@drawable/wheat</item>
+        <item>@drawable/dal</item>
+        <item>@drawable/oats</item>
+        <item>@drawable/millets</item>
+        <item>@drawable/barley</item>
+    </integer-array>
 
     <string-array name="common_dairy">
         <item>Milk</item>
@@ -110,10 +135,16 @@
         <item>Cheese</item>
         <item>Tofu</item>
         <item>Curd</item>
-
-
-
     </string-array>
+
+    <integer-array name="dairy_img">
+        <item>@drawable/milk</item>
+        <item>@drawable/paneer</item>
+        <item>@drawable/butter</item>
+        <item>@drawable/cheese</item>
+        <item>@drawable/tofu</item>
+        <item>@drawable/curd</item>
+    </integer-array>
 
     <string-array name="category_items">
         <item>Fruits</item>

@@ -3,6 +3,7 @@ package restaurantapp.randc.com.restaurant_app;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,15 @@ public class categoryItemAdapter
 
                 if (list.get(position).getFoodItem()!=null && list.get(position).getFoodWeight()!=0.0f) {
                     holder.foodName.setText(list.get(position).getFoodItem());
+                    if(list.get(position).getFoodItem().length()<9) {
+                       holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+                    }
+                    else if (list.get(position).getFoodItem().length()<12)
+                    {
+                        holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+                    }
+                    else
+                        holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
                     holder.foodWeight.setText(Float.toString(list.get(position).getFoodWeight()));
                 }
 

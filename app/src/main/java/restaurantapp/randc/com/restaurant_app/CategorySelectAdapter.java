@@ -1,5 +1,7 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -21,6 +23,7 @@ public class CategorySelectAdapter
     // List with String type
     private List<CategorySelectItem> list;
     private LinearLayout selectLayout;
+    private Context mContext;
 
     // View Holder class which
     // extends RecyclerView.ViewHolder
@@ -30,6 +33,7 @@ public class CategorySelectAdapter
         // Text View
         TextView categoryName;
         ImageView categoryIcon;
+        private LinearLayout selectLayout;
 
         // parameterised constructor for View Holder class
         // which takes the view as a parameter
@@ -47,9 +51,10 @@ public class CategorySelectAdapter
 
     // Constructor for adapter class
     // which takes a list of String type
-    public CategorySelectAdapter(List<CategorySelectItem> horizontalList)
+    public CategorySelectAdapter(List<CategorySelectItem> horizontalList, Context context)
     {
         this.list = horizontalList;
+        this.mContext = context;
     }
 
     // Override onCreateViewHolder which deals
@@ -84,10 +89,17 @@ public class CategorySelectAdapter
         holder.categoryIcon.setImageResource(list.get(position).getCategoryIcon());
         holder.categoryName.setText(list.get(position).getCategoryName());
 
-        selectLayout.setBackgroundResource(list.get(position).getCategoryBg());
+        holder.selectLayout.setBackgroundResource(list.get(position).getCategoryBg());
 
-        selectLayout.setPadding(60, 40, 60, 40);
-
+        holder.selectLayout.setPadding(60, 40, 60, 40);
+        holder.selectLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, categoryAdd.class);
+                intent.putExtra("type", position);
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 

@@ -73,6 +73,7 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="@id/relativeLayout"
         android:layout_marginBottom="30dp"
+        android:visibility="invisible"
         />
 
     <RelativeLayout
@@ -125,9 +126,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:layout_marginLeft="30dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toTopOf="@+id/confirmButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +140,7 @@
             android:id="@+id/foodTextview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Apples"
+            android:text="Apple"
             android:textColor="@color/black"
             android:textSize="27sp"
             android:textStyle="bold"
@@ -146,9 +148,10 @@
             />
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center_horizontal"
 
             >
 
@@ -168,8 +171,8 @@
                 android:layout_height="wrap_content"
                 android:text="Weight"
                 android:textColor="@color/gray"
-                android:textSize="25sp"
-                android:layout_marginLeft="30dp"
+                android:textSize="20sp"
+
                 android:layout_centerVertical="true"
                 />
 
@@ -181,7 +184,8 @@
                 android:background="@drawable/addbutton_bg"
                 android:layout_alignParentEnd="true"
                 android:padding="10dp"
-                android:layout_marginRight="20dp"
+
+
                 >
 
                 <ImageButton
@@ -230,13 +234,24 @@
             android:id="@+id/filterView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="15dp"
+
+            android:layout_marginTop="25dp"
             android:background="@color/colorTransparent"
             android:scrollbars="horizontal" />
 
     </LinearLayout>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Or add a fruit of your own here! "
+        android:textSize="15sp"
+        android:background="@color/colorTransparent"
+        app:layout_constraintBottom_toTopOf="@id/confirmButton"
+        android:shadowColor="@color/colorTransparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="10dp"
+        />
     <Button
         android:layout_width="match_parent"
         android:id="@+id/confirmButton"
@@ -251,7 +266,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:paddingTop="25sp"
-        android:paddingBottom="25sp"
+        android:paddingBottom="15sp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="17dp"

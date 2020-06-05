@@ -1,20 +1,24 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.hanks.htextview.HTextView;
 
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ public class categoryAdd extends AppCompatActivity {
 
     private ImageView foodImage;
     private TextView foodText;
+    private TextView TitleView;
     private ImageButton plus;
     private ImageButton minus;
     private TextView foodWeight;
@@ -35,18 +40,10 @@ public class categoryAdd extends AppCompatActivity {
     private Button confirmButton;
     private ImageButton leftButton;
     private ImageButton rightButton;
+    private String Title;
+    private List<String> itemName = new ArrayList<>();
 
-    private List<String> commonFruit = new ArrayList<>();
-    private List<String> commonMeat = new ArrayList<>();
-    private List<String> commonDairy = new ArrayList<>();
-    private List<String> commonVeg = new ArrayList<>();
-    private List<String> commonGrain = new ArrayList<>();
-
-    private TypedArray fruitImg;
-    private TypedArray meatImg ;
-    private TypedArray dairyImg;
-    private TypedArray vegImg;
-    private TypedArray grainImg ;
+    private TypedArray itemImg;
 
     private ArrayList<Float> weights;
 
@@ -71,6 +68,8 @@ public class categoryAdd extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_add);
+
+
         foodImage = findViewById(R.id.foodPic);
         foodText = findViewById(R.id.foodTextview);
         plus = findViewById(R.id.plus);
@@ -82,18 +81,77 @@ public class categoryAdd extends AppCompatActivity {
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
         filterView = findViewById(R.id.filterView);
-
+        TitleView = findViewById(R.id.CategoryView);
         leftButton.setVisibility(View.INVISIBLE);
 
-        mCategoryItems = new ArrayList<>();
 
-        //mCategoryItems.add(new categoryItem("Null", 0.5f));
+        int type = getIntent().getIntExtra("type",-1);
+        if(type == 0)
+        {
+            Title = "Fruits";
+            Collections.addAll(itemName, getResources().getStringArray(R.array.common_fruits));
+            itemImg = getResources().obtainTypedArray(R.array.fruits_img);
+            TitleView.setText("Fruits");
+        }
+        if(type == 1)
+        {
+            Title = "Vegetables";
+            Collections.addAll(itemName, getResources().getStringArray(R.array.common_veg));
+            itemImg = getResources().obtainTypedArray(R.array.vegge_img);
+            TitleView.setText("Vegetables");
+        }
+        if(type == 2)
+        {
+         //   Title = "Vegetables";
+         //   Collections.addAll(itemName, getResources().getStringArray(R.array.common_veg));
+          //  itemImg = getResources().obtainTypedArray(R.array.vegge_img);
+          //  TitleView.setText("Vegetables");
+        }
+        if(type == 3)
+        {
+            Title = "Meat";
+            Collections.addAll(itemName, getResources().getStringArray(R.array.common_meat));
+            itemImg = getResources().obtainTypedArray(R.array.meat_img);
+            TitleView.setText("Meat");
+        }
+        if(type == 4)
+        {
+            Title = "Grains";
+            Collections.addAll(itemName, getResources().getStringArray(R.array.common_grains));
+            itemImg = getResources().obtainTypedArray(R.array.grains_img);
+            TitleView.setText("Grains");
+        }
+        if(type == 5)
+        {
+            Title = "Dairy";
+            Collections.addAll(itemName, getResources().getStringArray(R.array.common_dairy));
+            itemImg = getResources().obtainTypedArray(R.array.dairy_img);
+            TitleView.setText("Dairy");
+        }
 
 
+        List<categoryItem> mmCategoryItems;
+        List<Float> mmweights;
+
+        SharedPreferences sharedPreferences = getSharedPreferences("CategorySave",MODE_PRIVATE);
+        Gson gson = new Gson();
+        String retrievedCategoryItems = sharedPreferences.getString(Title, null);
+        String retrievedweights = sharedPreferences.getString(Title+"weights", null);
+        if(retrievedCategoryItems!=null) {
+            mmCategoryItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
+            mCategoryItems = new ArrayList(mmCategoryItems);
+            mmweights = Arrays.asList(gson.fromJson(retrievedweights, Float[].class));
+            weights = new ArrayList(mmweights);
+        }
+        else {
+            mCategoryItems = new ArrayList<>();
+            weights = new ArrayList<>();
+            for (int i = 0; i < itemName.size(); i++) {
+                weights.add(0.0f);
+            }
+        }
 
 
-
-        // Set adapter on recycler view
 
         HorizontalLayout
                 = new LinearLayoutManager(
@@ -109,19 +167,14 @@ public class categoryAdd extends AppCompatActivity {
         filterView.setLayoutManager(HorizontalLayout);
         filterView.setAdapter(mCategoryItemAdapter);
 
+        foodImage.setImageResource(itemImg.getResourceId(0, -1));
+        foodText.setText(itemName.get(0));
+        foodWeight.setText(weights.get(0).toString());
 
 
 
-        Collections.addAll(commonFruit, getResources().getStringArray(R.array.common_fruits));
 
-        fruitImg = getResources().obtainTypedArray(R.array.fruits_img);
 
-        weights = new ArrayList<>();
-
-        for (int i=0;i<10;i++)
-        {
-            weights.add(0.0f);
-        }
 
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +208,33 @@ public class categoryAdd extends AppCompatActivity {
             }
         });
 
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+                String mCategoryItemsText = gson.toJson(mCategoryItems);
+                String weightsText = gson.toJson(weights);
+                editor.putString(Title,mCategoryItemsText);
+                editor.putString(Title+"weights",weightsText);
+                editor.apply();
+                Intent intent = new Intent(categoryAdd.this, addClass.class);
+                startActivity(intent);
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(categoryAdd.this, addClass.class);
+                startActivity(intent);
+            }
+        });
+
+
 
     }
 
@@ -162,8 +242,6 @@ public class categoryAdd extends AppCompatActivity {
     {
 
         weights.set(pos, Float.parseFloat(foodWeight.getText().toString()));
-
-
 
         pos-=1;
         if (pos==0)
@@ -175,54 +253,10 @@ public class categoryAdd extends AppCompatActivity {
             rightButton.setVisibility(View.VISIBLE);
         }
 
-        foodImage.setImageResource(fruitImg.getResourceId(pos, -1));
-        foodText.setText(commonFruit.get(pos));
+        foodImage.setImageResource(itemImg.getResourceId(pos, -1));
+        foodText.setText(itemName.get(pos));
 
         foodWeight.setText(Float.toString(weights.get(pos)));
-
-
-
-        /*switch (pos)
-        {
-
-            case 0:
-            {
-
-                foodImage.setImageResource(fruitImg.getResourceId(pos, -1));
-                foodText.setText(commonFruit.get(pos));
-
-                break;
-            }
-            case 1:
-            {
-
-                break;
-            }
-            case 2:
-            {
-
-                break;
-            }
-            case 3:
-            {
-
-                break;
-            }
-            case 4:
-            {
-
-                break;
-            }
-
-            case 5:
-            {
-
-
-            }
-
-
-        }*/
-
 
     }
 
@@ -244,8 +278,8 @@ public class categoryAdd extends AppCompatActivity {
             leftButton.setVisibility(View.VISIBLE);
         }
 
-        foodImage.setImageResource(fruitImg.getResourceId(pos, -1));
-        foodText.setText(commonFruit.get(pos));
+        foodImage.setImageResource(itemImg.getResourceId(pos, -1));
+        foodText.setText(itemName.get(pos));
 
         foodWeight.setText(Float.toString(weights.get(pos)));
     }
@@ -256,7 +290,7 @@ public class categoryAdd extends AppCompatActivity {
 
         if (weights.get(pos)==0.0f)
         {
-            mCategoryItems.add(new categoryItem(commonFruit.get(pos), 0.5f));
+            mCategoryItems.add(new categoryItem(itemName.get(pos), 0.5f));
 
 
             mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size()-1);
@@ -265,7 +299,7 @@ public class categoryAdd extends AppCompatActivity {
             float orig =weights.get(pos);
 
 
-            int newPos = findItem(commonFruit.get(pos));
+            int newPos = findItem(itemName.get(pos));
             mCategoryItems.get(newPos).setFoodWeight(0.5f+orig);
             mCategoryItemAdapter.notifyItemChanged(newPos);
         }
@@ -273,7 +307,11 @@ public class categoryAdd extends AppCompatActivity {
 
         foodWeight.setText(Float.toString(weights.get(pos)+0.5f));
         weights.set(pos,weights.get(pos)+0.5f);
+        for(int i = 0;i<weights.size();i++) {
+            Log.d("TAG", weights.get(i).toString());
+        }
 
+        Log.d("TAG", "DONE");
 
     }
 
@@ -282,19 +320,27 @@ public class categoryAdd extends AppCompatActivity {
 
         if (weights.get(pos)==0.5f)
         {
-            int newPos = findItem(commonFruit.get(pos));
+            int newPos = findItem(itemName.get(pos));
             mCategoryItems.remove(newPos);
             mCategoryItemAdapter.notifyItemRemoved(newPos);
-
-        }
-
-        if(weights.get(pos)!=0) {
             foodWeight.setText(Float.toString(weights.get(pos) - 0.5f));
             weights.set(pos, weights.get(pos) - 0.5f);
         }
 
+        else if(weights.get(pos)>0.5) {
+            foodWeight.setText(Float.toString(weights.get(pos) - 0.5f));
+            weights.set(pos, weights.get(pos) - 0.5f);
 
+            int newPos = findItem(itemName.get(pos));
+            mCategoryItems.get(newPos).setFoodWeight(weights.get(pos));
+            mCategoryItemAdapter.notifyItemChanged(newPos);
+        }
 
+        for(int i = 0;i<weights.size();i++) {
+            Log.d("TAG", weights.get(i).toString());
+        }
+
+        Log.d("TAG", "DONE");
 
     }
 

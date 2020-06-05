@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,17 +36,16 @@ public class Main_Activity extends AppCompatActivity {
     private SlidingRootNav slidingRootNav;
 
     private static final int POS_DASHBOARD = 0;
-    private static final int POS_SEARCH = 1;
-    private static final int POS_ORDER = 2;
-    private static final int POS_PLUS = 3;
-    private static final int POS_PROFILE = 4;
+    private static final int POS_NOTIFICATION= 1;
+    private static final int POS_PLUS = 2;
+    private static final int POS_PROFILE = 3;
 
     private String[] screenTitles;
     private Drawable[] screenIcons;
 
     private ImageButton menuButton;
 
-
+    private LinearLayout searchBarLayout;
     private Button settingsButton;
 
     private  RecyclerView filterView;
@@ -73,12 +73,13 @@ public class Main_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        searchBarLayout = findViewById(R.id.searchBarLayout);
 
         filterView = findViewById(R.id.filterView);
         menuButton = findViewById(R.id.menuButton);
 
         mainRecycler = findViewById(R.id.mainRecycler);
-        searchRecycler = findViewById(R.id.searchRecycler);
+      //  searchRecycler = findViewById(R.id.searchRecycler);
 
         searchList = new ArrayList<>();
 
@@ -138,9 +139,6 @@ public class Main_Activity extends AppCompatActivity {
         filterItemList.add(new filterItem("Likes", R.drawable.icons8_likes2,false));
         filterItemList.add( new filterItem("Verified", R.drawable.icons8_verified_account,false));
 
-        final ArrayList<Item> items = Item.getTestingList();
-
-
 
 
         filterAdapter1 filterAdapter1 = new filterAdapter1(filterItemList);
@@ -173,8 +171,7 @@ public class Main_Activity extends AppCompatActivity {
 
         DrawerAdapter adapter2 = new DrawerAdapter(Arrays.asList(
                 createItemFor(POS_DASHBOARD).setChecked(true),
-                createItemFor(POS_SEARCH),
-                createItemFor(POS_ORDER),
+                createItemFor(POS_NOTIFICATION),
                 createItemFor(POS_PLUS),
                 createItemFor(POS_PROFILE)));
         adapter2.setListener(new DrawerAdapter.OnItemSelectedListener() {
@@ -208,16 +205,6 @@ public class Main_Activity extends AppCompatActivity {
             }
         });
 
-        final FoldingCellListAdapter adapter = new FoldingCellListAdapter(this, items);
-
-        // add default btn handler for each request btn on each item if custom handler not found
-        adapter.setDefaultRequestBtnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "DEFAULT HANDLER FOR ALL BUTTONS", Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
 
 
@@ -244,31 +231,24 @@ public class Main_Activity extends AppCompatActivity {
             }
             case 1:
             {
-                Intent intent = new Intent(Main_Activity.this, SearchClass.class);
-                startActivity(intent);
-                break;
+
             }
             case 2:
             {
-                // Intent intent = new Intent(MainActivity.this, SearchClass.class);
-                //startActivity(intent);
+                Intent intent = new Intent(Main_Activity.this, addClass.class);
+                startActivity(intent);
                 break;
             }
 
 
             case 3:
             {
-                //Intent intent = new Intent(MainActivity.this, SearchClass.class);
-                //startActivity(intent);
-                break;
-            }
-
-            case 4:
-            {
                 Intent intent = new Intent(Main_Activity.this, profileClass.class);
                 startActivity(intent);
                 break;
             }
+
+
 
 
 
