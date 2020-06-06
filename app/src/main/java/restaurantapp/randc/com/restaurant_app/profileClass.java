@@ -78,7 +78,7 @@ public class profileClass extends AppCompatActivity {
         phnoView.setKeyListener(null);
         emailView.setKeyListener(null);
 
-        db.collection("Restaurant").document(user.getUid()).get()
+        /*db.collection("Restaurant").document(user.getUid()).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -171,10 +171,10 @@ public class profileClass extends AppCompatActivity {
                     Toast.makeText(profileClass.this, "Email field is empty. Please fill all fields", Toast.LENGTH_LONG).show();
 
                 else {
-                   /* UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                   *//* UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName("FoodWorld").build();
 
-                    user.updateProfile(profileUpdates);*/
+                    user.updateProfile(profileUpdates);*//*
                     Map<String, Object> note = new HashMap<>();
                     note.put("Name", name);
                     note.put("Email", email);
@@ -239,7 +239,7 @@ public class profileClass extends AppCompatActivity {
                 }
 
             }
-        });
+        });*/
 
     }
 

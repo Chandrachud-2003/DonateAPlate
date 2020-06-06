@@ -1,5 +1,6 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -13,6 +14,11 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class donationBottomAdapter
@@ -29,6 +35,9 @@ public class donationBottomAdapter
         // Text View
         TextView categoryName;
         TextView categoryWeight;
+        ImageView categoryImage;
+        TextView categoryItems;
+        TextView categoryNum;
 
         // parameterised constructor for View Holder class
         // which takes the view as a parameter
@@ -36,8 +45,11 @@ public class donationBottomAdapter
         {
             super(view);
 
-            categoryName = view.findViewById(R.id.categNameBottom);
-            categoryWeight = view.findViewById(R.id.categWeightBottom);
+            categoryName = view.findViewById(R.id.bottomDonationCategory);
+            categoryWeight = view.findViewById(R.id.bottomDonationWeight);
+            categoryImage = view.findViewById(R.id.bottomDonationImage);
+            categoryItems = view.findViewById(R.id.bottomDonationItems);
+            categoryNum = view.findViewById(R.id.bottomDonationNum);
 
 
         }
@@ -79,8 +91,45 @@ public class donationBottomAdapter
                                  final int position)
     {
 
-        holder.categoryWeight.setText(list.get(position).getCategoryWeight());
         holder.categoryName.setText(list.get(position).getCategoryName());
+        holder.categoryWeight.setText(list.get(position).getCategoryWeight()+"kg");
+        String[] items = list.get(position).getItemsList();
+        String itemText = "";
+        for(int i=0;i<items.length;i++)
+        {
+            itemText+=items[i];
+            if (i!=(items.length-1))
+            {
+                itemText+=" · ";
+            }
+
+        }
+        itemText.trim();
+
+
+
+
+        holder.categoryItems.setText(itemText);
+        holder.categoryNum.setText(String.valueOf(items.length)+ "Items");
+
+        float width =  Resources.getSystem().getDisplayMetrics().widthPixels/10;
+        float height = (float)(width/0.75);
+
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(Color.BLACK)
+                .borderWidthDp(0)
+                .cornerRadiusDp(7)
+                .oval(false)
+                .build();
+
+        Picasso.get()
+                .load(list.get(position).getCategoryImage())
+                .resize((int)width, (int)height)
+                .transform(transformation)
+                .centerCrop()
+                .into(holder.categoryImage);
+
+
 
 
 

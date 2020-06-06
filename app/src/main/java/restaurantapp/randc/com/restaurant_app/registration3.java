@@ -60,6 +60,7 @@ public class registration3 extends AppCompatActivity {
                 note.put("Phone Number",getIntent().getStringExtra("phno"));
                 note.put("Pincode",getIntent().getStringExtra("pincode"));
                 note.put("Url","");
+                note.put("Ongoing Donations",0);
                 db.collection("Restaurant").document(user.getUid()).set(note)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

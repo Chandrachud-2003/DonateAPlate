@@ -18,6 +18,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.concurrent.CompletionService;
+
 public class loginpage extends AppCompatActivity {
 
     private Button registrationbutton;
@@ -84,6 +86,9 @@ public class loginpage extends AppCompatActivity {
                                         Log.d("TAG", "signInWithEmail:success");
                                         Toast.makeText(loginpage.this, "Logging in...",
                                                 Toast.LENGTH_SHORT).show();
+                                        FirebaseAuth auth = mAuth.getInstance();
+
+                                        //getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE).edit().putString(Constants.userIdPref, mAuth.getUid()).apply();
 
                                         Handler handler = new Handler();
                                         handler.postDelayed(new Runnable() {

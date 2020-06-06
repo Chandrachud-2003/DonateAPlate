@@ -1,13 +1,19 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -21,11 +27,17 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
+import com.google.gson.internal.$Gson$Preconditions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class addClass extends AppCompatActivity {
 
@@ -51,36 +63,64 @@ public class addClass extends AppCompatActivity {
 
     private float totalFruitWeight=0.0f;
     private String fruitNames[];
-    private float fruitWeights[];
+    private Float fruitWeights[];
 
     private float totalVeggesWeight=0.0f;
     private String VeggesNames[];
-    private float VeggesWeights[];
+    private Float VeggesWeights[];
 
     private float totalMeatWeight=0.0f;
     private String MeatNames[];
-    private float MeatWeights[];
+    private Float MeatWeights[];
 
     private float totalGrainsWeight=0.0f;
     private String GrainsNames[];
-    private float GrainsWeights[];
+    private Float GrainsWeights[];
 
     private float totalDairyWeight=0.0f;
     private String DairyNames[];
-    private float DairyWeights[];
+    private Float DairyWeights[];
+
+    private TextView dairyPercent;
+    private TextView meatPercent;
+    private TextView fruitPercent;
+    private TextView vegPercent;
+    private TextView dishPercent;
+    private TextView grainPercent;
+
+    private TextView donateButton;
+
+    private LinearLayoutManager verticalLayout;
+
+    private donationBottomAdapter mDonationBottomAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_activity);
 
+
         selectCategory = findViewById(R.id.categorySelectView);
         mPieChart = findViewById(R.id.categoryChart);
         clearButton = findViewById(R.id.clearButton1);
         menuButton = findViewById(R.id.menuButton);
         recentLayout = findViewById(R.id.recentLayout);
+        dairyPercent = findViewById(R.id.dairyPercentText);
+        meatPercent = findViewById(R.id.meatPercentText);
+
+        grainPercent = findViewById(R.id.grainsPercentText);
+
+        fruitPercent = findViewById(R.id.fruitPercentText);
+
+        vegPercent = findViewById(R.id.veggiesPercentText);
+
+        donateButton = findViewById(R.id.donateTextView);
+
 
         selectList = new ArrayList<>();
+
+        setOnClickListeners();
+
 
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,14 +135,14 @@ public class addClass extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                        SharedPreferences sharedPreferences = getSharedPreferences("CategorySave",MODE_PRIVATE);
+                       /* SharedPreferences sharedPreferences = getSharedPreferences("CategorySave",MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.clear();
                         editor.apply();
 
                         mEntries.clear();
                         retrieveValuesFromMem();
-                        createPie();
+                        createPie();*/
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -145,35 +185,73 @@ public class addClass extends AppCompatActivity {
 
 
         bottomRecycler = findViewById(R.id.bottomRecycler);
-        donationBottomItems = new ArrayList<>();
-        donationBottomItems.add(new donationBottomItem("food","5kgs"));
-        donationBottomItems.add(new donationBottomItem("errwerwer","65kgs"));
-        donationBottomItems.add(new donationBottomItem("fooerereed","5k0gs"));
 
-        donationBottomAdapter = new donationBottomAdapter(donationBottomItems);
-        bottomRecycler.setLayoutManager(new LinearLayoutManager(this));
-        bottomRecycler.setAdapter(donationBottomAdapter);
+        setUpBottomDonation();
 
 
 
     }
 
+    private void setOnClickListeners()
+    {
+        donateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                if (auth!=null) {
+
+                    editor.putString(Constants.DairyPref, "");
+                    editor.putString(Constants.dishesPref, "");
+                    editor.putString(Constants.fruitPref, "");
+                    editor.putString(Constants.vegetablePref, "");
+                    editor.putString(Constants.grainsPref, "");
+                    editor.putString(Constants.meatPref, "");
+                    editor.commit();
+
+                    String uid = auth.getUid();
+
+                    addToFirebase(uid);
+                }
+
+                else {
+
+                    Toast.makeText(addClass.this, "Please Sign in First", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(addClass.this, loginpage.class);
+                    startActivity(intent);
+
+                }
+
+
+
+
+
+
+            }
+        });
+    }
+
     private void retrieveValuesFromMem(){
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences("CategorySave",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
         Gson gson = new Gson();
         List<categoryItem> mmItems;
         ArrayList<categoryItem> mItems;
 
 
         //FRUITS
-        String retrievedCategoryItems = sharedPreferences.getString("Fruits", null);
-        if(retrievedCategoryItems!=null) {
+        String retrievedCategoryItems = sharedPreferences.getString(Constants.fruitPref, "");
+        if(retrievedCategoryItems!="") {
             mmItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mItems = new ArrayList(mmItems);
             fruitNames = new String[mItems.size()];
-            fruitWeights = new float[mItems.size()];
+            fruitWeights = new Float[mItems.size()];
             for(int i =0;i<mItems.size();i++) {
                 fruitNames[i] = mItems.get(i).getFoodItem();
                 fruitWeights[i] = mItems.get(i).getFoodWeight();
@@ -188,12 +266,12 @@ public class addClass extends AppCompatActivity {
 
 
         //Veggies
-        retrievedCategoryItems = sharedPreferences.getString("Vegetables", null);
-        if(retrievedCategoryItems!=null) {
+        retrievedCategoryItems = sharedPreferences.getString(Constants.vegetablePref, "");
+        if(retrievedCategoryItems!="") {
             mmItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mItems = new ArrayList(mmItems);
             VeggesNames = new String[mItems.size()];
-            VeggesWeights = new float[mItems.size()];
+            VeggesWeights = new Float[mItems.size()];
             for(int i =0;i<mItems.size();i++) {
                 VeggesNames[i] = mItems.get(i).getFoodItem();
                 VeggesWeights[i] = mItems.get(i).getFoodWeight();
@@ -208,12 +286,12 @@ public class addClass extends AppCompatActivity {
 
 
         //Meat
-        retrievedCategoryItems = sharedPreferences.getString("Meat", null);
-        if(retrievedCategoryItems!=null) {
+        retrievedCategoryItems = sharedPreferences.getString(Constants.meatPref, "");
+        if(retrievedCategoryItems!="") {
             mmItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mItems = new ArrayList(mmItems);
             MeatNames = new String[mItems.size()];
-            MeatWeights = new float[mItems.size()];
+            MeatWeights = new Float[mItems.size()];
             for(int i =0;i<mItems.size();i++) {
                 MeatNames[i] = mItems.get(i).getFoodItem();
                 MeatWeights[i] = mItems.get(i).getFoodWeight();
@@ -227,12 +305,12 @@ public class addClass extends AppCompatActivity {
         }
 
         //Grains
-        retrievedCategoryItems = sharedPreferences.getString("Grains", null);
-        if(retrievedCategoryItems!=null) {
+        retrievedCategoryItems = sharedPreferences.getString(Constants.grainsPref, "");
+        if(retrievedCategoryItems!="") {
             mmItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mItems = new ArrayList(mmItems);
             GrainsNames = new String[mItems.size()];
-            GrainsWeights = new float[mItems.size()];
+            GrainsWeights = new Float[mItems.size()];
             for(int i =0;i<mItems.size();i++) {
                 GrainsNames[i] = mItems.get(i).getFoodItem();
                 GrainsWeights[i] = mItems.get(i).getFoodWeight();
@@ -246,12 +324,12 @@ public class addClass extends AppCompatActivity {
         }
 
         //Grains
-        retrievedCategoryItems = sharedPreferences.getString("Dairy", null);
-        if(retrievedCategoryItems!=null) {
+        retrievedCategoryItems = sharedPreferences.getString(Constants.DairyPref, "");
+        if(retrievedCategoryItems!="") {
             mmItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mItems = new ArrayList(mmItems);
             DairyNames = new String[mItems.size()];
-            DairyWeights = new float[mItems.size()];
+            DairyWeights = new Float[mItems.size()];
             for(int i =0;i<mItems.size();i++) {
                 DairyNames[i] = mItems.get(i).getFoodItem();
                 DairyWeights[i] = mItems.get(i).getFoodWeight();
@@ -338,5 +416,147 @@ public class addClass extends AppCompatActivity {
         mPieChart.setData(mPieData);
         mPieChart.highlightValues(null);
         mPieChart.invalidate();
+
+        setUpPieText();
+    }
+
+    private void setUpPieText()
+    {
+        float total = totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight;
+        float dairyPercentage = (totalDairyWeight/total)*100.0f;
+        float meatPercentage = (totalMeatWeight/total)*100.0f;
+        float fruitPercentage = (totalFruitWeight/total)*100.0f;
+        float vegPercentage = (totalVeggesWeight/total)*100.0f;
+        float grainsPercentage = (totalGrainsWeight/total)*100.0f;
+        float dishesPercentage = (totalDairyWeight/total)*100.0f;
+
+        dairyPercent.setText((int)dairyPercentage+"%");
+        meatPercent.setText((int)meatPercentage+"%");
+        grainPercent.setText((int)grainsPercentage+"%");
+        fruitPercent.setText((int)fruitPercentage+"%");
+        vegPercent.setText((int)vegPercentage+"%");
+
+
+    }
+
+    private void setUpBottomDonation()
+    {
+        donateButton.setVisibility(View.GONE);
+        float total = totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight;
+
+        ArrayList<donationBottomItem> foodList= new ArrayList<>();
+
+
+        if (totalFruitWeight!=0)
+        {
+            foodList.add(new donationBottomItem("Fruits", totalFruitWeight, fruitNames, R.drawable.fruits_donation_bottom));
+        }
+        if (totalVeggesWeight!=0)
+        {
+            foodList.add(new donationBottomItem("Vegetables", totalVeggesWeight, VeggesNames, R.drawable.veg_donation_bottom));
+        }
+        if (totalDairyWeight!=0)
+        {
+            foodList.add(new donationBottomItem("Dairy", totalDairyWeight, DairyNames, R.drawable.dairy_donation_bottom));
+        }
+        if (totalMeatWeight!=0)
+        {
+            foodList.add(new donationBottomItem("Meat", totalMeatWeight, MeatNames, R.drawable.meat_donation_bottom));
+        }
+        if (totalGrainsWeight!=0)
+        {
+            foodList.add(new donationBottomItem("Grains", totalGrainsWeight, GrainsNames, R.drawable.grains_donation_bottom));
+        }
+
+
+        if (foodList.size()!=0) {
+
+            mDonationBottomAdapter = new donationBottomAdapter(foodList);
+            verticalLayout = new LinearLayoutManager(
+                    addClass.this,
+                    LinearLayoutManager.VERTICAL,
+                    false);
+
+            bottomRecycler.setLayoutManager(verticalLayout);
+            bottomRecycler.setAdapter(mDonationBottomAdapter);
+
+            donateButton.setVisibility(View.VISIBLE);
+            donateButton.setText("Make Donation · "+total+"kg");
+        }
+
+
+
+
+    }
+
+    private void addToFirebase(String uid)
+    {
+
+        if (totalFruitWeight!=0 && fruitNames.length>0)
+        {
+            Map<String, Object> fruitMap = new HashMap<>();
+            fruitMap.put(Constants.name_fire, Arrays.asList(fruitNames));
+            fruitMap.put(Constants.weight_fire, Arrays.asList(fruitWeights));
+            addFood(Constants.fruitName_fire, fruitMap, uid);
+
+        }
+
+        if (totalGrainsWeight!=0 && GrainsNames.length>0)
+        {
+            Map<String, Object> grainsMap = new HashMap<>();
+            grainsMap.put(Constants.name_fire, Arrays.asList(GrainsNames));
+            grainsMap.put(Constants.weight_fire, Arrays.asList(GrainsWeights));
+            addFood(Constants.grainsName_fire, grainsMap, uid);
+
+        }
+
+        if (totalVeggesWeight!=0 && VeggesNames.length>0)
+        {
+            Map<String, Object> map = new HashMap<>();
+            map.put(Constants.name_fire, Arrays.asList(VeggesNames));
+            map.put(Constants.weight_fire, Arrays.asList(VeggesWeights));
+            addFood(Constants.vegName_fire, map, uid);
+
+        }
+
+        if (totalDairyWeight!=0 && DairyNames.length>0)
+        {
+            Map<String, Object> map = new HashMap<>();
+            map.put(Constants.name_fire, Arrays.asList(DairyNames));
+            map.put(Constants.weight_fire, Arrays.asList(DairyWeights));
+            addFood(Constants.dairyName_fire, map, uid);
+
+        }
+
+        if (totalMeatWeight!=0 && MeatNames.length>0)
+        {
+            Map<String, Object> map = new HashMap<>();
+            map.put(Constants.name_fire, Arrays.asList(MeatNames));
+            map.put(Constants.weight_fire, Arrays.asList(MeatWeights));
+            addFood(Constants.meatName_fire, map, uid);
+
+        }
+
+
+    }
+
+    private void addFood(String category, Map<String, Object> map, String uid)
+    {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection(Constants.orderName_fire).document(uid).collection(Constants.foodName_fire).document(category)
+                .set(map)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Log.d(Constants.tag, "onSuccess: "+category+" add");
+
+                    }
+                });
+
+        Toast.makeText(getBaseContext(), "Order Added", Toast.LENGTH_SHORT).show();
+
+
     }
 }

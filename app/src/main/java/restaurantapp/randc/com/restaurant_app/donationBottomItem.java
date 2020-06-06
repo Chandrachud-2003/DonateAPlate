@@ -1,12 +1,18 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import java.util.ArrayList;
+
 public class donationBottomItem {
     private String categoryName;
-    private String categoryWeight;
+    private float categoryWeight;
+    private String[] itemsList;
+    private int categoryImage;
 
-    public donationBottomItem(String categoryName, String categoryWeight) {
+    public donationBottomItem(String categoryName, float categoryWeight, String[] itemsList, int categoryImage) {
         this.categoryName = categoryName;
         this.categoryWeight = categoryWeight;
+        this.itemsList = itemsList;
+        this.categoryImage = categoryImage;
 
 
     }
@@ -19,11 +25,27 @@ public class donationBottomItem {
         this.categoryName = categoryName;
     }
 
-    public String getCategoryWeight() {
+    public float getCategoryWeight() {
         return categoryWeight;
     }
 
-    public void setCategoryWeight(String categoryWeight) {
+    public void setCategoryWeight(float categoryWeight) {
         this.categoryWeight = categoryWeight;
+    }
+
+    public String[] getItemsList() {
+        return itemsList;
+    }
+
+    public void setItemsList(String[] itemsList) {
+        this.itemsList = itemsList;
+    }
+
+    public int getCategoryImage() {
+        return categoryImage;
+    }
+
+    public void setCategoryImage(int categoryImage) {
+        this.categoryImage = categoryImage;
     }
 }

@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/montserrat"
-            android:text="App Name"
+            android:text="HOME"
             android:textColor="@color/black"
             android:textSize="25sp"
             android:textStyle="bold"

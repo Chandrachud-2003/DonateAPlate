@@ -88,14 +88,14 @@ public class categoryAdd extends AppCompatActivity {
         int type = getIntent().getIntExtra("type",-1);
         if(type == 0)
         {
-            Title = "Fruits";
+            Title = Constants.fruitPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_fruits));
             itemImg = getResources().obtainTypedArray(R.array.fruits_img);
             TitleView.setText("Fruits");
         }
         if(type == 1)
         {
-            Title = "Vegetables";
+            Title = Constants.vegetablePref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_veg));
             itemImg = getResources().obtainTypedArray(R.array.vegge_img);
             TitleView.setText("Vegetables");
@@ -109,21 +109,21 @@ public class categoryAdd extends AppCompatActivity {
         }
         if(type == 3)
         {
-            Title = "Meat";
+            Title = Constants.meatPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_meat));
             itemImg = getResources().obtainTypedArray(R.array.meat_img);
             TitleView.setText("Meat");
         }
         if(type == 4)
         {
-            Title = "Grains";
+            Title = Constants.grainsPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_grains));
             itemImg = getResources().obtainTypedArray(R.array.grains_img);
             TitleView.setText("Grains");
         }
         if(type == 5)
         {
-            Title = "Dairy";
+            Title = Constants.DairyPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_dairy));
             itemImg = getResources().obtainTypedArray(R.array.dairy_img);
             TitleView.setText("Dairy");
@@ -133,11 +133,13 @@ public class categoryAdd extends AppCompatActivity {
         List<categoryItem> mmCategoryItems;
         List<Float> mmweights;
 
-        SharedPreferences sharedPreferences = getSharedPreferences("CategorySave",MODE_PRIVATE);
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
         Gson gson = new Gson();
         String retrievedCategoryItems = sharedPreferences.getString(Title, null);
         String retrievedweights = sharedPreferences.getString(Title+"weights", null);
-        if(retrievedCategoryItems!=null) {
+        if(retrievedCategoryItems!=null && retrievedCategoryItems!="") {
             mmCategoryItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mCategoryItems = new ArrayList(mmCategoryItems);
             mmweights = Arrays.asList(gson.fromJson(retrievedweights, Float[].class));
