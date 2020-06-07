@@ -138,9 +138,10 @@ public class registration4 extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d("TAG", "Email sent.");
-                                }
+                                }u
                             }
                         });*/
+
                                     Map<String, Object> note = new HashMap<>();
                                     note.put("Name",sharedPreferences.getString("rName","ERROR"));
                                     note.put("Email",sharedPreferences.getString("rEmail","rEmail"));
@@ -159,6 +160,7 @@ public class registration4 extends AppCompatActivity {
                                         note.put("Type",typeSpinner.getSelectedItem().toString());
                                     else
                                         note.put("Type","");
+
                                     note.put("Frequency",freq);
 
                                     db.collection(sharedPreferences.getString("rType","ERROR")).document(user.getUid()).set(note)
@@ -166,6 +168,16 @@ public class registration4 extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(registration4.this, "Account Created!", Toast.LENGTH_SHORT).show();
+
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    editor.remove("rEmail");
+                                                    editor.remove("rName");
+                                                    editor.remove("rAddress");
+                                                    editor.remove("rPhone");
+                                                    editor.remove("rPincode");
+                                                    editor.remove("rState");
+                                                    editor.remove("rPass");
+
                                                     Intent intent = new Intent(registration4.this, registration5.class);
                                                     startActivity(intent);
                                                 }
@@ -186,7 +198,6 @@ public class registration4 extends AppCompatActivity {
                                     // If sign in fails, display a message to the user.
                                     Log.e("TAG", "createUserWithEmail:failure", task.getException());
                                     Intent intent = new Intent(registration4.this, registration1.class);
-                                    intent.putExtra("error",true);
                                     startActivity(intent);
                                 }
                             }
@@ -201,6 +212,20 @@ public class registration4 extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("rEmail");
+        editor.remove("rName");
+        editor.remove("rAddress");
+        editor.remove("rPhone");
+        editor.remove("rPincode");
+        editor.remove("rState");
+        editor.remove("rPass");
+        Log.d("TAG","DONE4");
+    }
 }
 
 

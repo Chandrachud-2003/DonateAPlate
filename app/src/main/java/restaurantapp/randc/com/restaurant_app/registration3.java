@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -110,5 +111,19 @@ public class registration3 extends AppCompatActivity {
                 }
             }
         });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("rEmail");
+        editor.remove("rName");
+        editor.remove("rAddress");
+        editor.remove("rPhone");
+        editor.remove("rPincode");
+        editor.remove("rState");
+        editor.remove("rPass");
+        Log.d("TAG","DONE3");
     }
 }

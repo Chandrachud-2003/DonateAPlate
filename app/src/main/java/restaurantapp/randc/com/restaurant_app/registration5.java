@@ -107,9 +107,11 @@ public class registration5 extends AppCompatActivity {
                     lbar.setCanceledOnTouchOutside(false);
                     lbar.show();
                     uploadImageToFirebase(mImageUri);
+
                 }
                 else
                 {
+
                     Intent intent = new Intent(registration5.this,Main_Activity.class);
                     startActivity(intent);
                 }

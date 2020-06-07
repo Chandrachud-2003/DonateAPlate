@@ -6,6 +6,7 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,9 @@ public class registration2 extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("rType","Restaurant");
+        editor.apply();
 
         toggleSwitch.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
 
@@ -79,5 +83,19 @@ public class registration2 extends AppCompatActivity {
                 }
             }
         });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("rEmail");
+        editor.remove("rName");
+        editor.remove("rAddress");
+        editor.remove("rPhone");
+        editor.remove("rPincode");
+        editor.remove("rState");
+        editor.remove("rPass");
+        Log.d("TAG","DONE2");
     }
 }

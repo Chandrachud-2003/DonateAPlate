@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,7 +63,7 @@ public class registration1 extends AppCompatActivity {
                     }
 
                 }
-                /*else if(!(password.equals(passwordConfirm.getText().toString().trim())))
+                else if(!(password.equals(passwordConfirm.getText().toString().trim())))
                 {
                     Toast.makeText(registration1.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                     passwordConfirm.setError("Confirm Password again");
@@ -72,7 +73,7 @@ public class registration1 extends AppCompatActivity {
                 else if (password.length() < 6) {
                     Toast.makeText(registration1.this, "Password must be atleast 6 charecters long", Toast.LENGTH_SHORT).show();
                     passwordView.setError("Password too short!");
-                }*/
+                }
 
                 else {
 
@@ -134,14 +135,21 @@ public class registration1 extends AppCompatActivity {
 
     }
 
+
+
     @Override
-    public void onResume() {
-        super.onResume();
-
-        if(getIntent().getBooleanExtra("error",false)) {
-            emailView.setError("Enter Valid Email");
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("rEmail");
+        editor.remove("rName");
+        editor.remove("rAddress");
+        editor.remove("rPhone");
+        editor.remove("rPincode");
+        editor.remove("rState");
+        editor.remove("rPass");
+        Log.d("TAG","DONE1");
     }
-
 
 }
