@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -135,14 +137,19 @@ public class addClass extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                       /* SharedPreferences sharedPreferences = getSharedPreferences("CategorySave",MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.clear();
+                        editor.remove(Constants.DairyPref);
+                        editor.remove(Constants.fruitPref);
+                        editor.remove(Constants.grainsPref);
+                        editor.remove(Constants.meatPref);
+                        editor.remove(Constants.vegetablePref);
+                        editor.remove(Constants.dishesPref);
                         editor.apply();
-
+                        setUpBottomDonation();
                         mEntries.clear();
                         retrieveValuesFromMem();
-                        createPie();*/
+                        createPie();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -203,7 +210,7 @@ public class addClass extends AppCompatActivity {
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                if (auth!=null) {
+                if (auth.getUid()!=null) {
 
                     editor.putString(Constants.DairyPref, "");
                     editor.putString(Constants.dishesPref, "");
@@ -211,7 +218,7 @@ public class addClass extends AppCompatActivity {
                     editor.putString(Constants.vegetablePref, "");
                     editor.putString(Constants.grainsPref, "");
                     editor.putString(Constants.meatPref, "");
-                    editor.commit();
+                    editor.apply();
 
                     String uid = auth.getUid();
 
@@ -551,11 +558,18 @@ public class addClass extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
 
                         Log.d(Constants.tag, "onSuccess: "+category+" add");
-
+                        Toast.makeText(getBaseContext(), "Order Added", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(Constants.tag, "error: "+e+" add");
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
                     }
                 });
 
-        Toast.makeText(getBaseContext(), "Order Added", Toast.LENGTH_SHORT).show();
+
 
 
     }

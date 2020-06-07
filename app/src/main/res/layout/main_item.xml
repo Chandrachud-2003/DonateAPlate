@@ -16,9 +16,10 @@
         <ImageView
             android:id="@+id/mainImage"
             android:layout_width="match_parent"
-            android:layout_height="280.5dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorTransparent"
             android:src="@drawable/restaurant2"
+
             />
 
 

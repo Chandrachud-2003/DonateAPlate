@@ -309,11 +309,7 @@ public class categoryAdd extends AppCompatActivity {
 
         foodWeight.setText(Float.toString(weights.get(pos)+0.5f));
         weights.set(pos,weights.get(pos)+0.5f);
-        for(int i = 0;i<weights.size();i++) {
-            Log.d("TAG", weights.get(i).toString());
-        }
 
-        Log.d("TAG", "DONE");
 
     }
 
@@ -338,11 +334,6 @@ public class categoryAdd extends AppCompatActivity {
             mCategoryItemAdapter.notifyItemChanged(newPos);
         }
 
-        for(int i = 0;i<weights.size();i++) {
-            Log.d("TAG", weights.get(i).toString());
-        }
-
-        Log.d("TAG", "DONE");
 
     }
 

@@ -1,23 +1,17 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.auth.User;
 
 public class registration1 extends AppCompatActivity {
     private Button next_button;
@@ -26,7 +20,6 @@ public class registration1 extends AppCompatActivity {
     private EditText emailView;
     private EditText passwordView;
     private EditText passwordConfirm;
-    private EditText name;
     private String email;
     private String password;
 
@@ -40,11 +33,10 @@ public class registration1 extends AppCompatActivity {
         next_button = findViewById(R.id.next_button);
         emailView = findViewById(R.id.editText2);
         passwordConfirm = findViewById(R.id.editText3);
-        name = findViewById(R.id.editText);
         loginbutton = findViewById(R.id.buttonlogin);
         passwordView= findViewById(R.id.editText5);
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Intent intent = new Intent(registration1.this, registration2.class);
+        Intent intent = new Intent(registration1.this, registration3.class);
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +44,9 @@ public class registration1 extends AppCompatActivity {
                 password = passwordView.getText().toString();
                 email = email.trim();
                 password = password.trim();
-                if(passwordConfirm.getText().toString().trim().equals("")||passwordView.getText().toString().trim().equals("")||emailView.getText().toString().trim().equals("")||name.getText().toString().trim().equals("")){
+
+
+                if(passwordConfirm.getText().toString().trim().equals("")||passwordView.getText().toString().trim().equals("")||emailView.getText().toString().trim().equals("")){
                     Toast.makeText(registration1.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                     if(passwordConfirm.getText().toString().trim().equals(""))
                     {
@@ -66,12 +60,9 @@ public class registration1 extends AppCompatActivity {
                     {
                         emailView.setError("Enter Email");
                     }
-                    if(name.getText().toString().trim().equals(""))
-                    {
-                        name.setError("Enter Organisation Name");
-                    }
+
                 }
-                else if(!(password.equals(passwordConfirm.getText().toString().trim())))
+                /*else if(!(password.equals(passwordConfirm.getText().toString().trim())))
                 {
                     Toast.makeText(registration1.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                     passwordConfirm.setError("Confirm Password again");
@@ -81,11 +72,21 @@ public class registration1 extends AppCompatActivity {
                 else if (password.length() < 6) {
                     Toast.makeText(registration1.this, "Password must be atleast 6 charecters long", Toast.LENGTH_SHORT).show();
                     passwordView.setError("Password too short!");
-                }
+                }*/
 
                 else {
-                    Log.d("TAG", "" + email + "   " + password);
-                    mAuth.createUserWithEmailAndPassword(email, password)
+
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    editor.putString("rEmail",email);
+                    editor.putString("rPass",password);
+                    editor.apply();
+                    Intent intent = new Intent(registration1.this, registration2.class);
+                    startActivity(intent);
+
+                   /* mAuth.createUserWithEmailAndPassword(email, password)
 
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -105,10 +106,6 @@ public class registration1 extends AppCompatActivity {
                                         // FirebaseDatabase.
 //                                  FirebaseUser user = mAuth.getCurrentUser();
                                         Toast.makeText(registration1.this, "Success", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(registration1.this, registration2.class);
-                                        intent.putExtra("name",name.getText().toString().trim());
-                                        intent.putExtra("email",email);
-                                        startActivity(intent);
 
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -120,7 +117,7 @@ public class registration1 extends AppCompatActivity {
                                 }
 
                                 // ...
-                            });
+                            });*/
                 }
             }
 
@@ -136,5 +133,15 @@ public class registration1 extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(getIntent().getBooleanExtra("error",false)) {
+            emailView.setError("Enter Valid Email");
+        }
+    }
+
 
 }

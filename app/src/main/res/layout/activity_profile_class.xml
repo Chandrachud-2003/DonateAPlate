@@ -20,7 +20,6 @@
 
 
 
-
         <ImageView
             android:id="@+id/profilePic"
             android:layout_width="match_parent"
@@ -30,7 +29,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/restaurant_sample" />
-
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icons8_edit"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/colorTransparent"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="20dp"
+            android:visibility="gone"
+            android:id="@+id/editPicture"
+            />
         <View
             android:id="@+id/divider"
             android:layout_width="409dp"
@@ -105,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:text="Pizza Hut"
+                android:text="Loading.."
                 android:textColor="@color/black"
                 android:textSize="30sp"
                 android:background="@null"
@@ -118,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="5sp"
-                android:text="Bangalore, Karnataka"
+                android:text=""
                 android:textSize="18sp"
 
                 />
@@ -136,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5sp"
-                    android:text="200"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="40dp"
                     android:textStyle="bold"
@@ -310,7 +320,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:paddingTop="10dp"
-                        android:text="Email"
+                        android:text="Loading.."
                         android:clickable="false"
                         android:textColor="#000000"
                         android:textSize="18sp"
@@ -347,7 +357,7 @@
                         android:paddingTop="10dp"
                         android:clickable="false"
                         android:background="@null"
-                        android:text="Phone Number"
+                        android:text="Loading.."
                         android:textColor="#000000"
                         android:textSize="18sp"/>
                     <View
@@ -377,7 +387,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:layout_marginTop="10dp"
-                        android:text="Address"
+                        android:text="Loading.."
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:background="@null"/>
@@ -469,14 +479,14 @@
         </com.github.clans.fab.FloatingActionMenu>
 
         <ImageButton
-            android:id="@+id/saveTick"
+            android:id="@+id/cancel_button"
             android:visibility="gone"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginEnd="12dp"
             android:layout_marginTop="16dp"
             android:background="@color/colorTransparent"
-            android:src="@drawable/icons8_tick2"
+            android:src="@drawable/icons8_cancel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

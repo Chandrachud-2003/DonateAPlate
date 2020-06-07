@@ -508,7 +508,7 @@
         />
 
 
-    
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottomSheetScroll"
         android:layout_width="match_parent"

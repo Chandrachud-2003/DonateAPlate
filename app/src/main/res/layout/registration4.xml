@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background2"
+    tools:context=".registration4">
+
+
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="260dp"
+        android:layout_height="40dp"
+android:visibility="gone"
+        android:layout_marginTop="12dp"
+        custom:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintTop_toBottomOf="@+id/typeView" />
+
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="235dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginLeft="88dp"
+        android:layout_marginRight="88dp"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="112dp"
+        android:gravity="center"
+        android:text="Tell us more about your restaurant"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp"
+    android:fontFamily="@font/montserrat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+android:id="@+id/toggle"
+        android:layout_marginTop="15dp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        custom:activeBgColor="@android:color/holo_blue_dark"
+        custom:activeTextColor="@android:color/white"
+        custom:inactiveBgColor="@android:color/white"
+        custom:inactiveTextColor="@android:color/black"
+        custom:separatorColor="@color/gray_very_light"
+        custom:textToggleCenter="WEEKLY"
+        custom:textToggleLeft="DAILY"
+        custom:textToggleRight="MONTHLY"
+        custom:toggleWidth="104dp" />
+    <TextView
+        android:id="@+id/typeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Select the type of restaurant "
+        android:visibility="gone"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:gravity="center"
+        android:textColor="@android:color/background_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toggle" />
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="180dp"
+       android:fontFamily="@font/montserrat"
+        android:text="Select approximately how often you can provide food "
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:gravity="center"
+
+        android:textColor="@android:color/background_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleView" />
+
+
+    <com.manojbhadane.QButton
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:text="CONTINUE"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.473"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:qb_backgroundColor="@color/green"
+        app:qb_radius="40"
+        app:qb_strokeColor="@color/green"
+        app:qb_strokeWidth="5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

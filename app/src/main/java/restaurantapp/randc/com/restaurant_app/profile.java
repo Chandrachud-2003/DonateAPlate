@@ -166,7 +166,7 @@ public class profile extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if(resultCode== RESULT_OK) {
                 lbar.setTitle("Uploading Image");
-                lbar.setMessage("Please wait,your profile picture is updating..");
+                lbar.setMessage("Please wait, your profile picture is updating..");
                 lbar.setCanceledOnTouchOutside(false);
                 lbar.show();
                 Uri resultUri  = result.getUri();

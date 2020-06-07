@@ -103,10 +103,7 @@ dependencies {
     implementation 'com.nex3z:flow-layout:1.3.0'
 
 
-
 }
-
-
 
 
 apply plugin: 'com.google.gms.google-services'

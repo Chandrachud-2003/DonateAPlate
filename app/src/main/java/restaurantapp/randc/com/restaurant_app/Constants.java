@@ -34,5 +34,8 @@ public class Constants {
     public static final String meatName_fire = "Meat";
     public static final String foodName_fire = "Food";
 
+
+
+
     //consts
 }
