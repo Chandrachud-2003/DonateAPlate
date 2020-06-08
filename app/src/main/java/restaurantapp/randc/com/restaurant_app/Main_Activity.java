@@ -1,5 +1,7 @@
 package restaurantapp.randc.com.restaurant_app;
 //This is a comment
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -215,6 +217,8 @@ public class Main_Activity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity
+
+
     }
 
     public void onItemSelected(int position) {
