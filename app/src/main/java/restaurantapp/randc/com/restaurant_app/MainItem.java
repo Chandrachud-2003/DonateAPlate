@@ -17,7 +17,10 @@ public class MainItem {
     private boolean Grains;
     private int image;
 
+    public MainItem()
+    {
 
+    }
     public MainItem(String location, String typeRestaurant, String type, String time, String followers, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, int image) {
         this.location = location;
         this.typeRestaurant = typeRestaurant;

@@ -1,19 +1,18 @@
 package restaurantapp.randc.com.restaurant_app;
 //This is a comment
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
@@ -21,11 +20,13 @@ import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.ramotion.foldingcell.FoldingCell;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 //
@@ -67,8 +68,21 @@ public class Main_Activity extends AppCompatActivity {
     private LinearLayoutManager verticalLayout;
 
     private  RecyclerView mainRecycler;
-    private ArrayList<MainItem> mainList;
     private MainAdapter mainAdapter;
+    private ProgressBar progressBar;
+    private ArrayList<MainItem> mainItems;
+
+    private static final int PAGE_START = 0;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private int TOTAL_PAGES = 3;
+    private int currentPage = PAGE_START;
+
+    private NestedScrollView nestedScrollView;
+
+    private boolean atBottom;
+
+    private AVLoadingIndicatorView recyclerLoader;
 
 
     @Override
@@ -77,13 +91,16 @@ public class Main_Activity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
 
         searchBarLayout = findViewById(R.id.searchBarLayout);
+        nestedScrollView = findViewById(R.id.mainNestedScrollView);
 
         filterView = findViewById(R.id.filterView);
         menuButton = findViewById(R.id.menuButton);
-
+        mainItems = new ArrayList<>();
         mainRecycler = findViewById(R.id.mainRecycler);
+        recyclerLoader = findViewById(R.id.avi);
+        recyclerLoader.setVisibility(View.GONE);
       //  searchRecycler = findViewById(R.id.searchRecycler);
-
+        progressBar = findViewById(R.id.main_progress);
         searchList = new ArrayList<>();
 
         searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
@@ -104,11 +121,9 @@ public class Main_Activity extends AppCompatActivity {
 
         mainRecycler = findViewById(R.id.mainRecycler);
         //mainRecycler.setNestedScrollingEnabled(false);
-        mainList = new ArrayList<>();
 
-        mainList.add(new MainItem("Bangalore, Karnataka", "Fast-Food", "Resaurant","15 Mins","10.5K","3 kg","McDonalds",false,false ,true,true,true,false,R.drawable.restaurant2));
-        mainList.add(new MainItem("Bangalore, Karnataka", "Mexican", "Resaurant","45 Mins","1.5K","0.2 kg","Chilli's",true,true ,false,true,false,true,R.drawable.restaurant3));
-        mainAdapter = new MainAdapter(mainList, Main_Activity.this);
+
+
 
         verticalLayout = new LinearLayoutManager(
                 Main_Activity.this,
@@ -121,9 +136,47 @@ public class Main_Activity extends AppCompatActivity {
             }
         };
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadFirstPage();
+            }
+        }, 1000);
 
-        mainRecycler.setLayoutManager(verticalLayout);
-        mainRecycler.setAdapter(mainAdapter);
+
+
+
+        nestedScrollView.getViewTreeObserver()
+                .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+                        if (nestedScrollView.getChildAt(0).getBottom()
+                                <= (nestedScrollView.getHeight() + nestedScrollView.getScrollY())) {
+                            //scroll view is at bottom
+                            if (!atBottom)
+                            {
+                                atBottom=true;
+                                Log.d("tag", "onScrollChanged: reached bottom");
+                                recyclerLoader.setVisibility(View.VISIBLE);
+                                recyclerLoader.show();
+                                loadNextPage();
+                                Log.d("tag", "onScrollChanged:loaded items");
+                            }
+
+                        } else {
+                            if (atBottom)
+                            {
+                                atBottom=false;
+                                Log.d("tag", "onScrollChanged:not at bottom");
+                            }
+                            //scroll view is not at bottom
+                        }
+                    }
+                });
+
+
+
+
 
 
 
@@ -320,7 +373,64 @@ public class Main_Activity extends AppCompatActivity {
 
 
 
+    private void loadFirstPage() {
+        Log.d("TAG", "loadFirstPage: ");
 
+
+        for(int  i = 0 ; i<5;i++)
+        {
+            mainItems.add(new MainItem("Bangalore, Karnataka", "Fast-Food", "Resaurant","15 Mins","10.5K","3 kg","McDonalds",false,false ,true,true,true,false,R.drawable.restaurant2));
+        }
+        progressBar.setVisibility(View.GONE);
+        mainAdapter = new MainAdapter( Main_Activity.this, mainItems);
+        mainRecycler.setLayoutManager(verticalLayout);
+        mainRecycler.setAdapter(mainAdapter);
+        mainRecycler.setItemAnimator(new DefaultItemAnimator());
+
+        if (currentPage <= TOTAL_PAGES) {
+            //add anim
+        }
+        else
+            isLastPage = true;
+
+    }
+
+    private void loadNextPage() {
+
+
+        if (mainItems != null && mainAdapter != null) {
+            Log.d("TAG", "loadNextPage: " + currentPage);
+            //List<MainItem> newItems = new ArrayList<>();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    int intitialPos = mainItems.size() - 1;
+                    for (int i = 0; i < 5; i++) {
+                        mainItems.add(new MainItem("Bangalore, Karnataka", "Fast-Food", "Resaurant", "15 Mins", "10.5K", "3 kg", "McDonalds", false, false, true, true, true, false, R.drawable.restaurant2));
+                    }
+
+                    //mainAdapter.removeLoadingFooter();
+                    isLoading = false;
+
+
+                    mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
+
+                    recyclerLoader.hide();
+                    recyclerLoader.setVisibility(View.GONE);
+
+                    if (currentPage != TOTAL_PAGES) {
+                        //add animation
+                    } else
+                        isLastPage = true;
+
+                }
+            }, 2500);
+
+
+        }
+    }
 
 
 }
