@@ -262,7 +262,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     void updateDetails()
     {
 
-        db.collection(user.getDisplayName()).document(user.getUid()).get()
+        db.collection(Constants.rest_fire).document(user.getUid()).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {

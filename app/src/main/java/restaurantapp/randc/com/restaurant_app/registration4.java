@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -148,6 +149,13 @@ public class registration4 extends AppCompatActivity {
                                     note.put("Address",sharedPreferences.getString("rAddress","ERROR"));
                                     note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
                                     note.put("Pincode",sharedPreferences.getString("rPincode","ERROR"));
+
+                                    ArrayList<Boolean> orderArray=new ArrayList<>();
+                                    for (int i=0;i<=4;i++)
+                                    {
+                                        orderArray.add(false);
+                                    }
+                                    note.put(Constants.order_id_num,orderArray);
                                     if(sharedPreferences.getString("rType",null).equals("NGO"))
                                         note.put("Url","https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultNGO.png?alt=media&token=b0de6cb2-bce8-4c5e-9441-e1edadf3cbdf");
                                     else if (sharedPreferences.getString("rType",null).equals("Restaurant"))

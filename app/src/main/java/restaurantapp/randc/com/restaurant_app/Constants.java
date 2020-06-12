@@ -34,6 +34,17 @@ public class Constants {
     public static final String meatName_fire = "Meat";
     public static final String foodName_fire = "Food";
 
+    public static final String order_list_fire = "Order List";
+    public static final String order_list_field = "Order Ids";
+    public static final String ongoing_fire = "Ongoing Donations";
+    public static final String order_id_num = "order_array";
+    public static final String rest_fire = "Restaurant";
+    public static final String ngo_fire = "NGO";
+
+    public static final String username = "Name";
+    public static final String url_user = "Url";
+    public static final String type_user = "Type";
+
 
 
 

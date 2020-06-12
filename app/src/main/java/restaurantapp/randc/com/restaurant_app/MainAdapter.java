@@ -202,45 +202,6 @@ import androidx.recyclerview.widget.RecyclerView;
         }
 
 
-        public void add(MainItem addition) {
-            list.add(addition);
-            Log.d("TAG", "addAll: new item added");
-            notifyItemInserted(list.size() - 1);
-        }
-
-        public void addAll(List<MainItem> ItemList) {
-            for (int i = 0;i<ItemList.size();i++) {
-                add(ItemList.get(i));
-
-            }
-
-        }
-
-        public void remove(MainItem item) {
-            int position = list.indexOf(item);
-            if (position > -1) {
-                list.remove(position);
-                notifyItemRemoved(position);
-            }
-        }
-
-        public void clear() {
-            isLoadingAdded = false;
-            while (getItemCount() > 0) {
-                remove(getItem(0));
-            }
-        }
-
-        public boolean isEmpty() {
-            return getItemCount() == 0;
-        }
-
-
-
-
-        public MainItem getItem(int position) {
-            return list.get(position);
-        }
 
     }
 

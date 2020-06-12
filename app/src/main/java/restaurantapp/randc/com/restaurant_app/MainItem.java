@@ -15,13 +15,13 @@ public class MainItem {
     private boolean Dairy;
     private boolean Dishes;
     private boolean Grains;
-    private int image;
+    private String image;
 
     public MainItem()
     {
 
     }
-    public MainItem(String location, String typeRestaurant, String type, String time, String followers, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, int image) {
+    public MainItem(String location, String typeRestaurant, String type, String time, String followers, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, String image) {
         this.location = location;
         this.typeRestaurant = typeRestaurant;
         this.type = type;
@@ -90,7 +90,7 @@ public class MainItem {
         Grains = grains;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -146,7 +146,7 @@ public class MainItem {
         return Grains;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 }

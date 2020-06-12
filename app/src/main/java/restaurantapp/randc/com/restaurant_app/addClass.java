@@ -31,9 +31,13 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Preconditions;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,10 +95,12 @@ public class addClass extends AppCompatActivity {
     private TextView grainPercent;
 
     private TextView donateButton;
-
+    private ArrayList<Boolean> orderNum;
     private LinearLayoutManager verticalLayout;
 
     private donationBottomAdapter mDonationBottomAdapter;
+
+    private String orderId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -499,6 +505,82 @@ public class addClass extends AppCompatActivity {
     private void addToFirebase(String uid)
     {
 
+
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection(Constants.rest_fire).document(uid).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+
+                            orderId="";
+
+                            orderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
+                           for (int i=0;i<orderNum.size();i++)
+                           {
+                               if (!orderNum.get(i))
+                               {
+                                   orderId=String.valueOf(i);
+                                   orderNum.set(i,true);
+                                   break;
+                               }
+                           }
+
+                           if(!(orderId.equals(""))) {
+                               addAllFood(uid + "-" + orderId);
+
+                               HashMap<String, Object> updateMap = new HashMap<>();
+                               updateMap.put(Constants.order_id_num, orderNum);
+                               db.collection(Constants.rest_fire).document(uid)
+                                       .update(updateMap)
+                                       .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                           @Override
+                                           public void onSuccess(Void aVoid) {
+
+                                           }
+                                       })
+                                       .addOnFailureListener(new OnFailureListener() {
+                                           @Override
+                                           public void onFailure(@NonNull Exception e) {
+                                               Log.d(Constants.tag, "error: " + e + " add");
+                                               Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                           }
+                                       });
+
+
+                               DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
+
+                                // Atomically add a new region to the "regions" array field.
+                               orderRef.update(Constants.order_list_field, FieldValue.arrayUnion(uid + "-" + orderId));
+
+
+
+
+                           }
+                           else
+                               Toast.makeText(getBaseContext(),"LIMIT OF 5 DONATIONS REACHED",Toast.LENGTH_LONG).show();
+
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Log.d("TAG", e.toString());
+                    }
+                });
+
+
+
+    }
+
+    private void addAllFood(String uid)
+    {
         if (totalFruitWeight!=0 && fruitNames.length>0)
         {
             Map<String, Object> fruitMap = new HashMap<>();
@@ -543,8 +625,6 @@ public class addClass extends AppCompatActivity {
             addFood(Constants.meatName_fire, map, uid);
 
         }
-
-
     }
 
     private void addFood(String category, Map<String, Object> map, String uid)
