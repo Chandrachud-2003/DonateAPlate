@@ -3,7 +3,6 @@ package restaurantapp.randc.com.restaurant_app;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
     public class MainAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private List<MainItem> list;
-        private View mView;
-        private boolean isLoadingAdded = false;
         private Context mContext;
 
-        // View Holder class which
-        // extends RecyclerView.ViewHolder
         public class donationView
                 extends RecyclerView.ViewHolder {
 
-            // Text View
+
             TextView nameText;
             TextView locationtText;
             TextView typeText;
@@ -47,8 +42,6 @@ import androidx.recyclerview.widget.RecyclerView;
             TextView dishesview;
             TextView grainsview;
 
-            // parameterised constructor for View Holder class
-            // which takes the view as a parameter
             public donationView(View view)
             {
                 super(view);

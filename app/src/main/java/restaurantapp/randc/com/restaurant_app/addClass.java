@@ -1,6 +1,6 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +35,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
-import com.google.gson.internal.$Gson$Preconditions;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,8 +47,6 @@ public class addClass extends AppCompatActivity {
     private RecyclerView selectCategory;
 
     private RecyclerView bottomRecycler;
-    private donationBottomAdapter donationBottomAdapter;
-    private ArrayList<donationBottomItem> donationBottomItems;
     private Button clearButton;
     private PieChart mPieChart;
     private PieDataSet mPieDataSet;

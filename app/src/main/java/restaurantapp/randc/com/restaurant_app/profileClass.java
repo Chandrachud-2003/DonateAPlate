@@ -1,11 +1,6 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
@@ -35,14 +30,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class profileClass extends AppCompatActivity implements PasswordDialog.DialogListener{
 
@@ -94,7 +90,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
 
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
-        height = (int) ((width*2)/3);
+        height = (int) ((width*2)/3.0);
 
         updateDetails();
 

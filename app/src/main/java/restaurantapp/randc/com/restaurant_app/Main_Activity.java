@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -25,22 +24,20 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCanceledListener;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
-//
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,6 +127,7 @@ public class Main_Activity extends AppCompatActivity {
         searchList = new ArrayList<>();
 
         getOrderIDS();
+        Log.d("TAG", "run: listIntitialPos: "+TOTAL_PAGES);
 
         searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
         searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
@@ -163,13 +161,12 @@ public class Main_Activity extends AppCompatActivity {
                 return false;
             }
         };
+        recyclerLoader.setVisibility(View.VISIBLE);
+        recyclerLoader.show();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadFirstPage();
-            }
-        }, 1000);
+
+
+
 
 
 
@@ -416,7 +413,7 @@ public class Main_Activity extends AppCompatActivity {
         }
         db = FirebaseFirestore.getInstance();
 
-        retriever(0,max);
+        retriever(0,max, false, 0);
 
        /* int success1 = 0;
         int success2 = 0;
@@ -519,19 +516,19 @@ public class Main_Activity extends AppCompatActivity {
 */
     }
 
-    private void retriever(int i, int max) {
+    private void retriever(int i, int max, boolean check, int intitialPos) {
         if (i < max) {
             String id = orderIds.get(i).trim();
             String userId = id.substring(0, id.indexOf("-")).trim();
 
             tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempVeg = false;
             tempName = tempUrl = tempType = "";
-           
+
 
 
 
             db.collection(Constants.rest_fire).document(
-                        "smoxJZJSsfOzWyPvYGQWLez5qb62").get()
+                        userId).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -567,7 +564,7 @@ public class Main_Activity extends AppCompatActivity {
                                                 }
 
                                                 mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl));
-                                                retriever(i+1,max);
+                                                retriever(i+1,max, check, intitialPos);
 
                                             } else {
                                                 Log.d("TAG", "Error getting types: ", task.getException());
@@ -591,10 +588,21 @@ public class Main_Activity extends AppCompatActivity {
             }
 
         else {
-            mainAdapter = new MainAdapter( Main_Activity.this, mainItems);
-            mainRecycler.setLayoutManager(verticalLayout);
-            mainRecycler.setAdapter(mainAdapter);
-            mainRecycler.setItemAnimator(new DefaultItemAnimator());
+            if (!check) {
+
+                mainAdapter = new MainAdapter(Main_Activity.this, mainItems);
+                mainRecycler.setLayoutManager(verticalLayout);
+                mainRecycler.setAdapter(mainAdapter);
+                mainRecycler.setItemAnimator(new DefaultItemAnimator());
+                recyclerLoader.setVisibility(View.GONE);
+                recyclerLoader.hide();
+            }
+
+            else {
+                mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
+                recyclerLoader.setVisibility(View.GONE);
+                recyclerLoader.hide();
+            }
         }
         }
 
@@ -602,20 +610,15 @@ public class Main_Activity extends AppCompatActivity {
     private void loadNextPage() {
 
 
-        if (mainItems != null && mainAdapter != null) {
+        if (mainItems != null && mainAdapter != null &&mainItems.size()<orderIds.size()) {
             Log.d("TAG", "loadNextPage: " + currentPage);
             //List<MainItem> newItems = new ArrayList<>();
 
 
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
                     int intitialPos = mainItems.size() - 1;
                      int listIntitialPos = currentPage * 10;
                      int listFinalPos = ((currentPage+1)*10-1);
-                    Log.d("TAG", "run: listIntitialPos: "+listIntitialPos);
+
 
                     if (currentPage==(TOTAL_PAGES-1)) {
 
@@ -625,7 +628,7 @@ public class Main_Activity extends AppCompatActivity {
                     Log.d("TAG", "run: listFinalPos: "+listFinalPos);
                     currentPage+=1;
 
-                    for (int i = listIntitialPos; i <=listFinalPos; i++) {
+                   /* for (int i = intitialPos; i <listFinalPos; i++) {
 
                         String id = orderIds.get(i);
                         String userId = id.substring(0, id.indexOf("-"));
@@ -686,24 +689,28 @@ public class Main_Activity extends AppCompatActivity {
 
                         mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl ));
                     }
-
+*/
                     //mainAdapter.removeLoadingFooter();
                     isLoading = false;
 
+                    retriever(intitialPos, listFinalPos, true, intitialPos);
 
-                    mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
 
-                    recyclerLoader.hide();
-                    recyclerLoader.setVisibility(View.GONE);
+
+
 
                     if (currentPage != TOTAL_PAGES) {
                         //add animation
                     } else
                         isLastPage = true;
 
-                }
-            }, 2500);
 
+
+        }
+        else
+        {
+            recyclerLoader.hide();
+            recyclerLoader.setVisibility(View.GONE);
 
         }
     }
@@ -720,13 +727,16 @@ public class Main_Activity extends AppCompatActivity {
                 if (documentSnapshot.exists())
                 {
                     orderIds = (ArrayList) documentSnapshot.get(Constants.order_list_field);
+                    TOTAL_PAGES = (int) Math.ceil(orderIds.size()/(10.0f));
+                    loadFirstPage();
+
 
                 }
 
             }
         });
 
-        TOTAL_PAGES = (int) Math.ceil(orderIds.size()/10);
+
 
 
 
