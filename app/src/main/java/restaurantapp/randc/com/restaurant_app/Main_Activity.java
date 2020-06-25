@@ -30,6 +30,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -104,7 +109,7 @@ public class Main_Activity extends AppCompatActivity {
     private String tempUrl;
     private boolean tempGrain;
     private boolean tempDairy;
-
+ private   DatabaseReference rootRef;
     private int loopi;
     private int previ;
 
@@ -125,7 +130,7 @@ public class Main_Activity extends AppCompatActivity {
         recyclerLoader.setVisibility(View.GONE);
       //  searchRecycler = findViewById(R.id.searchRecycler);
         searchList = new ArrayList<>();
-
+        rootRef = FirebaseDatabase.getInstance().getReference();
         getOrderIDS();
         Log.d("TAG", "run: listIntitialPos: "+TOTAL_PAGES);
 
@@ -415,108 +420,9 @@ public class Main_Activity extends AppCompatActivity {
 
         retriever(0,max, false, 0);
 
-       /* int success1 = 0;
-        int success2 = 0;
-        previ=-1;
-        //int i = 0;
-        for(loopi = 0 ; loopi<max;)
-        //while(success1<4||success2<4)
-               {
-            String id = orderIds.get(0).trim();
-            String userId = id.substring(0, id.indexOf("-")).trim();
-
-            tempDairy=tempFruit=tempGrain=tempMeat=tempVeg=tempVeg=false;
-            tempName=tempUrl=tempType="";
-                   Log.d("TAG", "loadFirstPage: loopi:"+loopi);
-                   Log.d("TAG", "loadFirstPage: previ:"+previ);
-
-            if (previ!=loopi) {
-                previ = loopi;
-
-                db.collection(Constants.rest_fire).document(
-                        "smoxJZJSsfOzWyPvYGQWLez5qb62").get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Log.d("TAG", "r33333333un: user id: " + userId);
-                                if (documentSnapshot.exists()) {
-                                    tempName = (String) documentSnapshot.get(Constants.username);
-                                    tempUrl = (String) documentSnapshot.get(Constants.url_user);
-                                    Log.d("TAG", "URL:" + tempUrl);
-                                    tempType = (String) documentSnapshot.get(Constants.type_user);
-                                    loopi+=1;
-                                }
-
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("TAG", "onFailure: " + e.toString());
-                            }
-                        });
-
-
-                db.collection(Constants.orderName_fire).document(id).collection(Constants.foodName_fire).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TAG", "r33333333un: user id: " + userId);
-                            List<String> list = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document.getId().equals(Constants.dairyName_fire)) {
-                                    tempDairy = true;
-                                }
-                                if (document.getId().equals(Constants.fruitName_fire)) {
-                                    tempFruit = true;
-                                }
-                                if (document.getId().equals(Constants.vegName_fire)) {
-                                    tempVeg = true;
-                                }
-                                if (document.getId().equals(Constants.meatName_fire)) {
-                                    tempMeat = true;
-                                }
-                                if (document.getId().equals(Constants.grainsName_fire)) {
-                                    tempGrain = true;
-                                }
-                            }
-                        } else {
-                            Log.d("TAG", "Error getting types: ", task.getException());
-                        }
-                    }
-                });
-
-                mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl));
-
-            }
-
-
-
-
-
-
-
-
-
-        }
-
-
-        mainAdapter = new MainAdapter( Main_Activity.this, mainItems);
-        mainRecycler.setLayoutManager(verticalLayout);
-        mainRecycler.setAdapter(mainAdapter);
-        mainRecycler.setItemAnimator(new DefaultItemAnimator());
-
-
-
-        if (currentPage <= TOTAL_PAGES) {
-            //add anim
-        }
-        else
-            isLastPage = true;
-*/
     }
 
-    private void retriever(int i, int max, boolean check, int intitialPos) {
+    public void retriever(int i, int max, boolean check, int intitialPos) {
         if (i < max) {
             String id = orderIds.get(i).trim();
             String userId = id.substring(0, id.indexOf("-")).trim();
@@ -539,39 +445,34 @@ public class Main_Activity extends AppCompatActivity {
                                     Log.d("TAG", "URL:" + tempUrl);
                                     tempType = (String) documentSnapshot.get(Constants.type_user);
 
-                                    db.collection(Constants.orderName_fire).document(id).collection(Constants.foodName_fire).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+                                    rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                Log.d("TAG", "r33333333un: user id: " + userId);
-                                                List<String> list = new ArrayList<>();
-                                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    if (document.getId().equals(Constants.dairyName_fire)) {
-                                                        tempDairy = true;
-                                                    }
-                                                    if (document.getId().equals(Constants.fruitName_fire)) {
-                                                        tempFruit = true;
-                                                    }
-                                                    if (document.getId().equals(Constants.vegName_fire)) {
-                                                        tempVeg = true;
-                                                    }
-                                                    if (document.getId().equals(Constants.meatName_fire)) {
-                                                        tempMeat = true;
-                                                    }
-                                                    if (document.getId().equals(Constants.grainsName_fire)) {
-                                                        tempGrain = true;
-                                                    }
-                                                }
-
-                                                mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl));
-                                                retriever(i+1,max, check, intitialPos);
-
-                                            } else {
-                                                Log.d("TAG", "Error getting types: ", task.getException());
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.hasChild(Constants.dairyName_fire)) {
+                                                tempDairy = true;
                                             }
+                                            if (snapshot.hasChild(Constants.fruitName_fire)) {
+                                                tempFruit = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.vegName_fire)) {
+                                                tempVeg = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.meatName_fire)) {
+                                                tempMeat = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.grainsName_fire)) {
+                                                tempGrain = true;
+                                            }
+                                            mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl));
+                                            retriever(i+1,max, check, intitialPos);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Log.d("TAG", "onFailure: " + error.toString());
                                         }
                                     });
-
 
                                 }
 
@@ -628,69 +529,7 @@ public class Main_Activity extends AppCompatActivity {
                     Log.d("TAG", "run: listFinalPos: "+listFinalPos);
                     currentPage+=1;
 
-                   /* for (int i = intitialPos; i <listFinalPos; i++) {
 
-                        String id = orderIds.get(i);
-                        String userId = id.substring(0, id.indexOf("-"));
-                        Log.d("TAG", "run: user id: "+userId);
-
-                        tempDairy=tempFruit=tempGrain=tempMeat=tempVeg=tempVeg=false;
-                        tempName=tempUrl=tempType="";
-
-
-                        db.collection(Constants.rest_fire).document(userId).get()
-                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                                        if (documentSnapshot.exists())
-                                        {
-                                            tempName = (String) documentSnapshot.get(Constants.username);
-                                            tempUrl = (String) documentSnapshot.get(Constants.url_user);
-                                            Log.d("TAG","URL:"+ tempUrl);
-                                            tempType = (String) documentSnapshot.get(Constants.type_user);
-                                        }
-
-                                    }
-                                });
-
-                        db.collection(Constants.orderName_fire).document(id).collection(Constants.foodName_fire).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    List<String> list = new ArrayList<>();
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        if (document.getId().equals(Constants.dairyName_fire))
-                                        {
-                                            tempDairy=true;
-                                        }
-                                        if (document.getId().equals(Constants.fruitName_fire))
-                                        {
-                                            tempFruit=true;
-                                        }
-                                        if (document.getId().equals(Constants.vegName_fire))
-                                        {
-                                            tempVeg=true;
-                                        }
-                                        if (document.getId().equals(Constants.meatName_fire))
-                                        {
-                                            tempMeat=true;
-                                        }
-                                        if (document.getId().equals(Constants.grainsName_fire))
-                                        {
-                                            tempGrain=true;
-                                        }
-                                    }
-                                } else {
-                                    Log.d("TAG", "Error getting types: ", task.getException());
-                                }
-                            }
-                        });
-
-                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl ));
-                    }
-*/
-                    //mainAdapter.removeLoadingFooter();
                     isLoading = false;
 
                     retriever(intitialPos, listFinalPos, true, intitialPos);

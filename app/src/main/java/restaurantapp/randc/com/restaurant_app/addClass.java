@@ -30,6 +30,8 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -94,7 +96,7 @@ public class addClass extends AppCompatActivity {
     private LinearLayoutManager verticalLayout;
 
     private donationBottomAdapter mDonationBottomAdapter;
-
+    private DatabaseReference mDatabase;
     private String orderId;
 
     @Override
@@ -103,6 +105,8 @@ public class addClass extends AppCompatActivity {
         setContentView(R.layout.add_activity);
 
 
+// ...
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         selectCategory = findViewById(R.id.categorySelectView);
         mPieChart = findViewById(R.id.categoryChart);
         clearButton = findViewById(R.id.clearButton1);
@@ -527,6 +531,7 @@ public class addClass extends AppCompatActivity {
                            if(!(orderId.equals(""))) {
                                addAllFood(uid + "-" + orderId);
 
+
                                HashMap<String, Object> updateMap = new HashMap<>();
                                updateMap.put(Constants.order_id_num, orderNum);
                                db.collection(Constants.rest_fire).document(uid)
@@ -626,12 +631,10 @@ public class addClass extends AppCompatActivity {
     {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection(Constants.orderName_fire).document(uid).collection(Constants.foodName_fire).document(category)
-                .set(map)
+        mDatabase.child("Orders").child(uid).child(Constants.foodName_fire).child(category).setValue(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
                         Log.d(Constants.tag, "onSuccess: "+category+" add");
                         Toast.makeText(getBaseContext(), "Order Added", Toast.LENGTH_SHORT).show();
                     }
@@ -643,9 +646,6 @@ public class addClass extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-
 
     }
 }

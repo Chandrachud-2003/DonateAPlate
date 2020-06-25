@@ -22,9 +22,9 @@
         <activity android:name=".addClass" />
         <activity android:name=".resetpassword" />
         <activity android:name=".Main_Activity" />
-        <activity android:name=".loginpage" />
+        <activity android:name=".displayInfoActivity" />
         <activity android:name=".categoryAdd" />
-        <activity android:name=".displayInfoActivity" >
+        <activity android:name=".loginpage" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
