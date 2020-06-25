@@ -43,10 +43,11 @@
     <color name="textColorPrimary">#212121</color>
     <color name="textColorSecondary">#757575</color>
 
-
+<color name="colorDisplayOrderBG">#013258</color>
     <color name="colorWhite">#FFF</color>
     <color name="colorGrey">#AAA</color>
     <color name="colorBlack">#000</color>
+    <color name="black">#000</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorRipple">#44FFFFFF</color>
     <color name="greenBack">#416C6E</color>

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="restaurantapp.randc.com.restaurant_app">
+    package="restaurantapp.randc.com.restaurant_app" >
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -9,16 +13,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".registration5"/>
+        android:theme="@style/AppTheme" >
+        <activity android:name=".displayOrder" >
+        </activity>
+        <activity android:name=".registration5" />
         <activity android:name=".registration2" />
         <activity android:name=".registration1" />
         <activity android:name=".addClass" />
         <activity android:name=".resetpassword" />
         <activity android:name=".Main_Activity" />
-        <activity android:name=".displayInfoActivity" />
+        <activity android:name=".loginpage" />
         <activity android:name=".categoryAdd" />
-        <activity android:name=".loginpage">
+        <activity android:name=".displayInfoActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,9 +42,5 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
