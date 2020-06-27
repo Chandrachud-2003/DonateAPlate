@@ -103,13 +103,14 @@ public class Main_Activity extends AppCompatActivity {
 
     private String tempName;
     private String tempType;
+    private String tempAddress;
     private boolean tempFruit;
     private boolean tempVeg;
     private boolean tempMeat;
     private String tempUrl;
     private boolean tempGrain;
     private boolean tempDairy;
- private   DatabaseReference rootRef;
+    private   DatabaseReference rootRef;
     private int loopi;
     private int previ;
 
@@ -441,6 +442,7 @@ public class Main_Activity extends AppCompatActivity {
                                 Log.d("TAG", "r33333333un: user id: " + userId);
                                 if (documentSnapshot.exists()) {
                                     tempName = (String) documentSnapshot.get(Constants.username);
+                                    tempAddress = (String) documentSnapshot.getString("Address");
                                     tempUrl = (String) documentSnapshot.get(Constants.url_user);
                                     Log.d("TAG", "URL:" + tempUrl);
                                     tempType = (String) documentSnapshot.get(Constants.type_user);
@@ -464,7 +466,8 @@ public class Main_Activity extends AppCompatActivity {
                                             if (snapshot.hasChild(Constants.grainsName_fire)) {
                                                 tempGrain = true;
                                             }
-                                            mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl));
+
+                                            mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
                                             retriever(i+1,max, check, intitialPos);
                                         }
 
@@ -566,8 +569,10 @@ public class Main_Activity extends AppCompatActivity {
                 if (documentSnapshot.exists())
                 {
                     orderIds = (ArrayList) documentSnapshot.get(Constants.order_list_field);
-                    TOTAL_PAGES = (int) Math.ceil(orderIds.size()/(10.0f));
-                    loadFirstPage();
+                    if (orderIds!=null && orderIds.size()>0) {
+                        TOTAL_PAGES = (int) Math.ceil(orderIds.size() / (10.0f));
+                        loadFirstPage();
+                    }
 
 
                 }

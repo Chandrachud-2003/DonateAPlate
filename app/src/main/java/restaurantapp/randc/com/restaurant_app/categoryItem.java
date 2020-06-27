@@ -4,6 +4,11 @@ public class categoryItem {
     private String foodItem;
     private float foodWeight;
 
+    public categoryItem()
+    {
+
+    }
+
     public categoryItem(String foodItem, float foodWeight) {
         this.foodItem = foodItem;
         this.foodWeight = foodWeight;

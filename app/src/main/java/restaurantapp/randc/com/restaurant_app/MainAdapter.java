@@ -1,6 +1,8 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +132,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
                     int width = Resources.getSystem().getDisplayMetrics().widthPixels;
 
+                    String uid = list.get(position).getUid();
+                    String orderID = list.get(position).getOrderId();
+                    String address = list.get(position).getAddress();
+
                     if (list.get(position).isFruits()) {
                         holder.fruitview.setVisibility(View.VISIBLE);
                     } else {
@@ -179,6 +186,40 @@ import androidx.recyclerview.widget.RecyclerView;
                             .transform(transformation)
                             .centerCrop()
                             .into(holder.mainImage);
+
+
+
+                    PushDownAnim.setPushDownAnimTo(holder.itemView)
+                    .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            Intent intent = new Intent((Activity)mContext, displayOrder.class);
+
+                            intent.putExtra(Constants.uid_intent, uid);
+                            intent.putExtra(Constants.orderId_intent, orderID);
+                            intent.putExtra(Constants.name_intent, list.get(position).getName());
+                            intent.putExtra(Constants.isDairy_intent,list.get(position).isDairy() );
+                            intent.putExtra(Constants.isGrains_intent, list.get(position).isGrains());
+                            intent.putExtra(Constants.isFruits_intent, list.get(position).isFruits());
+                            intent.putExtra(Constants.isVeggies_intent, list.get(position).isVegetables());
+                            intent.putExtra(Constants.isMeat_intent, list.get(position).isMeat());
+                            intent.putExtra(Constants.address_intent, address);
+
+                            mContext.startActivity(intent);
+
+
+
+
+
+
+
+
+
+                        }
+                    });
+
                 }
 
 

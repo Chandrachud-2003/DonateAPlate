@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fruitsDisplay"
+        android:title="Fruits"
+        android:icon="@drawable/fruits_displayorder"/>
+
+    <item
+        android:id="@+id/veggiesDisplay"
+        android:icon="@drawable/vegetables_displayorder"/>
+
+    <item
+        android:id="@+id/dairyDisplay"
+        android:icon="@drawable/dairy_displayorder"/>
+
+    <item
+        android:id="@+id/grainsDisplay"
+        android:icon="@drawable/grains_displayorder"/>
+
+    <item
+        android:id="@+id/MeatDisplay"
+        android:icon="@drawable/meat_displayorder"/>
+
+    <item
+        android:id="@+id/DishesDisplay"
+        android:icon="@drawable/dishes_displayorder"/>
+
+
+
+
+</menu>

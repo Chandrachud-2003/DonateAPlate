@@ -93,12 +93,13 @@ public class donationBottomAdapter
 
         holder.categoryName.setText(list.get(position).getCategoryName());
         holder.categoryWeight.setText(list.get(position).getCategoryWeight()+"kg");
-        String[] items = list.get(position).getItemsList();
+        ArrayList<categoryItem> items = new ArrayList<>();
+        items = list.get(position).getItemsList();
         String itemText = "";
-        for(int i=0;i<items.length;i++)
+        for(int i=0;i<items.size();i++)
         {
-            itemText+=items[i];
-            if (i!=(items.length-1))
+            itemText+=items.get(i).getFoodItem();
+            if (i!=(items.size()-1))
             {
                 itemText+=" · ";
             }
@@ -110,7 +111,7 @@ public class donationBottomAdapter
 
 
         holder.categoryItems.setText(itemText);
-        holder.categoryNum.setText(String.valueOf(items.length)+ "Items");
+        holder.categoryNum.setText(String.valueOf(items.size())+ "Items");
 
         float width =  Resources.getSystem().getDisplayMetrics().widthPixels/10;
         float height = (float)(width/0.75);

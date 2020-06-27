@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class donationBottomItem {
     private String categoryName;
     private float categoryWeight;
-    private String[] itemsList;
+    private ArrayList<categoryItem> itemsList;
     private int categoryImage;
 
-    public donationBottomItem(String categoryName, float categoryWeight, String[] itemsList, int categoryImage) {
+    public donationBottomItem(String categoryName, float categoryWeight, ArrayList<categoryItem> itemsList, int categoryImage) {
         this.categoryName = categoryName;
         this.categoryWeight = categoryWeight;
         this.itemsList = itemsList;
@@ -33,11 +33,11 @@ public class donationBottomItem {
         this.categoryWeight = categoryWeight;
     }
 
-    public String[] getItemsList() {
+    public ArrayList<categoryItem> getItemsList() {
         return itemsList;
     }
 
-    public void setItemsList(String[] itemsList) {
+    public void setItemsList(ArrayList<categoryItem> itemsList) {
         this.itemsList = itemsList;
     }
 

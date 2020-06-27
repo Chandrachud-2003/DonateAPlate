@@ -16,12 +16,12 @@ public class MainItem {
     private boolean Dishes;
     private boolean Grains;
     private String image;
+    private String uid;
+    private String orderId;
+    private String address;
 
-    public MainItem()
-    {
 
-    }
-    public MainItem(String location, String typeRestaurant, String type, String time, String followers, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, String image) {
+    public MainItem(String location, String typeRestaurant, String type, String time, String followers, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, String image, String uid, String orderId, String address) {
         this.location = location;
         this.typeRestaurant = typeRestaurant;
         this.type = type;
@@ -36,6 +36,9 @@ public class MainItem {
         Dishes = dishes;
         Grains = grains;
         this.image = image;
+        this.uid = uid;
+        this.orderId = orderId;
+        this.address = address;
     }
 
     public void setLocation(String location) {
@@ -148,5 +151,29 @@ public class MainItem {
 
     public String getImage() {
         return image;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

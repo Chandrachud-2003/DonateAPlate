@@ -23,8 +23,7 @@ public class Constants {
     public static final String dishesPrefweights = "Dishesweights";
 
     public static final String userIdPref = "UID";
-    public static final String name_fire = "Names";
-    public static final String weight_fire = "Weights";
+    public static final String item_fire = "Items";
     public static final String orderName_fire = "Orders";
     public static final String fruitName_fire = "Fruits";
     public static final String vegName_fire = "Vegetables";
@@ -44,6 +43,16 @@ public class Constants {
     public static final String username = "Name";
     public static final String url_user = "Url";
     public static final String type_user = "Type";
+
+    public static final String uid_intent = "UID";
+    public static final String orderId_intent = "Order ID";
+    public static final String name_intent = "Name of Restaurant";
+    public static final String isFruits_intent = "isFruits";
+    public static final String isVeggies_intent = "isVeggies";
+    public static final String isMeat_intent = "isMeat";
+    public static final String isDairy_intent = "isDairy";
+    public static final String isGrains_intent = "isGrains";
+    public static final String address_intent = "Address";
 
 
 
