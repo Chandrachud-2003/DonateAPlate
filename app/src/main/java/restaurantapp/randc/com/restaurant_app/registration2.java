@@ -91,11 +91,9 @@ public class registration2 extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("rEmail");
         editor.remove("rName");
-        editor.remove("rAddress");
         editor.remove("rPhone");
-        editor.remove("rPincode");
-        editor.remove("rState");
         editor.remove("rPass");
+        editor.apply();
         Log.d("TAG","DONE2");
     }
 }

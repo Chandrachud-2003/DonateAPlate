@@ -1,4 +1,6 @@
 <resources>
+
+
     <string name="app_name">Restaurant_App</string>
     <string name="title_activity_registration2">registration2</string>
     <string name="register2_text">Where is your \norganization based?</string>

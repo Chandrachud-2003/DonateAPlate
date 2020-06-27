@@ -366,14 +366,14 @@ public class displayOrder extends AppCompatActivity {
                 {
                     categoryName.setText("Fruits Summary");
                     if ( isFruits && fruitsList.size()>0 && fruitsWeight>0.0f) {
-
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
                         mDisplayOrderAdapter = new displayOrderAdapter(fruitsList);
                         displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
                         categoryWeight.setText(Float.toString(fruitsWeight)+"kg");
                     }
                     else {
                         categoryWeight.setText("0.0kg");
-
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -382,7 +382,7 @@ public class displayOrder extends AppCompatActivity {
 
                     categoryName.setText("Vegetables Summary");
                     if ( isVeggies && veggiesList.size()>0 && veggiesWeight>0.0f) {
-
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
                         mDisplayOrderAdapter = new displayOrderAdapter(veggiesList);
                         displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
                         categoryWeight.setText(Float.toString(veggiesWeight)+"kg");
@@ -390,6 +390,7 @@ public class displayOrder extends AppCompatActivity {
                     else {
                         categoryWeight.setText("0.0kg");
 
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -398,7 +399,7 @@ public class displayOrder extends AppCompatActivity {
 
                     categoryName.setText("Dairy Summary");
                     if (isDairy && dairyList.size()>0 && dairyWeight>0.0f) {
-
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
                         mDisplayOrderAdapter = new displayOrderAdapter(dairyList);
                         displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
                         categoryWeight.setText(Float.toString(dairyWeight)+"kg");
@@ -406,6 +407,7 @@ public class displayOrder extends AppCompatActivity {
                     else {
                         categoryWeight.setText("0.0kg");
 
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -414,7 +416,7 @@ public class displayOrder extends AppCompatActivity {
 
                     categoryName.setText("Grains Summary");
                     if (isGrains && grainsList.size()>0 && grainsWeight>0.0f) {
-
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
                         mDisplayOrderAdapter = new displayOrderAdapter(grainsList);
                         displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
                         categoryWeight.setText(Float.toString(grainsWeight)+"kg");
@@ -422,6 +424,7 @@ public class displayOrder extends AppCompatActivity {
                     else {
                         categoryWeight.setText("0.0kg");
 
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -429,7 +432,7 @@ public class displayOrder extends AppCompatActivity {
                 {
                     categoryName.setText("Meat Summary");
                     if (isMeat && meatList.size()>0 && meatWeight>0.0f) {
-
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
                         mDisplayOrderAdapter = new displayOrderAdapter(meatList);
                         displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
                         categoryWeight.setText(Float.toString(meatWeight)+"kg");
@@ -437,6 +440,7 @@ public class displayOrder extends AppCompatActivity {
                     else {
                         categoryWeight.setText("0.0kg");
 
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
                     }
                 }
 

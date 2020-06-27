@@ -4,6 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +28,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,9 +50,11 @@ import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class Main_Activity extends AppCompatActivity {
 
@@ -100,9 +108,12 @@ public class Main_Activity extends AppCompatActivity {
     private ArrayList<String> orderIds;
 
     private FirebaseFirestore db ;
-
+    private double currectLat;
+    private double currentLon;
     private String tempName;
     private String tempType;
+    private double tempLat;
+    private double tempLon;
     private String tempAddress;
     private boolean tempFruit;
     private boolean tempVeg;
@@ -113,13 +124,15 @@ public class Main_Activity extends AppCompatActivity {
     private   DatabaseReference rootRef;
     private int loopi;
     private int previ;
+    private String dis;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
+        currectLat=0.0;
+        currentLon=0.0;
         searchBarLayout = findViewById(R.id.searchBarLayout);
         nestedScrollView = findViewById(R.id.mainNestedScrollView);
         db = FirebaseFirestore.getInstance();
@@ -134,7 +147,7 @@ public class Main_Activity extends AppCompatActivity {
         rootRef = FirebaseDatabase.getInstance().getReference();
         getOrderIDS();
         Log.d("TAG", "run: listIntitialPos: "+TOTAL_PAGES);
-
+        getDeviceLocation();
         searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
         searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
         searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
@@ -446,6 +459,24 @@ public class Main_Activity extends AppCompatActivity {
                                     tempUrl = (String) documentSnapshot.get(Constants.url_user);
                                     Log.d("TAG", "URL:" + tempUrl);
                                     tempType = (String) documentSnapshot.get(Constants.type_user);
+                                    dis = "-";
+                                    try {
+                                        tempLat = (double) documentSnapshot.getDouble("Latitude");
+                                        tempLon = (double) documentSnapshot.getDouble("Longitude");
+                                        Log.d("tag","ORDER LOC:"+tempLat);
+                                        Log.d("tag","ORDER LOC:"+tempLon);
+                                        Log.d("tag","ORDER LOC:"+currectLat);
+                                        Log.d("tag","ORDER LOC:"+currentLon);
+
+                                        if(currectLat!=0&&currentLon!=0) {
+                                            float[] results = new float[1];
+                                            Location.distanceBetween(tempLat, tempLon,
+                                                    currectLat, currentLon, results);
+                                            dis = Math. round(results[0] / 100) / 10.0+"KM";
+                                        }
+                                    }catch (Exception e) { }
+
+
 
 
                                     rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -467,7 +498,7 @@ public class Main_Activity extends AppCompatActivity {
                                                 tempGrain = true;
                                             }
 
-                                            mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", "15 min", "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                            mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", dis, "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
                                             retriever(i+1,max, check, intitialPos);
                                         }
 
@@ -586,6 +617,37 @@ public class Main_Activity extends AppCompatActivity {
 
 
     }
+    private void getDeviceLocation(){
+        Log.d("TAG", "getDeviceLocation: getting the devices current location");
 
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+
+
+            final Task location = mFusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if(task.isSuccessful()){
+                        Log.d("TAG", "onComplete: found location");
+                        Location currentLocation = (Location) task.getResult();
+
+                        if(currentLocation!=null) {
+                           currectLat = currentLocation.getLatitude();
+                           currentLon = currentLocation.getLongitude();
+                        }
+
+                    }else{
+                        Log.d("TAG", "onComplete: current location is null");
+                        Toast.makeText(Main_Activity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }catch (SecurityException e){
+            Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage() );
+        }
+    }
 
 }

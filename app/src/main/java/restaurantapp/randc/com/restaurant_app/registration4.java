@@ -146,9 +146,10 @@ public class registration4 extends AppCompatActivity {
                                     Map<String, Object> note = new HashMap<>();
                                     note.put("Name",sharedPreferences.getString("rName","ERROR"));
                                     note.put("Email",sharedPreferences.getString("rEmail","rEmail"));
-                                    note.put("Address",sharedPreferences.getString("rAddress","ERROR"));
+                                    note.put("Latitude",getIntent().getDoubleExtra("Lat",0.0f));
+                                    note.put("Longitude",getIntent().getDoubleExtra("Lon",0.0f));
+                                    note.put("Address",getIntent().getStringExtra("Add"));
                                     note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
-                                    note.put("Pincode",sharedPreferences.getString("rPincode","ERROR"));
 
                                     ArrayList<Boolean> orderArray=new ArrayList<>();
                                     for (int i=0;i<=4;i++)
@@ -163,7 +164,6 @@ public class registration4 extends AppCompatActivity {
                                     else
                                         note.put("Url","https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/default_induvidual.png?alt=media&token=c618b327-8dfd-458f-84a1-19b8023436b2");
                                     note.put("Ongoing Donations",0);
-                                    note.put("State",sharedPreferences.getString("rState","ERROR"));
                                     if(sharedPreferences.getString("rType",null).equals("Individual")||sharedPreferences.getString("rType",null).equals("Restaurant"))
                                         note.put("Type",typeSpinner.getSelectedItem().toString());
                                     else
@@ -227,11 +227,9 @@ public class registration4 extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("rEmail");
         editor.remove("rName");
-        editor.remove("rAddress");
         editor.remove("rPhone");
-        editor.remove("rPincode");
-        editor.remove("rState");
         editor.remove("rPass");
+        editor.apply();
         Log.d("TAG","DONE4");
     }
 }

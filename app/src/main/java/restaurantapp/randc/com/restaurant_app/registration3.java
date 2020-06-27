@@ -1,117 +1,172 @@
 package restaurantapp.randc.com.restaurant_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import static restaurantapp.randc.com.restaurant_app.Constants.ERROR_DIALOG_REQUEST;
+import static restaurantapp.randc.com.restaurant_app.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static restaurantapp.randc.com.restaurant_app.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
+import android.content.SharedPreferences;
+
 
 public class registration3 extends AppCompatActivity {
     private Button next_button;
-    private EditText address;
-    private Spinner stateSpinner;
-    private Spinner citySpinner;
-    private EditText pincode;
+    private boolean mLocationPermissionGranted = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration3);
-        address =  findViewById(R.id.editText7);
-        pincode = findViewById(R.id.editText8);
         next_button = findViewById(R.id.next_button);
 
-        stateSpinner = findViewById(R.id.spinner);
-        citySpinner = findViewById(R.id.spinner2);
 
-        String[] check = {"Select State","Andhra Pradesh",
-                "Arunachal Pradesh",
-                "Assam",
-                "Bihar",
-                "Chhattisgarh",
-                "Goa",
-                "Gujarat",
-                "Haryana",
-                "Himachal Pradesh",
-                "Jammu and Kashmir",
-                "Jharkhand",
-                "Karnataka",
-                "Kerala",
-                "Madhya Pradesh",
-                "Maharashtra",
-                "Manipur",
-                "Meghalaya",
-                "Mizoram",
-                "Nagaland",
-                "Odisha",
-                "Punjab",
-                "Rajasthan",
-                "Sikkim",
-                "Tamil Nadu",
-                "Telangana",
-                "Tripura",
-                "Uttarakhand",
-                "Uttar Pradesh",
-                "West Bengal",
-                "Andaman and Nicobar Islands",
-                "Chandigarh",
-                "Dadra and Nagar Haveli",
-                "Daman and Diu",
-                "Delhi",
-                "Lakshadweep",
-                "Puducherry","Other"};
-        List<String> spinnerArray = Arrays.asList(check);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        stateSpinner.setAdapter(adapter);
 
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(address.getText().toString().trim().equals("")||pincode.getText().toString().trim().equals("")||stateSpinner.getSelectedItem().toString().equals("Select State")) {
-                    Toast.makeText(registration3.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
 
-                    if (address.getText().toString().trim().equals("")) {
-
-                        address.setError("Enter Address");
+                if(checkMapServices()){
+                    if(mLocationPermissionGranted){
+                        Intent intent = new Intent(registration3.this, MapActivity.class);
+                        startActivity(intent);
                     }
-                    if (pincode.getText().toString().trim().equals("")) {
-
-                        pincode.setError("Enter Pincode");
-                    }
-                    if(stateSpinner.getSelectedItem().toString().equals("Select State")) {
-                        Toast.makeText(registration3.this, "Select State", Toast.LENGTH_SHORT).show();
+                    else{
+                        getLocationPermission();
                     }
                 }
-                else {
-                    SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("rAddress",address.getText().toString().trim());
-                    editor.putString("rPincode",pincode.getText().toString().trim());
-                    editor.putString("rState",stateSpinner.getSelectedItem().toString());
-                    editor.putString("rCity","");
-                    editor.apply();
 
-                    Intent intent = new Intent(registration3.this, registration4.class);
-                    startActivity(intent);
-                }
             }
         });
     }
+
+    private boolean checkMapServices(){
+        if(isServicesOK()){
+            if(isMapsEnabled()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Location services have to be turned on to provide your location. Do you want to turn it on?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public boolean isMapsEnabled(){
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+            return false;
+        }
+        return true;
+    }
+
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+            Intent intent = new Intent(registration3.this, MapActivity.class);
+            startActivity(intent);
+
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    public boolean isServicesOK(){
+        Log.d("TAG", "isServicesOK: checking google services version");
+
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(registration3.this);
+
+        if(available == ConnectionResult.SUCCESS){
+            //everything is fine and the user can make map requests
+            Log.d("TAG", "isServicesOK: Google Play Services is working");
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //an error occured but we can resolve it
+            Log.d("TAG", "isServicesOK: an error occured but we can fix it");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(registration3.this, available, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }else{
+            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("TAG", "onActivityResult: called.");
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ENABLE_GPS: {
+                if(mLocationPermissionGranted){
+                    Intent intent = new Intent(registration3.this, MapActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    getLocationPermission();
+                }
+            }
+        }
+
+    }
+
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -119,11 +174,9 @@ public class registration3 extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("rEmail");
         editor.remove("rName");
-        editor.remove("rAddress");
         editor.remove("rPhone");
-        editor.remove("rPincode");
-        editor.remove("rState");
         editor.remove("rPass");
+        editor.apply();
         Log.d("TAG","DONE3");
     }
 }
