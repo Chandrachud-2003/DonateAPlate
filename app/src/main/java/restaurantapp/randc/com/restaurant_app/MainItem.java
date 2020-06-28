@@ -4,9 +4,7 @@ public class MainItem {
 
     private String location;
     private String typeRestaurant;
-    private String type;
     private String time;
-    private String followers;
     private String weight;
     private String name;
     private boolean fruits;
@@ -21,12 +19,10 @@ public class MainItem {
     private String address;
 
 
-    public MainItem(String location, String typeRestaurant, String type, String time, String followers, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, String image, String uid, String orderId, String address) {
+    public MainItem(String location, String typeRestaurant, String time, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, String image, String uid, String orderId, String address) {
         this.location = location;
         this.typeRestaurant = typeRestaurant;
-        this.type = type;
         this.time = time;
-        this.followers = followers;
         this.weight = weight;
         this.name = name;
         this.fruits = fruits;
@@ -49,17 +45,11 @@ public class MainItem {
         this.typeRestaurant = typeRestaurant;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public void setTime(String time) {
         this.time = time;
     }
 
-    public void setFollowers(String followers) {
-        this.followers = followers;
-    }
 
     public void setWeight(String weight) {
         this.weight = weight;
@@ -105,17 +95,11 @@ public class MainItem {
         return typeRestaurant;
     }
 
-    public String getType() {
-        return type;
-    }
 
     public String getTime() {
         return time;
     }
 
-    public String getFollowers() {
-        return followers;
-    }
 
     public String getWeight() {
         return weight;

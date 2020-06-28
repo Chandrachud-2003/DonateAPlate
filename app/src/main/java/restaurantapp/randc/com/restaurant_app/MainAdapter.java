@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
             TextView nameText;
             TextView locationtText;
-            TextView typeText;
             TextView resaurantTypeText;
             TextView weightText;
             ImageView mainImage;
-            TextView followerText;
             TextView timeText;
             TextView fruitview;
             TextView veggiesview;
@@ -51,12 +50,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
                 nameText = view.findViewById(R.id.mainListName);
                 locationtText = view.findViewById(R.id.mainListAddr);
-                typeText = view.findViewById(R.id.mainType);
                 resaurantTypeText = view.findViewById(R.id.typeMain);
                 timeText = view.findViewById(R.id.timeMain);
                 weightText = view.findViewById(R.id.MainWeight);
                 mainImage = view.findViewById(R.id.mainImage);
-                followerText = view.findViewById(R.id.mainFollowers);
                 fruitview = view.findViewById(R.id.fruitsPop);
                 veggiesview = view.findViewById(R.id.vegetablesPop);
                 dairyview = view.findViewById(R.id.dairyPop);
@@ -122,10 +119,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
                     donationView holder = (donationView) CommonHolder;
                     holder.nameText.setText(list.get(position).getName());
-                    holder.typeText.setText(list.get(position).getType());
                     holder.resaurantTypeText.setText(list.get(position).getTypeRestaurant());
-                    holder.weightText.setText(list.get(position).getWeight());
-                    holder.followerText.setText(list.get(position).getFollowers());
+                    holder.weightText.setText(list.get(position).getWeight()+"Kg");
                     holder.timeText.setText(list.get(position).getTime());
                     holder.locationtText.setText(list.get(position).getLocation());
                     //holder.mainImage.setImageResource(list.get(position).getImage());
@@ -206,6 +201,7 @@ import androidx.recyclerview.widget.RecyclerView;
                             intent.putExtra(Constants.isVeggies_intent, list.get(position).isVegetables());
                             intent.putExtra(Constants.isMeat_intent, list.get(position).isMeat());
                             intent.putExtra(Constants.address_intent, address);
+                            intent.putExtra(Constants.total_weight_intent,list.get(position).getWeight());
 
                             mContext.startActivity(intent);
 

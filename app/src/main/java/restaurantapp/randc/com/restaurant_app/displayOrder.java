@@ -82,7 +82,7 @@ public class displayOrder extends AppCompatActivity {
     private ArrayList<categoryItem> dairyList;
     private ArrayList<categoryItem> meatList;
 
-    private float totalWeight;
+    private float total_Weight;
     private float fruitsWeight;
     private float grainsWeight;
     private float dairyWeight;
@@ -106,7 +106,7 @@ public class displayOrder extends AppCompatActivity {
         isVeggies = intent.getBooleanExtra(Constants.isVeggies_intent, false);
         isMeat = intent.getBooleanExtra(Constants.isMeat_intent, false);
         address = intent.getStringExtra(Constants.address_intent);
-
+        total_Weight = Float.parseFloat(intent.getStringExtra(Constants.total_weight_intent));
 
 
         findViewsById();
@@ -309,7 +309,6 @@ public class displayOrder extends AppCompatActivity {
         meatList = new ArrayList<>();
         dairyList = new ArrayList<>();
 
-        totalWeight = 0;
         fruitsWeight =0;
         veggiesWeight=0;
         meatWeight=0;
@@ -579,7 +578,6 @@ public class displayOrder extends AppCompatActivity {
 
                 if (done)
                 {
-                    totalWeight = fruitsWeight+meatWeight+veggiesWeight+dairyWeight+grainsWeight;
                     float currentWeight=0.0f;
                     String currentCategory ="";
                     if (isFruits && fruitsList!=null && fruitsList.size()>0)
@@ -637,7 +635,7 @@ public class displayOrder extends AppCompatActivity {
 
                     loadingAnimation3.setVisibility(View.INVISIBLE);
                     loadingAnimation3.cancelAnimation();
-                    totalWeightText.setText(Float.toString(totalWeight)+"kg");
+                    totalWeightText.setText(Float.toString(total_Weight)+"kg");
 
                     displayOrderRecycler.setLayoutManager(verticalLayout);
                     displayOrderRecycler.setItemAnimator(new DefaultItemAnimator());

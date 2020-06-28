@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icons8_nearby"
-            android:padding="10dp"
+            android:padding="8dp"
             android:background="@color/colorTransparent"
 
 
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nearby"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"
         />

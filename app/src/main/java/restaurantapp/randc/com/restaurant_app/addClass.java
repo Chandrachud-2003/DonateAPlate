@@ -631,6 +631,7 @@ public class addClass extends AppCompatActivity {
         Map<String, Object> infoMap = new HashMap<>();
         infoMap.put("Name", restName);
         infoMap.put("Address", restAddress);
+        infoMap.put("Total Weight", totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight);
 
         mDatabase.child("Orders").child(uid).child("Info").setValue(infoMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

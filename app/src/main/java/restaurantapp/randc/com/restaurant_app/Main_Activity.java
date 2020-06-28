@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
@@ -40,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -117,9 +119,11 @@ public class Main_Activity extends AppCompatActivity {
     private String tempAddress;
     private boolean tempFruit;
     private boolean tempVeg;
+    private String tempTotalWeight;
     private boolean tempMeat;
     private String tempUrl;
     private boolean tempGrain;
+    private TextView nodonations;
     private boolean tempDairy;
     private   DatabaseReference rootRef;
     private int loopi;
@@ -140,6 +144,8 @@ public class Main_Activity extends AppCompatActivity {
         menuButton = findViewById(R.id.menuButton);
         mainItems = new ArrayList<>();
         mainRecycler = findViewById(R.id.mainRecycler);
+        nodonations = findViewById(R.id.no_donations);
+        nodonations.setVisibility(View.GONE);
         recyclerLoader = findViewById(R.id.avi);
         recyclerLoader.setVisibility(View.GONE);
       //  searchRecycler = findViewById(R.id.searchRecycler);
@@ -498,8 +504,25 @@ public class Main_Activity extends AppCompatActivity {
                                                 tempGrain = true;
                                             }
 
-                                            mainItems.add(new MainItem("Bangalore, Karnataka", tempType, "Restaurant", dis, "100", "20kg", tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
-                                            retriever(i+1,max, check, intitialPos);
+                                            rootRef.child(Constants.orderName_fire).child(id).child("Info").child("Total Weight").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                    tempTotalWeight =snapshot.getValue().toString();
+
+                                                    Log.d("CHECK", "TEMP WEIGHT:"+tempTotalWeight);
+                                                    mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis,  tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                                    retriever(i+1,max, check, intitialPos);
+                                                    }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Log.d("TAG", "onFailure: " + error.toString());
+                                                }
+                                                    });
+
+
+
+
                                         }
 
                                         @Override
@@ -603,6 +626,12 @@ public class Main_Activity extends AppCompatActivity {
                     if (orderIds!=null && orderIds.size()>0) {
                         TOTAL_PAGES = (int) Math.ceil(orderIds.size() / (10.0f));
                         loadFirstPage();
+                        nodonations.setVisibility(View.GONE);
+                    }
+                    else {
+                        recyclerLoader.hide();
+                        recyclerLoader.setVisibility(View.GONE);
+                        nodonations.setVisibility(View.VISIBLE);
                     }
 
 

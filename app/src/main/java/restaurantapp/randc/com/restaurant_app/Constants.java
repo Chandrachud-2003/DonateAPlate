@@ -46,6 +46,7 @@ public class Constants {
 
     public static final String uid_intent = "UID";
     public static final String orderId_intent = "Order ID";
+    public static final String total_weight_intent = "TotalWeight";
     public static final String name_intent = "Name of Restaurant";
     public static final String isFruits_intent = "isFruits";
     public static final String isVeggies_intent = "isVeggies";
