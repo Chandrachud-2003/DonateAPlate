@@ -20,11 +20,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +40,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -54,13 +60,15 @@ public class displayOrder extends AppCompatActivity {
     private LinearLayoutManager verticalLayout;
     private TextView totalWeightText;
     private ConstraintLayout requestButton;
+    private View profileClick;
+    private TextView requestText;
 
     private LottieAnimationView displayAnimation;
     private LottieAnimationView categoryLoadingAnimation;
     private LottieAnimationView loadingAnimation1;
     private LottieAnimationView loadingAnimation2;
     private LottieAnimationView loadingAnimation3;
-
+    private DatabaseReference mDatabase;
     private String uid;
     private String orderID;
     private String  name;
@@ -71,7 +79,7 @@ public class displayOrder extends AppCompatActivity {
     private boolean isGrains;
     //private boolean isDishes;
     private boolean isDairy;
-
+    private ImageView requestArrow;
 
     private DatabaseReference mDatabaseReference;
     private FirebaseFirestore db;
@@ -97,6 +105,7 @@ public class displayOrder extends AppCompatActivity {
 
 
         Intent intent = getIntent();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         uid = intent.getStringExtra(Constants.uid_intent);
         orderID = intent.getStringExtra(Constants.orderId_intent);
         name = intent.getStringExtra(Constants.name_intent);
@@ -113,7 +122,6 @@ public class displayOrder extends AppCompatActivity {
         setOnClickOnListeners();
 
 
-
     }
 
     private void findViewsById()
@@ -123,7 +131,7 @@ public class displayOrder extends AppCompatActivity {
         loadingAnimation2 = findViewById(R.id.loadingTextAnimation2);
         loadingAnimation1 = findViewById(R.id.loadingTextAnimation1);
         loadingAnimation3 = findViewById(R.id.loadingTextAnimation3);
-
+        profileClick = findViewById(R.id.profileClick);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screen_width = displayMetrics.widthPixels;
@@ -255,7 +263,7 @@ public class displayOrder extends AppCompatActivity {
         });
 
 
-
+        requestArrow = findViewById(R.id.requestArrow);
         nameText = findViewById(R.id.nameText);
         nameText.setText(name);
         backButton = findViewById(R.id.backButton);
@@ -265,6 +273,7 @@ public class displayOrder extends AppCompatActivity {
         categoryName = findViewById(R.id.categoryHeading);
         categoryWeight = findViewById(R.id.categoryWeight);
         displayOrderRecycler = findViewById(R.id.categoryRecycler);
+        requestText = findViewById(R.id.requestText);
         verticalLayout = new LinearLayoutManager(
                 displayOrder.this,
                 LinearLayoutManager.VERTICAL,
@@ -326,16 +335,23 @@ public class displayOrder extends AppCompatActivity {
 
     private void setOnClickOnListeners()
     {
+        profileClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(displayOrder.this, profileClass.class);
+                intent.putExtra("uid",uid);
+                intent.putExtra("from","display");
+                startActivity(intent);
+            }
+        });
+
         PushDownAnim.setPushDownAnimTo(backButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-
-
-
-
+                        Intent intent = new Intent(displayOrder.this, Main_Activity.class);
+                        startActivity(intent);
                     }
 
 
@@ -347,6 +363,30 @@ public class displayOrder extends AppCompatActivity {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+                        mDatabase.child("Orders").child(orderID).child("Requests").push().setValue(user.getUid())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(Constants.tag, "Request Success");
+                                        Toast.makeText(getBaseContext(), "Request Success", Toast.LENGTH_SHORT).show();
+                                        requestArrow.setImageResource(R.drawable.tick_white);
+                                        requestText.setText("Requested");
+                                        requestButton.setClickable(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(Constants.tag, "error: " + e + " add");
+                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
 
 
 
@@ -485,6 +525,37 @@ public class displayOrder extends AppCompatActivity {
             // Activity activity = weakActivity.get();
 
             Log.d("TAG", "doInBackground: task running");
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            mDatabase.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        Log.d("TAG", "doInBackground: checking for requests");
+                        boolean found = false;
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            String req = snapshot.getValue().toString();
+                            if(req.equals(user.getUid()))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(found) {
+                            requestArrow.setImageResource(R.drawable.tick_white);
+                            requestText.setText("Requested");
+                            requestButton.setClickable(false);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+
 
             mDatabaseReference.child(Constants.orderName_fire).child(orderID).child("Food").addValueEventListener(new ValueEventListener() {
                 @Override

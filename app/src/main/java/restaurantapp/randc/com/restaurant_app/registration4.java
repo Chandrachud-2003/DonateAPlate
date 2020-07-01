@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,8 +147,8 @@ public class registration4 extends AppCompatActivity {
                                     Map<String, Object> note = new HashMap<>();
                                     note.put("Name",sharedPreferences.getString("rName","ERROR"));
                                     note.put("Email",sharedPreferences.getString("rEmail","rEmail"));
-                                    note.put("Latitude",getIntent().getDoubleExtra("Lat",0.0f));
-                                    note.put("Longitude",getIntent().getDoubleExtra("Lon",0.0f));
+                                    GeoPoint location  = new GeoPoint(getIntent().getDoubleExtra("Lat",0.0f),getIntent().getDoubleExtra("Lon",0.0f));
+                                    note.put("Location",location);
                                     note.put("Address",getIntent().getStringExtra("Add"));
                                     note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
 

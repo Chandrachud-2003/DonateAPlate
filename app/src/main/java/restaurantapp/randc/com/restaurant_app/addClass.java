@@ -1,6 +1,7 @@
 package restaurantapp.randc.com.restaurant_app;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,6 +88,8 @@ public class addClass extends AppCompatActivity {
     private float totalDairyWeight=0.0f;
 
     private ArrayList<categoryItem> dairyList;
+    private ProgressDialog dialog;
+
 
 
     private TextView dairyPercent;
@@ -112,7 +116,7 @@ public class addClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_activity);
 
-
+        dialog = new ProgressDialog(addClass.this);
 // ...
         mDatabase = FirebaseDatabase.getInstance().getReference();
         selectCategory = findViewById(R.id.categorySelectView);
@@ -158,12 +162,19 @@ public class addClass extends AppCompatActivity {
 
                         SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.remove(Constants.DairyPref);
                         editor.remove(Constants.fruitPref);
-                        editor.remove(Constants.grainsPref);
-                        editor.remove(Constants.meatPref);
-                        editor.remove(Constants.vegetablePref);
+                        editor.remove(Constants.fruitPref+"weights");
                         editor.remove(Constants.dishesPref);
+                        editor.remove(Constants.dishesPref+"weights");
+                        editor.remove(Constants.vegetablePref);
+                        editor.remove(Constants.vegetablePref+"weights");
+                        editor.remove(Constants.meatPref);
+                        editor.remove(Constants.meatPref+"weights");
+                        editor.remove(Constants.DairyPref);
+                        editor.remove(Constants.DairyPref+"weights");
+                        editor.remove(Constants.grainsPref);
+                        editor.remove(Constants.grainsPref+"weights");
+                        editor.apply();
                         editor.apply();
                         setUpBottomDonation();
                         mEntries.clear();
@@ -220,7 +231,9 @@ public class addClass extends AppCompatActivity {
 
     private void setOnClickListeners()
     {
-        donateButton.setOnClickListener(new View.OnClickListener() {
+        PushDownAnim.setPushDownAnimTo(donateButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -231,17 +244,25 @@ public class addClass extends AppCompatActivity {
 
                 if (auth.getUid()!=null) {
 
-                    editor.putString(Constants.DairyPref, "");
-                    editor.putString(Constants.dishesPref, "");
-                    editor.putString(Constants.fruitPref, "");
-                    editor.putString(Constants.vegetablePref, "");
-                    editor.putString(Constants.grainsPref, "");
-                    editor.putString(Constants.meatPref, "");
+                    editor.remove(Constants.fruitPref);
+                    editor.remove(Constants.fruitPref+"weights");
+                    editor.remove(Constants.dishesPref);
+                    editor.remove(Constants.dishesPref+"weights");
+                    editor.remove(Constants.vegetablePref);
+                    editor.remove(Constants.vegetablePref+"weights");
+                    editor.remove(Constants.meatPref);
+                    editor.remove(Constants.meatPref+"weights");
+                    editor.remove(Constants.DairyPref);
+                    editor.remove(Constants.DairyPref+"weights");
+                    editor.remove(Constants.grainsPref);
+                    editor.remove(Constants.grainsPref+"weights");
                     editor.apply();
-
+                    dialog.setMessage("Adding Donation...");
+                    dialog.show();
                     String uid = auth.getUid();
-
                     addToFirebase(uid);
+
+
                 }
 
                 else {
@@ -569,7 +590,7 @@ public class addClass extends AppCompatActivity {
                            }
                            else
                                Toast.makeText(getBaseContext(),"LIMIT OF 5 DONATIONS REACHED",Toast.LENGTH_LONG).show();
-
+                                dialog.dismiss();
 
                         }
                     }
@@ -577,7 +598,7 @@ public class addClass extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        dialog.dismiss();
                         Log.d("TAG", e.toString());
                     }
                 });
@@ -639,7 +660,14 @@ public class addClass extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
 
                         Log.d(Constants.tag, "onSuccess: info add");
-                        Toast.makeText(getBaseContext(), "Order Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "Donation Added", Toast.LENGTH_SHORT).show();
+
+
+                        dialog.dismiss();
+
+
+                        Intent intent = new Intent(addClass.this, Main_Activity.class);
+                        startActivity(intent);
 
                     }
                 })
@@ -662,7 +690,6 @@ public class addClass extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(Constants.tag, "onSuccess: "+category+" add");
-                        Toast.makeText(getBaseContext(), "Order Added", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -2,6 +2,7 @@ package restaurantapp.randc.com.restaurant_app;
 //This is a comment
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -22,13 +23,17 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 
+import com.av.smoothviewpager.Smoolider.SmoothViewpager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,6 +42,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +51,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -57,6 +64,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import static com.av.smoothviewpager.utils.Smoolider_Utils.autoplay_viewpager;
+import static com.av.smoothviewpager.utils.Smoolider_Utils.stop_autoplay_ViewPager;
 
 public class Main_Activity extends AppCompatActivity {
 
@@ -105,10 +115,9 @@ public class Main_Activity extends AppCompatActivity {
 
     private boolean atBottom;
 
-    private AVLoadingIndicatorView recyclerLoader;
+    private AVLoadingIndicatorView mainRecyclerLoader;
 
     private ArrayList<String> orderIds;
-
     private FirebaseFirestore db ;
     private double currectLat;
     private double currentLon;
@@ -121,20 +130,21 @@ public class Main_Activity extends AppCompatActivity {
     private boolean tempVeg;
     private String tempTotalWeight;
     private boolean tempMeat;
+    private CustomSmoothViewPager ongoingViewPager;
     private String tempUrl;
     private boolean tempGrain;
     private TextView nodonations;
     private boolean tempDairy;
     private   DatabaseReference rootRef;
-    private int loopi;
-    private int previ;
     private String dis;
+    private ArrayList<OngoingItems> ongoingItems;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         currectLat=0.0;
         currentLon=0.0;
         searchBarLayout = findViewById(R.id.searchBarLayout);
@@ -145,127 +155,119 @@ public class Main_Activity extends AppCompatActivity {
         mainItems = new ArrayList<>();
         mainRecycler = findViewById(R.id.mainRecycler);
         nodonations = findViewById(R.id.no_donations);
+
         nodonations.setVisibility(View.GONE);
-        recyclerLoader = findViewById(R.id.avi);
-        recyclerLoader.setVisibility(View.GONE);
+        mainRecyclerLoader = findViewById(R.id.mainRecycler_loader);
+        mainRecyclerLoader.setVisibility(View.GONE);
+        ongoingViewPager = findViewById(R.id.ongoingSmoolider);
+
+        ongoingItems = new ArrayList<>();
+        ongoingItems.add(new OngoingItems("Childrens NGO", null, 10.5f, true, false,true,false,true));
+        ongoingItems.add(new OngoingItems("Pizza hut", null, 10.5f, true, true,true,false,true));
+        ongoingItems.add(new OngoingItems("Pizza hut", null, 10.5f, true, false,true,false,true));
+        ongoingViewPager.setPadding(175, 0, 175, 0);
+
+       ongoingViewPager.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
+      //  autoplay_viewpager(ongoingViewPager,ongoingItems.size()+1);
       //  searchRecycler = findViewById(R.id.searchRecycler);
-        searchList = new ArrayList<>();
-        rootRef = FirebaseDatabase.getInstance().getReference();
-        getOrderIDS();
-        Log.d("TAG", "run: listIntitialPos: "+TOTAL_PAGES);
-        getDeviceLocation();
-        searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
-        searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
-        searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
-        searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
 
-        searchAdapter = new searchAdapter(searchList, Main_Activity.this);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user.getDisplayName().equals("Restaurant")) {
+            searchList = new ArrayList<>();
+            rootRef = FirebaseDatabase.getInstance().getReference();
+            getOrderIDS();
+            Log.d("TAG", "run: listIntitialPos: " + TOTAL_PAGES);
+            getDeviceLocation();
+            searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
+            searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
+            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
+            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
 
-        verticalLayout = new LinearLayoutManager(
-                Main_Activity.this,
-                LinearLayoutManager.VERTICAL,
-                false);
+            searchAdapter = new searchAdapter(searchList, Main_Activity.this);
 
-       // searchRecycler.setLayoutManager(verticalLayout);
-       // searchRecycler.setAdapter(searchAdapter);
+            verticalLayout = new LinearLayoutManager(
+                    Main_Activity.this,
+                    LinearLayoutManager.VERTICAL,
+                    false);
 
-
-        mainRecycler = findViewById(R.id.mainRecycler);
-        //mainRecycler.setNestedScrollingEnabled(false);
-
+            // searchRecycler.setLayoutManager(verticalLayout);
+            // searchRecycler.setAdapter(searchAdapter);
 
 
-
-        verticalLayout = new LinearLayoutManager(
-                Main_Activity.this,
-                LinearLayoutManager.VERTICAL,
-                false)
-        {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
-        recyclerLoader.setVisibility(View.VISIBLE);
-        recyclerLoader.show();
+            mainRecycler = findViewById(R.id.mainRecycler);
 
 
+            verticalLayout = new LinearLayoutManager(
+                    Main_Activity.this,
+                    LinearLayoutManager.VERTICAL,
+                    false) {
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            };
+            mainRecyclerLoader.setVisibility(View.VISIBLE);
+            mainRecyclerLoader.show();
 
 
+            nestedScrollView.getViewTreeObserver()
+                    .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                        @Override
+                        public void onScrollChanged() {
+                            if (nestedScrollView.getChildAt(0).getBottom()
+                                    <= (nestedScrollView.getHeight() + nestedScrollView.getScrollY() + 500)) {
+                                //scroll view is at bottom
+                                if (!atBottom) {
+                                    atBottom = true;
+                                    Log.d("tag", "onScrollChanged: reached bottom");
+                                    if (orderIds.size() > 10) {
+                                        mainRecyclerLoader.setVisibility(View.VISIBLE);
+                                        mainRecyclerLoader.show();
+                                        loadNextPage();
+                                        Log.d("tag", "onScrollChanged:loaded items");
+                                    }
 
 
-
-
-        nestedScrollView.getViewTreeObserver()
-                .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                    @Override
-                    public void onScrollChanged() {
-                        if (nestedScrollView.getChildAt(0).getBottom()
-                                <= (nestedScrollView.getHeight() + nestedScrollView.getScrollY()+500)) {
-                            //scroll view is at bottom
-                            if (!atBottom)
-                            {
-                                atBottom=true;
-                                Log.d("tag", "onScrollChanged: reached bottom");
-                                if (orderIds.size()>10) {
-                                    recyclerLoader.setVisibility(View.VISIBLE);
-                                    recyclerLoader.show();
-                                    loadNextPage();
-                                    Log.d("tag", "onScrollChanged:loaded items");
                                 }
 
-
-
+                            } else {
+                                if (atBottom) {
+                                    atBottom = false;
+                                    Log.d("tag", "onScrollChanged:not at bottom");
+                                }
+                                //scroll view is not at bottom
                             }
-
-                        } else {
-                            if (atBottom)
-                            {
-                                atBottom=false;
-                                Log.d("tag", "onScrollChanged:not at bottom");
-                            }
-                            //scroll view is not at bottom
                         }
-                    }
-                });
+                    });
 
 
+            RecyclerViewLayoutManager
+                    = new LinearLayoutManager(
+                    getApplicationContext());
+
+            filterItemList = new ArrayList<filterItem>();
+
+            filterItemList.add(new filterItem("Nearby", R.drawable.icons8_nearby, false));
+            filterItemList.add(new filterItem("Orders", R.drawable.icons8_mostorders, false));
+            filterItemList.add(new filterItem("Followers", R.drawable.icons8_person, false));
+            filterItemList.add(new filterItem("Likes", R.drawable.icons8_likes2, false));
+            filterItemList.add(new filterItem("Verified", R.drawable.icons8_verified_account, false));
 
 
+            filterAdapter1 filterAdapter1 = new filterAdapter1(filterItemList);
+
+            HorizontalLayout
+                    = new LinearLayoutManager(
+                    Main_Activity.this,
+                    LinearLayoutManager.HORIZONTAL,
+                    false);
 
 
+            filterView.setLayoutManager(HorizontalLayout);
 
-
-
-
-        RecyclerViewLayoutManager
-                = new LinearLayoutManager(
-                getApplicationContext());
-
-        filterItemList = new ArrayList<filterItem>();
-
-        filterItemList.add(new filterItem("Nearby", R.drawable.icons8_nearby,false));
-        filterItemList.add(new filterItem("Orders", R.drawable.icons8_mostorders,false));
-        filterItemList.add(new filterItem("Followers", R.drawable.icons8_person,false));
-        filterItemList.add(new filterItem("Likes", R.drawable.icons8_likes2,false));
-        filterItemList.add( new filterItem("Verified", R.drawable.icons8_verified_account,false));
-
-
-
-        filterAdapter1 filterAdapter1 = new filterAdapter1(filterItemList);
-
-        HorizontalLayout
-                = new LinearLayoutManager(
-                Main_Activity.this,
-                LinearLayoutManager.HORIZONTAL,
-                false);
-
-
-        filterView.setLayoutManager(HorizontalLayout);
-
-        // Set adapter on recycler view
-        filterView.setAdapter(filterAdapter1);
-
+            // Set adapter on recycler view
+            filterView.setAdapter(filterAdapter1);
+        }
 
         slidingRootNav = new SlidingRootNavBuilder(this)
 
@@ -357,6 +359,7 @@ public class Main_Activity extends AppCompatActivity {
             case 3:
             {
                 Intent intent = new Intent(Main_Activity.this, profileClass.class);
+                intent.putExtra("from","main");
                 startActivity(intent);
                 break;
             }
@@ -458,7 +461,6 @@ public class Main_Activity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Log.d("TAG", "r33333333un: user id: " + userId);
                                 if (documentSnapshot.exists()) {
                                     tempName = (String) documentSnapshot.get(Constants.username);
                                     tempAddress = (String) documentSnapshot.getString("Address");
@@ -467,12 +469,10 @@ public class Main_Activity extends AppCompatActivity {
                                     tempType = (String) documentSnapshot.get(Constants.type_user);
                                     dis = "-";
                                     try {
-                                        tempLat = (double) documentSnapshot.getDouble("Latitude");
-                                        tempLon = (double) documentSnapshot.getDouble("Longitude");
-                                        Log.d("tag","ORDER LOC:"+tempLat);
-                                        Log.d("tag","ORDER LOC:"+tempLon);
-                                        Log.d("tag","ORDER LOC:"+currectLat);
-                                        Log.d("tag","ORDER LOC:"+currentLon);
+                                        GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
+                                        tempLat = geoPoint.getLatitude();
+                                        tempLon = geoPoint.getLongitude();
+
 
                                         if(currectLat!=0&&currentLon!=0) {
                                             float[] results = new float[1];
@@ -552,14 +552,14 @@ public class Main_Activity extends AppCompatActivity {
                 mainRecycler.setLayoutManager(verticalLayout);
                 mainRecycler.setAdapter(mainAdapter);
                 mainRecycler.setItemAnimator(new DefaultItemAnimator());
-                recyclerLoader.setVisibility(View.GONE);
-                recyclerLoader.hide();
+                mainRecyclerLoader.setVisibility(View.GONE);
+                mainRecyclerLoader.hide();
             }
 
             else {
                 mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
-                recyclerLoader.setVisibility(View.GONE);
-                recyclerLoader.hide();
+                mainRecyclerLoader.setVisibility(View.GONE);
+                mainRecyclerLoader.hide();
             }
         }
         }
@@ -605,8 +605,8 @@ public class Main_Activity extends AppCompatActivity {
         }
         else
         {
-            recyclerLoader.hide();
-            recyclerLoader.setVisibility(View.GONE);
+            mainRecyclerLoader.hide();
+            mainRecyclerLoader.setVisibility(View.GONE);
 
         }
     }
@@ -629,8 +629,8 @@ public class Main_Activity extends AppCompatActivity {
                         nodonations.setVisibility(View.GONE);
                     }
                     else {
-                        recyclerLoader.hide();
-                        recyclerLoader.setVisibility(View.GONE);
+                        mainRecyclerLoader.hide();
+                        mainRecyclerLoader.setVisibility(View.GONE);
                         nodonations.setVisibility(View.VISIBLE);
                     }
 

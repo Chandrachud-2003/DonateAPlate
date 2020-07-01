@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -27,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -51,28 +54,34 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     private EditText AddressView;
     private EditText phnoView;
     private EditText nameView;
+    private String uid;
+    private String main_collection;
     private KeyListener listener;
     private KeyListener listener2;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser user;
     private ImageView userProfileImage;
     private String newEmail;
+    private String name;
+    private TextView typeView;
     private ImageButton editPicture;
     private int width;
+    private ImageButton gmaps;
     private StorageReference storageReference;
     private int height;
     private boolean pictureChanged = false;
-
+    private double lat;
+    private double lon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_class);
-
         storageReference= FirebaseStorage.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
         fab = findViewById(R.id.fabfab);
         edit = findViewById(R.id.menu_item);
         save = findViewById(R.id.saveButton);
+        gmaps = findViewById(R.id.gmaps);
         cancelButton = findViewById(R.id.cancel_button);
         emailView = findViewById(R.id.emailView);
         phnoView = findViewById(R.id.phoneView);
@@ -82,17 +91,26 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         listener = emailView.getKeyListener();
         listener2 = phnoView.getKeyListener();
         editPicture = findViewById(R.id.editPicture);
-
+        typeView = findViewById(R.id.type);
         nameView.setKeyListener(null);
         AddressView.setKeyListener(null);
         phnoView.setKeyListener(null);
         emailView.setKeyListener(null);
-
-
+        uid = user.getUid();
+        main_collection = user.getDisplayName();
+        gmaps.setVisibility(View.GONE);
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
         height = (int) ((width*2)/3.0);
 
         updateDetails();
+
+        if(getIntent().getStringExtra("from").equals("display"))
+        {
+            fab.setVisibility(View.GONE);
+            uid = getIntent().getStringExtra("uid");
+            main_collection = "Restaurant";
+        }
+
 
 
         edit.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +191,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                         pictureChanged = false;
                     }
 
-                    db.collection(user.getDisplayName()).document(user.getUid()).update(note)
+                    db.collection(main_collection).document(uid).update(note)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -183,7 +201,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(profileClass.this, "Update failed. Please check your Internet Connection", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(profileClass.this, "Update failed", Toast.LENGTH_SHORT).show();
                                     Log.d("TAG", e.toString());
                                 }
                             });
@@ -217,6 +235,18 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
             }
         });
 
+
+        gmaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String strUri = "http://maps.google.com/maps?q=loc:" + lat + "," + lon + " (" + name + ")";
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
+
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+
+                startActivity(intent);
+            }
+        });
 
         editPicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,7 +288,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     void updateDetails()
     {
 
-        db.collection(Constants.rest_fire).document(user.getUid()).get()
+        db.collection(main_collection).document(uid).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -271,18 +301,31 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
                             emailView.setText(documentSnapshot.getString("Email"));
                             phnoView.setText(documentSnapshot.getString("Phone Number"));
-                            nameView.setText(documentSnapshot.getString("Name"));
-                            AddressView.setText(documentSnapshot.getString("Address"));
 
+                            name = documentSnapshot.getString("Name");
+                            nameView.setText(name);
+                            GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
+                            lat = geoPoint.getLatitude();
+                            lon = geoPoint.getLongitude();
+                            AddressView.setText(documentSnapshot.getString("Address"));
+                            gmaps.setVisibility(View.VISIBLE);
+                            if(main_collection.equals("Restaurant")) {
+                                typeView.setText(documentSnapshot.getString("Type"));
+                            }
+                            else {
+                                typeView.setVisibility(View.INVISIBLE);
+                            }
                         } else {
-                            nameView.setText("User not found");
-                        }
+
+                                nameView.setText("User not found");
+
+                            }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(profileClass.this, "Error! Check your Internet Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(profileClass.this, "Error!", Toast.LENGTH_SHORT).show();
                         Log.d("TAG", e.toString());
                     }
                 });
@@ -308,7 +351,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                             Log.d("TAG", "User email address updated.");
                                             Map<String, Object> note = new HashMap<>();
                                             note.put("Email", newEmail);
-                                            db.collection(user.getDisplayName()).document(user.getUid()).update(note)
+                                            db.collection(main_collection).document(uid).update(note)
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
@@ -322,7 +365,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                                     .addOnFailureListener(new OnFailureListener() {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(profileClass.this, "Update failed. Please check your Internet Connection", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(profileClass.this, "Update failed.", Toast.LENGTH_SHORT).show();
                                                             Log.d("TAG", e.toString());
                                                         }
                                                     });
@@ -385,7 +428,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     private void uploadImageToFirebase(Uri mImageUri) {
         if (mImageUri != null) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            StorageReference fileref = storageReference.child(user.getUid() + ".jpeg");
+            StorageReference fileref = storageReference.child(uid + ".jpeg");
             fileref.putFile(mImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -398,7 +441,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         String downloadurl = uri.toString();
-                                        db.collection(user.getDisplayName()).document(user.getUid())
+                                        db.collection(main_collection).document(uid)
                                                 .update("Url",downloadurl)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
@@ -410,7 +453,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                                 .addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(profileClass.this, "Error! Check internet connection!", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(profileClass.this, "Error!", Toast.LENGTH_SHORT).show();
                                                         Log.d("tag","URLuplaodFail ---- Error:"+ e.toString());
                                                     }
                                                 });

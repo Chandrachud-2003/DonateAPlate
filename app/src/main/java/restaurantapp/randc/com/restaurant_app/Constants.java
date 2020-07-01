@@ -15,13 +15,6 @@ public class Constants {
     public static final String vegetablePref = "Vegetables";
     public static final String dishesPref = "Dishes";
 
-    public static final String grainsPrefweights = "Grainsweights";
-    public static final String meatPrefweights = "Meatweights";
-    public static final String DairyPrefweights = "Dairyweights";
-    public static final String fruitPrefweights = "Fruitsweights";
-    public static final String vegetablePrefweights = "Vegetablesweights";
-    public static final String dishesPrefweights = "Dishesweights";
-
     public static final String userIdPref = "UID";
     public static final String item_fire = "Items";
     public static final String orderName_fire = "Orders";
