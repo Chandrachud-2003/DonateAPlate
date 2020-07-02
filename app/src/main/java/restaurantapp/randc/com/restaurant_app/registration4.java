@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class registration4 extends AppCompatActivity {
     private TextView titleView;
     private TextView question1View;
     private ToggleSwitch freqToggle;
+    private ProgressDialog dialog;
     private  String freq;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class registration4 extends AppCompatActivity {
         typeSpinner = findViewById(R.id.spinner3);
         freqToggle = findViewById(R.id.toggle);
         question1View = findViewById(R.id.textView6);
+        dialog = new ProgressDialog(registration4.this);
         String[] check = {"Select State","Italian","South indian"};
         List<String> spinnerArray = Arrays.asList(check);
         typeview = findViewById(R.id.typeView);
@@ -112,6 +115,9 @@ public class registration4 extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.setMessage("Creating Account...");
+                dialog.show();
+
 
                 mAuth.createUserWithEmailAndPassword(sharedPreferences.getString("rEmail","ERROR"), sharedPreferences.getString("rPass","ERROR"))
 
@@ -186,7 +192,7 @@ public class registration4 extends AppCompatActivity {
                                                     editor.remove("rPincode");
                                                     editor.remove("rState");
                                                     editor.remove("rPass");
-
+                                                    dialog.dismiss();
                                                     Intent intent = new Intent(registration4.this, registration5.class);
                                                     startActivity(intent);
                                                 }
@@ -194,6 +200,7 @@ public class registration4 extends AppCompatActivity {
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
+                                                    dialog.dismiss();
                                                     Toast.makeText(registration4.this, "Error!", Toast.LENGTH_SHORT).show();
                                                     Log.d("TAG", e.toString());
                                                 }
@@ -205,6 +212,8 @@ public class registration4 extends AppCompatActivity {
 
                                 } else {
                                     // If sign in fails, display a message to the user.
+                                    dialog.dismiss();
+                                    Toast.makeText(registration4.this, "Error!", Toast.LENGTH_SHORT).show();
                                     Log.e("TAG", "createUserWithEmail:failure", task.getException());
                                     Intent intent = new Intent(registration4.this, registration1.class);
                                     startActivity(intent);
@@ -212,7 +221,13 @@ public class registration4 extends AppCompatActivity {
                             }
 
                             // ...
-                        });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        dialog.dismiss();
+                        Toast.makeText(registration4.this, "Error!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
             }

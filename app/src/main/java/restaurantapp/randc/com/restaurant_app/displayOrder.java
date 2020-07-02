@@ -7,14 +7,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -37,12 +35,11 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.squareup.picasso.Picasso;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -50,11 +47,14 @@ import me.ibrahimsn.lib.SmoothBottomBar;
 public class displayOrder extends AppCompatActivity {
 
     private TextView nameText;
+    private TextView requestsbardonatetxt;
+    private TextView requestsbarreqtxt;
     private ImageButton backButton;
     private TextView addressText;
-    private SmoothBottomBar mSmoothBottomBar;
+    private SmoothBottomBar categoriesBar;
     private TextView categoryName;
     private TextView categoryWeight;
+    private String From;
     private RecyclerView displayOrderRecycler;
     private displayOrderAdapter mDisplayOrderAdapter;
     private LinearLayoutManager verticalLayout;
@@ -62,7 +62,7 @@ public class displayOrder extends AppCompatActivity {
     private ConstraintLayout requestButton;
     private View profileClick;
     private TextView requestText;
-
+    private SmoothBottomBar requestsBar;
     private LottieAnimationView displayAnimation;
     private LottieAnimationView categoryLoadingAnimation;
     private LottieAnimationView loadingAnimation1;
@@ -89,6 +89,8 @@ public class displayOrder extends AppCompatActivity {
     private ArrayList<categoryItem> grainsList;
     private ArrayList<categoryItem> dairyList;
     private ArrayList<categoryItem> meatList;
+    private ArrayList<displayRequestsItem> requestedItemList;
+
 
     private float total_Weight;
     private float fruitsWeight;
@@ -106,21 +108,41 @@ public class displayOrder extends AppCompatActivity {
 
         Intent intent = getIntent();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        uid = intent.getStringExtra(Constants.uid_intent);
+
         orderID = intent.getStringExtra(Constants.orderId_intent);
-        name = intent.getStringExtra(Constants.name_intent);
+
         isFruits = intent.getBooleanExtra(Constants.isFruits_intent, false);
         isDairy = intent.getBooleanExtra(Constants.isDairy_intent, false);
         isGrains = intent.getBooleanExtra(Constants.isGrains_intent, false);
         isVeggies = intent.getBooleanExtra(Constants.isVeggies_intent, false);
         isMeat = intent.getBooleanExtra(Constants.isMeat_intent, false);
-        address = intent.getStringExtra(Constants.address_intent);
+
         total_Weight = Float.parseFloat(intent.getStringExtra(Constants.total_weight_intent));
 
+        From = intent.getStringExtra("From");
 
+
+        Log.d("tag","From:"+From);
+        if(From.equals("requestItem"))
+        {
+
+        }
+        else if (From.equals("ongoingItem"))
+        {
+            uid = intent.getStringExtra(Constants.uid_intent);
+            name = intent.getStringExtra(Constants.name_intent);
+            address = intent.getStringExtra(Constants.address_intent);
+        }
+        else if (From.equals("mainItem"))
+        {
+
+            uid = intent.getStringExtra(Constants.uid_intent);
+            name = intent.getStringExtra(Constants.name_intent);
+            address = intent.getStringExtra(Constants.address_intent);
+
+        }
         findViewsById();
         setOnClickOnListeners();
-
 
     }
 
@@ -131,6 +153,7 @@ public class displayOrder extends AppCompatActivity {
         loadingAnimation2 = findViewById(R.id.loadingTextAnimation2);
         loadingAnimation1 = findViewById(R.id.loadingTextAnimation1);
         loadingAnimation3 = findViewById(R.id.loadingTextAnimation3);
+
         profileClick = findViewById(R.id.profileClick);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -269,9 +292,12 @@ public class displayOrder extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         addressText = findViewById(R.id.addressText);
         addressText.setText(address);
-        mSmoothBottomBar = findViewById(R.id.bubbleBottomSheetBar);
+        requestsbardonatetxt = findViewById(R.id.donatetext);
+        requestsbarreqtxt = findViewById(R.id.requeststext);
+        categoriesBar = findViewById(R.id.bubbleBottomSheetBar);
         categoryName = findViewById(R.id.categoryHeading);
         categoryWeight = findViewById(R.id.categoryWeight);
+        requestsBar = findViewById(R.id.bubbleRequestBar);
         displayOrderRecycler = findViewById(R.id.categoryRecycler);
         requestText = findViewById(R.id.requestText);
         verticalLayout = new LinearLayoutManager(
@@ -281,32 +307,40 @@ public class displayOrder extends AppCompatActivity {
 
         totalWeightText = findViewById(R.id.totalWeight);
         requestButton = findViewById(R.id.requestButtonLayout);
+        if(From.equals("requestItem"))
+        {
+            requestsbardonatetxt.setVisibility(View.VISIBLE);
+            requestsbarreqtxt.setVisibility(View.VISIBLE);
+            requestsBar.setVisibility(View.VISIBLE);
+            requestsBar.setItemActiveIndex(1);
+            categoriesBar.setVisibility(View.GONE);
+        }
 
         if (isFruits)
         {
-            mSmoothBottomBar.setItemActiveIndex(0);
+            categoriesBar.setItemActiveIndex(0);
         }
         else if (isVeggies)
         {
-            mSmoothBottomBar.setItemActiveIndex(1);
+            categoriesBar.setItemActiveIndex(1);
 
         }
 
         else if (isDairy)
         {
-            mSmoothBottomBar.setItemActiveIndex(2);
+            categoriesBar.setItemActiveIndex(2);
 
         }
 
         else if (isGrains)
         {
-            mSmoothBottomBar.setItemActiveIndex(3);
+            categoriesBar.setItemActiveIndex(3);
 
         }
 
         else if (isMeat)
         {
-            mSmoothBottomBar.setItemActiveIndex(4);
+            categoriesBar.setItemActiveIndex(4);
         }
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -317,6 +351,8 @@ public class displayOrder extends AppCompatActivity {
         grainsList = new ArrayList<>();
         meatList = new ArrayList<>();
         dairyList = new ArrayList<>();
+
+        requestedItemList = new ArrayList<>();
 
         fruitsWeight =0;
         veggiesWeight=0;
@@ -340,7 +376,7 @@ public class displayOrder extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(displayOrder.this, profileClass.class);
                 intent.putExtra("uid",uid);
-                intent.putExtra("from","display");
+                intent.putExtra("From",From);
                 startActivity(intent);
             }
         });
@@ -366,26 +402,43 @@ public class displayOrder extends AppCompatActivity {
 
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+                        if(From.equals("mainItem")) {
+                            String id = user.getUid();
+                            db.collection("NGO").document(id).get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if (documentSnapshot.exists()) {
+                                                mDatabase.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;"+ documentSnapshot.get("Name").toString())
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d(Constants.tag, "Request Success");
+                                                                Toast.makeText(getBaseContext(), "Request Success", Toast.LENGTH_SHORT).show();
+                                                                requestArrow.setImageResource(R.drawable.tick_white);
+                                                                requestText.setText("Requested");
+                                                                requestButton.setClickable(false);
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.d(Constants.tag, "error: " + e + " add");
+                                                                Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(Constants.tag, "error: " + e + " add");
+                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
-                        mDatabase.child("Orders").child(orderID).child("Requests").push().setValue(user.getUid())
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(Constants.tag, "Request Success");
-                                        Toast.makeText(getBaseContext(), "Request Success", Toast.LENGTH_SHORT).show();
-                                        requestArrow.setImageResource(R.drawable.tick_white);
-                                        requestText.setText("Requested");
-                                        requestButton.setClickable(false);
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(Constants.tag, "error: " + e + " add");
-                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
 
+                        }
 
 
 
@@ -397,7 +450,7 @@ public class displayOrder extends AppCompatActivity {
 
                 });
 
-        mSmoothBottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
+        categoriesBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public boolean onItemSelect(int i) {
 
@@ -486,6 +539,37 @@ public class displayOrder extends AppCompatActivity {
                 return false;
             }
         });
+        requestsBar.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public boolean onItemSelect(int i) {
+                if (i==0)
+                {
+                    categoriesBar.setVisibility(View.VISIBLE);
+                    categoriesBar.setItemActiveIndex(0);
+                    categoryWeight.setVisibility(View.VISIBLE);
+                    categoryName.setText("Fruits Summary");
+                    if ( isFruits && fruitsList.size()>0 && fruitsWeight>0.0f) {
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
+                        mDisplayOrderAdapter = new displayOrderAdapter(fruitsList);
+                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                        categoryWeight.setText(Float.toString(fruitsWeight)+"kg");
+                    }
+                    else {
+                        categoryWeight.setText("0.0kg");
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                else if (i==1)
+                {
+                    categoriesBar.setVisibility(View.GONE);
+                    categoryName.setText("Requests");
+                    displayOrderRecycler.setAdapter(new displayRequestsAdapter(requestedItemList));
+                    categoryWeight.setVisibility(View.GONE);
+                }
+                return false;
+            }
+        });
 
     }
 
@@ -527,35 +611,61 @@ public class displayOrder extends AppCompatActivity {
             Log.d("TAG", "doInBackground: task running");
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-            mDatabase.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        Log.d("TAG", "doInBackground: checking for requests");
-                        boolean found = false;
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                            String req = snapshot.getValue().toString();
-                            if(req.equals(user.getUid()))
-                            {
-                                found = true;
-                                break;
+            if(From.equals("mainItem")) {
+                mDatabase.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Log.d("TAG", "doInBackground: checking for requests");
+                            boolean found = false;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                String req = snapshot.getValue().toString();
+                                String[] split = req.split(";;");
+                                Log.d("tag","split id:"+ split[0]);
+                                if (split[0].equals(user.getUid())) {
+                                    found = true;
+                                    break;
+                                }
                             }
-                        }
-                        if(found) {
-                            requestArrow.setImageResource(R.drawable.tick_white);
-                            requestText.setText("Requested");
-                            requestButton.setClickable(false);
-                        }
+                            if (found) {
+                                requestArrow.setImageResource(R.drawable.tick_white);
+                                requestText.setText("Requested");
+                                requestButton.setClickable(false);
+                            }
 
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
+            if(From.equals("requestItem"))
+            {
+                mDatabase.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Log.d("TAG", "doInBackground: getting requests");
+                            boolean found = false;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                String req = snapshot.getValue().toString();
+                                String[] split = req.split(";;");
+                                requestedItemList.add(new displayRequestsItem(split[0],split[1]));
+
+                            }
+                            onPostExecute(true);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
             mDatabaseReference.child(Constants.orderName_fire).child(orderID).child("Food").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -649,72 +759,79 @@ public class displayOrder extends AppCompatActivity {
 
                 if (done)
                 {
-                    float currentWeight=0.0f;
-                    String currentCategory ="";
-                    if (isFruits && fruitsList!=null && fruitsList.size()>0)
+                    if(From.equals("mainItem")||From.equals("ongoingItem")) {
+                        float currentWeight = 0.0f;
+                        String currentCategory = "";
+                        if (isFruits && fruitsList != null && fruitsList.size() > 0) {
+
+                            mDisplayOrderAdapter = new displayOrderAdapter(fruitsList);
+                            categoriesBar.setItemActiveIndex(0);
+                            currentCategory = "Fruits";
+                            currentWeight = fruitsWeight;
+                        } else if (isVeggies && veggiesList != null && veggiesList.size() > 0) {
+                            mDisplayOrderAdapter = new displayOrderAdapter(veggiesList);
+                            categoriesBar.setItemActiveIndex(1);
+                            currentCategory = "Vegetables";
+                            currentWeight = veggiesWeight;
+
+                        } else if (isDairy && dairyList != null && dairyList.size() > 0) {
+                            mDisplayOrderAdapter = new displayOrderAdapter(dairyList);
+                            categoriesBar.setItemActiveIndex(2);
+                            currentCategory = "Dairy";
+                            currentWeight = dairyWeight;
+
+                        } else if (isGrains && grainsList != null && grainsList.size() > 0) {
+                            mDisplayOrderAdapter = new displayOrderAdapter(grainsList);
+                            categoriesBar.setItemActiveIndex(3);
+                            currentCategory = "Grains";
+                            currentWeight = grainsWeight;
+
+                        } else if (isMeat && meatList != null && meatList.size() > 0) {
+                            mDisplayOrderAdapter = new displayOrderAdapter(meatList);
+                            categoriesBar.setItemActiveIndex(4);
+                            currentCategory = "Meat";
+                            currentWeight = meatWeight;
+
+                        }
+
+                        Log.d("TAG", "onPostExecute: ");
+
+                        loadingAnimation1.setVisibility(View.INVISIBLE);
+                        loadingAnimation1.cancelAnimation();
+                        categoryName.setText(currentCategory + " Summary");
+                        loadingAnimation2.setVisibility(View.INVISIBLE);
+                        loadingAnimation2.cancelAnimation();
+                        categoryWeight.setText(Float.toString(currentWeight) + "kg");
+
+                        loadingAnimation3.setVisibility(View.INVISIBLE);
+                        loadingAnimation3.cancelAnimation();
+                        totalWeightText.setText(Float.toString(total_Weight) + "kg");
+
+                        displayOrderRecycler.setLayoutManager(verticalLayout);
+                        displayOrderRecycler.setItemAnimator(new DefaultItemAnimator());
+
+                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+
+                        categoryLoadingAnimation.setVisibility(View.INVISIBLE);
+                        categoryLoadingAnimation.cancelAnimation();
+                    }
+                    if(From.equals("requestItem"))
                     {
 
-                        mDisplayOrderAdapter = new displayOrderAdapter(fruitsList);
-                        mSmoothBottomBar.setItemActiveIndex(0);
-                        currentCategory = "Fruits";
-                        currentWeight = fruitsWeight;
-                    }
-                    else if (isVeggies && veggiesList!=null && veggiesList.size()>0)
-                    {
-                        mDisplayOrderAdapter = new displayOrderAdapter(veggiesList);
-                        mSmoothBottomBar.setItemActiveIndex(1);
-                        currentCategory = "Vegetables";
-                        currentWeight = veggiesWeight;
+                        displayOrderRecycler.setLayoutManager(verticalLayout);
+                        displayOrderRecycler.setItemAnimator(new DefaultItemAnimator());
+                        displayOrderRecycler.setAdapter(new displayRequestsAdapter(requestedItemList));
+                        categoryName.setText("Requests");
+                        loadingAnimation1.setVisibility(View.INVISIBLE);
+                        loadingAnimation1.cancelAnimation();
+                        loadingAnimation2.setVisibility(View.INVISIBLE);
+                        loadingAnimation2.cancelAnimation();
+                        loadingAnimation3.setVisibility(View.INVISIBLE);
+                        loadingAnimation3.cancelAnimation();
+                        categoryLoadingAnimation.setVisibility(View.INVISIBLE);
+                        categoryLoadingAnimation.cancelAnimation();
 
                     }
-
-                    else if (isDairy && dairyList!=null && dairyList.size()>0)
-                    {
-                        mDisplayOrderAdapter = new displayOrderAdapter(dairyList);
-                        mSmoothBottomBar.setItemActiveIndex(2);
-                        currentCategory = "Dairy";
-                        currentWeight = dairyWeight;
-
-                    }
-
-                    else if (isGrains && grainsList!=null && grainsList.size()>0)
-                    {
-                        mDisplayOrderAdapter = new displayOrderAdapter(grainsList);
-                        mSmoothBottomBar.setItemActiveIndex(3);
-                        currentCategory = "Grains";
-                        currentWeight = grainsWeight;
-
-                    }
-
-                    else if (isMeat && meatList!=null && meatList.size()>0)
-                    {
-                        mDisplayOrderAdapter = new displayOrderAdapter(meatList);
-                        mSmoothBottomBar.setItemActiveIndex(4);
-                        currentCategory = "Meat";
-                        currentWeight = meatWeight;
-
-                    }
-
-                    Log.d("TAG", "onPostExecute: ");
-
-                    loadingAnimation1.setVisibility(View.INVISIBLE);
-                    loadingAnimation1.cancelAnimation();
-                    categoryName.setText(currentCategory+" Summary");
-                    loadingAnimation2.setVisibility(View.INVISIBLE);
-                    loadingAnimation2.cancelAnimation();
-                    categoryWeight.setText(Float.toString(currentWeight)+"kg");
-
-                    loadingAnimation3.setVisibility(View.INVISIBLE);
-                    loadingAnimation3.cancelAnimation();
-                    totalWeightText.setText(Float.toString(total_Weight)+"kg");
-
-                    displayOrderRecycler.setLayoutManager(verticalLayout);
-                    displayOrderRecycler.setItemAnimator(new DefaultItemAnimator());
-
-                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-
-                    categoryLoadingAnimation.setVisibility(View.INVISIBLE);
-                    categoryLoadingAnimation.cancelAnimation();
 
                 }
 

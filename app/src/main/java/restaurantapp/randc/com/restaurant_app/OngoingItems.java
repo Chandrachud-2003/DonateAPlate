@@ -4,15 +4,17 @@ public class OngoingItems {
     String name;
     String image;
 
-    float weight;
+    String weight;
     boolean isVeggies;
     boolean isFruits;
-
     boolean isDairy;
     boolean isGrains;
     boolean isMeat;
+    String OrderID;
+    String NGOID;
+    String Address;
 
-    public OngoingItems(String name, String image, float weight, boolean isVeggies, boolean isFruits, boolean isDairy, boolean isGrains, boolean isMeat) {
+    public OngoingItems(String name, String image, String weight, boolean isVeggies, boolean isFruits, boolean isDairy, boolean isGrains, boolean isMeat, String orderID, String NGOID, String address) {
         this.name = name;
         this.image = image;
         this.weight = weight;
@@ -21,6 +23,9 @@ public class OngoingItems {
         this.isDairy = isDairy;
         this.isGrains = isGrains;
         this.isMeat = isMeat;
+        OrderID = orderID;
+        this.NGOID = NGOID;
+        Address = address;
     }
 
     public String getName() {
@@ -39,11 +44,11 @@ public class OngoingItems {
         this.image = image;
     }
 
-    public float getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 
@@ -87,5 +92,27 @@ public class OngoingItems {
         isMeat = meat;
     }
 
+    public String getOrderID() {
+        return OrderID;
+    }
 
+    public void setOrderID(String orderID) {
+        OrderID = orderID;
+    }
+
+    public String getNGOID() {
+        return NGOID;
+    }
+
+    public void setNGOID(String NGOID) {
+        this.NGOID = NGOID;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/requestsDisplay"
+        android:title="Requests"
+        android:icon="@color/colorTransparent"
+      />
+    <item
+        android:id="@+id/donationDisplay"
+        android:title="Donation"
+        android:icon="@color/colorTransparent"
+        />
+</menu>

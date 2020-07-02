@@ -102,16 +102,22 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
         height = (int) ((width*2)/3.0);
 
-        updateDetails();
 
-        if(getIntent().getStringExtra("from").equals("display"))
+
+        if(getIntent().getStringExtra("From").equals("mainItem"))
         {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "Restaurant";
         }
+        if(getIntent().getStringExtra("what").equals("ongoingItem"))
+        {
+            fab.setVisibility(View.GONE);
+            uid = getIntent().getStringExtra("uid");
+            main_collection = "NGO";
+        }
 
-
+        updateDetails();
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override

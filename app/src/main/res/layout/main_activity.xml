@@ -230,9 +230,8 @@
 
 
             />
-
         <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
-            android:id="@+id/ongoingSmoolider"
+            android:id="@+id/requestSmoolider"
             app:layout_constraintTop_toBottomOf="@+id/nearbyText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -245,6 +244,22 @@
             android:layout_marginBottom="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
+            android:id="@+id/ongoingSmoolider"
+            app:layout_constraintTop_toBottomOf="@+id/requestSmoolider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:clipToPadding = "false"
+            android:layout_marginBottom="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

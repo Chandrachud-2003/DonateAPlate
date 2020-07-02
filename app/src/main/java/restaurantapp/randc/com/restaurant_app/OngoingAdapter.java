@@ -1,6 +1,8 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -102,19 +104,41 @@ public class OngoingAdapter extends PagerAdapter{
                 veggiesPop.setVisibility(View.VISIBLE);
             }
 
+            float density = mContext.getResources()
+                    .getDisplayMetrics()
+                    .density;
 
             int width = Resources.getSystem().getDisplayMetrics().widthPixels;
                     int height = (int) ((width * 2) / 5);
 
             Picasso.get()
-                    .load(R.drawable.restaurant2)
+                    .load(item.getImage())
                     .resize(width, height)
-                    .centerCrop()
+                    .centerInside()
                     .into(picture);
 
 
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent((Activity)mContext, displayOrder.class);
 
+                    intent.putExtra(Constants.uid_intent, item.getNGOID());
+                    intent.putExtra(Constants.orderId_intent, item.getOrderID());
+                    intent.putExtra(Constants.name_intent, item.getName());
+                    intent.putExtra(Constants.isDairy_intent,item.isDairy );
+                    intent.putExtra(Constants.isGrains_intent, item.isGrains);
+                    intent.putExtra(Constants.isFruits_intent, item.isFruits);
+                    intent.putExtra(Constants.isVeggies_intent, item.isVeggies);
+                    intent.putExtra(Constants.isMeat_intent,item.isMeat);
+                    intent.putExtra(Constants.address_intent, item.getAddress());
+                    intent.putExtra(Constants.total_weight_intent,item.getWeight());
+                    intent.putExtra("From","ongoingItem");
 
+                    mContext.startActivity(intent);
+
+                }
+            });
 
             container.addView(view);
 

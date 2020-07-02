@@ -653,6 +653,7 @@ public class addClass extends AppCompatActivity {
         infoMap.put("Name", restName);
         infoMap.put("Address", restAddress);
         infoMap.put("Total Weight", totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight);
+        infoMap.put("State","New");
 
         mDatabase.child("Orders").child(uid).child("Info").setValue(infoMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -202,7 +202,7 @@ import androidx.recyclerview.widget.RecyclerView;
                             intent.putExtra(Constants.isMeat_intent, list.get(position).isMeat());
                             intent.putExtra(Constants.address_intent, address);
                             intent.putExtra(Constants.total_weight_intent,list.get(position).getWeight());
-
+                            intent.putExtra("From","mainItem");
                             mContext.startActivity(intent);
 
 

@@ -44,7 +44,7 @@
             app:layout_constraintTop_toBottomOf="@id/ongoingImage"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="7dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             />
 
         <TextView
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="parent"
 
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:text="10kg"
 
             />
@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/ongoingWeight"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:orientation="horizontal"

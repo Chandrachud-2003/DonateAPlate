@@ -2,11 +2,8 @@ package restaurantapp.randc.com.restaurant_app;
 //This is a comment
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,19 +21,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 
-import com.av.smoothviewpager.Smoolider.SmoothViewpager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,26 +40,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import static com.av.smoothviewpager.utils.Smoolider_Utils.autoplay_viewpager;
-import static com.av.smoothviewpager.utils.Smoolider_Utils.stop_autoplay_ViewPager;
 
 public class Main_Activity extends AppCompatActivity {
 
@@ -106,8 +90,6 @@ public class Main_Activity extends AppCompatActivity {
     private ArrayList<MainItem> mainItems;
 
     private static final int PAGE_START = 1;
-    private boolean isLoading = false;
-    private boolean isLastPage = false;
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
 
@@ -116,7 +98,7 @@ public class Main_Activity extends AppCompatActivity {
     private boolean atBottom;
 
     private AVLoadingIndicatorView mainRecyclerLoader;
-
+    private String MyUID;
     private ArrayList<String> orderIds;
     private FirebaseFirestore db ;
     private double currectLat;
@@ -130,20 +112,28 @@ public class Main_Activity extends AppCompatActivity {
     private boolean tempVeg;
     private String tempTotalWeight;
     private boolean tempMeat;
-    private CustomSmoothViewPager ongoingViewPager;
+    private CustomSmoothViewPager ongoingRecycler;
+    private CustomSmoothViewPager requestedRecycler;
     private String tempUrl;
     private boolean tempGrain;
     private TextView nodonations;
     private boolean tempDairy;
     private   DatabaseReference rootRef;
+    private ArrayList<Boolean> allOrderNum;
     private String dis;
     private ArrayList<OngoingItems> ongoingItems;
+    //temp
+    private ArrayList<OngoingItems> requestedItems;
+    //
+    private ArrayList<String> currentOrderIds;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         currectLat=0.0;
         currentLon=0.0;
@@ -155,46 +145,79 @@ public class Main_Activity extends AppCompatActivity {
         mainItems = new ArrayList<>();
         mainRecycler = findViewById(R.id.mainRecycler);
         nodonations = findViewById(R.id.no_donations);
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        MyUID = user.getUid();
         nodonations.setVisibility(View.GONE);
         mainRecyclerLoader = findViewById(R.id.mainRecycler_loader);
         mainRecyclerLoader.setVisibility(View.GONE);
-        ongoingViewPager = findViewById(R.id.ongoingSmoolider);
-
+        ongoingRecycler = findViewById(R.id.ongoingSmoolider);
+        requestedRecycler = findViewById(R.id.requestSmoolider);
+        mainRecycler = findViewById(R.id.mainRecycler);
+        currentOrderIds = new ArrayList<>();
         ongoingItems = new ArrayList<>();
-        ongoingItems.add(new OngoingItems("Childrens NGO", null, 10.5f, true, false,true,false,true));
-        ongoingItems.add(new OngoingItems("Pizza hut", null, 10.5f, true, true,true,false,true));
-        ongoingItems.add(new OngoingItems("Pizza hut", null, 10.5f, true, false,true,false,true));
-        ongoingViewPager.setPadding(175, 0, 175, 0);
+        requestedItems = new ArrayList<>();
+        rootRef = FirebaseDatabase.getInstance().getReference();
+        //  searchRecycler = findViewById(R.id.searchRecycler);
 
-       ongoingViewPager.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
-      //  autoplay_viewpager(ongoingViewPager,ongoingItems.size()+1);
-      //  searchRecycler = findViewById(R.id.searchRecycler);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if(user.getDisplayName().equals("Restaurant")) {
-            searchList = new ArrayList<>();
-            rootRef = FirebaseDatabase.getInstance().getReference();
+            ongoingRecycler.setVisibility(View.VISIBLE);
+            ongoingRecycler.setPadding(150, 0, 150, 0);
+
+
+            db.collection(Constants.rest_fire).document(MyUID).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+
+                                allOrderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
+                                for (int i = 0; i < allOrderNum.size(); i++) {
+                                    if (allOrderNum.get(i)) {
+                                        currentOrderIds.add(MyUID + "-" + i);
+
+                                    }
+                                }
+                                Log.d("tag", "Current IDS:" + currentOrderIds);
+
+                                myDonationsRetriever(0,currentOrderIds.size());
+
+                            }
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                    Log.d("TAG", "onFailure: " + e.toString());
+                }
+            });
+
+
+        }
+
+
+
+
+
+
+
+        if(user.getDisplayName().equals("NGO")) {
+            mainRecycler.setVisibility(View.VISIBLE);
+            mainRecyclerLoader.setVisibility(View.VISIBLE);
+      //      searchList = new ArrayList<>();
+
             getOrderIDS();
             Log.d("TAG", "run: listIntitialPos: " + TOTAL_PAGES);
             getDeviceLocation();
-            searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
-            searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
-            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
-            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
-
-            searchAdapter = new searchAdapter(searchList, Main_Activity.this);
-
-            verticalLayout = new LinearLayoutManager(
-                    Main_Activity.this,
-                    LinearLayoutManager.VERTICAL,
-                    false);
-
+//            searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
+//            searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
+//            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
+//            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
+     //       searchAdapter = new searchAdapter(searchList, Main_Activity.this);
             // searchRecycler.setLayoutManager(verticalLayout);
             // searchRecycler.setAdapter(searchAdapter);
-
-
-            mainRecycler = findViewById(R.id.mainRecycler);
 
 
             verticalLayout = new LinearLayoutManager(
@@ -245,7 +268,7 @@ public class Main_Activity extends AppCompatActivity {
                     = new LinearLayoutManager(
                     getApplicationContext());
 
-            filterItemList = new ArrayList<filterItem>();
+/*            filterItemList = new ArrayList<filterItem>();
 
             filterItemList.add(new filterItem("Nearby", R.drawable.icons8_nearby, false));
             filterItemList.add(new filterItem("Orders", R.drawable.icons8_mostorders, false));
@@ -266,7 +289,7 @@ public class Main_Activity extends AppCompatActivity {
             filterView.setLayoutManager(HorizontalLayout);
 
             // Set adapter on recycler view
-            filterView.setAdapter(filterAdapter1);
+            filterView.setAdapter(filterAdapter1);*/
         }
 
         slidingRootNav = new SlidingRootNavBuilder(this)
@@ -327,8 +350,6 @@ public class Main_Activity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity
-
-
     }
 
     public void onItemSelected(int position) {
@@ -444,6 +465,125 @@ public class Main_Activity extends AppCompatActivity {
         retriever(0,max, false, 0);
 
     }
+    public void myDonationsRetriever(int i, int num)
+    {
+        if (i < num) {
+            rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
+
+                    Log.d("tag", "State:" + snapshotInfo.child("State").getValue().toString());
+                    if(snapshotInfo.child("State").getValue().toString().equals("New")) {
+                        rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshotFood) {
+                                tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
+                                Log.d("tag", "Entered food");
+                                if (snapshotFood.hasChild(Constants.dairyName_fire)) {
+                                    tempDairy = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.fruitName_fire)) {
+                                    tempFruit = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.vegName_fire)) {
+                                    tempVeg = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.meatName_fire)) {
+                                    tempMeat = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.grainsName_fire)) {
+                                    tempGrain = true;
+                                }
+
+
+                                requestedItems.add(new OngoingItems("", null, snapshotInfo.child("Total Weight").getValue().toString(),tempVeg, tempFruit, tempDairy, tempGrain, tempMeat,currentOrderIds.get(i),MyUID , ""));
+                                myDonationsRetriever(i + 1, num);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.d("TAG", "onFailure: " + error.toString());
+                            }
+
+                        });
+                    }
+
+
+
+                    else if(snapshotInfo.child("State").getValue().toString().equals("Ongoing"))
+                    {
+                        rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshotFood) {
+                                tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
+                                Log.d("tag", "Entered food");
+                                if (snapshotFood.hasChild(Constants.dairyName_fire)) {
+                                    tempDairy = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.fruitName_fire)) {
+                                    tempFruit = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.vegName_fire)) {
+                                    tempVeg = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.meatName_fire)) {
+                                    tempMeat = true;
+                                }
+                                if (snapshotFood.hasChild(Constants.grainsName_fire)) {
+                                    tempGrain = true;
+                                }
+                                String NGOuid = snapshotInfo.child("Accepted").getValue().toString();
+                                Log.d("tag", "NGO ID:"+ NGOuid);
+                                db.collection(Constants.ngo_fire).document(
+                                        NGOuid).get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                if (documentSnapshot.exists()) {
+                                                    Log.d("tag", "entered NGO");
+                                                   String name =  documentSnapshot.get("Name").toString();
+                                                    String  url = documentSnapshot.get("Url").toString();
+                                                    String address = documentSnapshot.get("Address").toString();
+                                                    ongoingItems.add(new OngoingItems(name, url, snapshotInfo.child("Total Weight").getValue().toString(),tempVeg, tempFruit, tempDairy, tempGrain, tempMeat,currentOrderIds.get(i),NGOuid , address));
+                                                    myDonationsRetriever(i + 1, num);
+                                                }
+                                            }
+
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("TAG", "onFailure: " + e.toString());
+
+                                    }
+                                });
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.d("TAG", "onFailure: " + error.toString());
+                            }
+                        });
+
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("TAG", "onFailure: " + error.toString());
+                }
+            });
+        }
+        else
+        {
+            ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
+            requestedRecycler.setAdapter(new RequestAdapter(requestedItems,Main_Activity.this));
+        }
+    }
+
 
     public void retriever(int i, int max, boolean check, int intitialPos) {
         if (i < max) {
@@ -585,23 +725,7 @@ public class Main_Activity extends AppCompatActivity {
                     }
                     Log.d("TAG", "run: listFinalPos: "+listFinalPos);
                     currentPage+=1;
-
-
-                    isLoading = false;
-
                     retriever(intitialPos, listFinalPos, true, intitialPos);
-
-
-
-
-
-                    if (currentPage != TOTAL_PAGES) {
-                        //add animation
-                    } else
-                        isLastPage = true;
-
-
-
         }
         else
         {
