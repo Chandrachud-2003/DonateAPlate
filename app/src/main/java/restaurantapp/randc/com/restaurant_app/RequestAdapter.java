@@ -111,7 +111,7 @@ public class RequestAdapter extends PagerAdapter{
         int width = Resources.getSystem().getDisplayMetrics().widthPixels;
         int height = (int) ((width * 2) / 5);
 
-
+        picture.setImageDrawable(null);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

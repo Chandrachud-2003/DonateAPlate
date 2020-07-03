@@ -3,6 +3,7 @@ package restaurantapp.randc.com.restaurant_app;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,10 +34,12 @@ public class displayOrderAdapter extends RecyclerView.Adapter<displayOrderAdapte
     @Override
     public void onBindViewHolder(displayOrderAdapter.ViewHolder holder, int position) {
         final categoryItem item = list.get(position);
+
+        holder.weightText.setVisibility(View.VISIBLE);
+        holder.viewProfie.setVisibility(View.GONE);
+        holder.accept.setVisibility(View.GONE);
         holder.nameText.setText(item.getFoodItem());
         holder.weightText.setText(item.getFoodWeight()+"kg");
-
-
 
     }
 
@@ -49,10 +52,15 @@ public class displayOrderAdapter extends RecyclerView.Adapter<displayOrderAdapte
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameText;
         public TextView weightText;
+        public Button viewProfie;
+        public Button accept;
+
         public ViewHolder(View itemView) {
             super(itemView);
             this.nameText = (TextView) itemView.findViewById(R.id.foodName);
             this.weightText = (TextView) itemView.findViewById(R.id.foodWeight);
+            this.viewProfie = itemView.findViewById(R.id.ViewButton);
+            this.accept = itemView.findViewById(R.id.acceptButton);
 
         }
     }

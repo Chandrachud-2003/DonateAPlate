@@ -1,26 +1,43 @@
 package restaurantapp.randc.com.restaurant_app;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAdapter.ViewHolder>{
 
-
+    private Context mContext;
     private ArrayList<displayRequestsItem> list;
 
     // RecyclerView recyclerView;
-    public displayRequestsAdapter(ArrayList<displayRequestsItem> list) {
+    public displayRequestsAdapter(Context context, ArrayList<displayRequestsItem> list) {
         this.list = list;
+        this.mContext = context;
     }
 
     @Override
@@ -36,7 +53,74 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
         final displayRequestsItem item = list.get(position);
         holder.weightText.setVisibility(View.GONE);
         holder.nameText.setText(item.getName());
+        holder.viewProfie.setVisibility(View.VISIBLE);
+        holder.accept.setVisibility(View.VISIBLE);
 
+        holder.viewProfie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent((Activity)mContext, profileClass.class);
+                intent.putExtra("uid",item.getUID());
+                intent.putExtra("From","ongoingItem");
+                mContext.startActivity(intent);
+            }
+        });
+        holder.accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> infoMap = new HashMap<>();
+                infoMap.put("State", "Ongoing");
+                infoMap.put("Accepted", item.getUID());
+                mDatabase.child("Orders").child(item.getOrderID()).child("Info").updateChildren(infoMap)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
+                                orderRef.update(Constants.order_list_field, FieldValue.arrayRemove(item.getOrderID()))
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                DocumentReference orderRef = db.collection(Constants.ngo_fire).document(item.getUID());
+                                                orderRef.update(Constants.ngo_ongoing_list_fire, FieldValue.arrayUnion(item.getOrderID()))
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d(Constants.tag, "Accept Success");
+                                                                Toast.makeText(mContext, "Request Accepted", Toast.LENGTH_SHORT).show();
+                                                                Intent intent = new Intent((Activity)mContext, Main_Activity.class);
+                                                                mContext.startActivity(intent);
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.d(Constants.tag, "error: " + e + " add");
+                                                                Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(Constants.tag, "error: " + e + " add");
+                                                Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(Constants.tag, "error: " + e + " add");
+                                Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
 
 
     }
@@ -50,10 +134,15 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameText;
         public TextView weightText;
+        public Button viewProfie;
+        public Button accept;
+
         public ViewHolder(View itemView) {
             super(itemView);
             this.nameText = (TextView) itemView.findViewById(R.id.foodName);
             this.weightText = (TextView) itemView.findViewById(R.id.foodWeight);
+            this.viewProfie = itemView.findViewById(R.id.ViewButton);
+            this.accept = itemView.findViewById(R.id.acceptButton);
 
         }
     }

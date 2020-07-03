@@ -184,9 +184,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 
-                    PushDownAnim.setPushDownAnimTo(holder.itemView)
-                    .setScale(PushDownAnim.MODE_SCALE, 0.8f)
-                    .setOnClickListener(new View.OnClickListener() {
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 

@@ -3,11 +3,13 @@ package restaurantapp.randc.com.restaurant_app;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -33,13 +35,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.squareup.picasso.Picasso;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -49,6 +54,7 @@ public class displayOrder extends AppCompatActivity {
     private TextView nameText;
     private TextView requestsbardonatetxt;
     private TextView requestsbarreqtxt;
+    private TextView norequeststext;
     private ImageButton backButton;
     private TextView addressText;
     private SmoothBottomBar categoriesBar;
@@ -62,13 +68,13 @@ public class displayOrder extends AppCompatActivity {
     private ConstraintLayout requestButton;
     private View profileClick;
     private TextView requestText;
+    private ProgressDialog dialog;
     private SmoothBottomBar requestsBar;
     private LottieAnimationView displayAnimation;
     private LottieAnimationView categoryLoadingAnimation;
     private LottieAnimationView loadingAnimation1;
     private LottieAnimationView loadingAnimation2;
     private LottieAnimationView loadingAnimation3;
-    private DatabaseReference mDatabase;
     private String uid;
     private String orderID;
     private String  name;
@@ -107,7 +113,6 @@ public class displayOrder extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         orderID = intent.getStringExtra(Constants.orderId_intent);
 
@@ -153,7 +158,7 @@ public class displayOrder extends AppCompatActivity {
         loadingAnimation2 = findViewById(R.id.loadingTextAnimation2);
         loadingAnimation1 = findViewById(R.id.loadingTextAnimation1);
         loadingAnimation3 = findViewById(R.id.loadingTextAnimation3);
-
+        dialog = new ProgressDialog(displayOrder.this);
         profileClick = findViewById(R.id.profileClick);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -297,6 +302,7 @@ public class displayOrder extends AppCompatActivity {
         categoriesBar = findViewById(R.id.bubbleBottomSheetBar);
         categoryName = findViewById(R.id.categoryHeading);
         categoryWeight = findViewById(R.id.categoryWeight);
+        norequeststext = findViewById(R.id.noRequestsText);
         requestsBar = findViewById(R.id.bubbleRequestBar);
         displayOrderRecycler = findViewById(R.id.categoryRecycler);
         requestText = findViewById(R.id.requestText);
@@ -363,8 +369,18 @@ public class displayOrder extends AppCompatActivity {
         GetBackgroundInfo backgroundInfo = new GetBackgroundInfo();
         backgroundInfo.execute();
 
+        float density = displayOrder.this.getResources()
+                .getDisplayMetrics()
+                .density;
 
+        if(From.equals("requestItem"))
+        {
 
+            requestText.setText("Remove");
+            requestButton.setBackground(ContextCompat.getDrawable(displayOrder.this, R.drawable.cancel_button_bg));
+            requestButton.setPadding((int)(20 * density),(int)(5 * density),(int)(20 * density),(int)(5 * density));
+            requestArrow.setImageResource(R.drawable.cancel_white);
+        }
 
 
     }
@@ -409,11 +425,11 @@ public class displayOrder extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             if (documentSnapshot.exists()) {
-                                                mDatabase.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;"+ documentSnapshot.get("Name").toString())
+                                                mDatabaseReference.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;"+ documentSnapshot.get("Name").toString())
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
-                                                                Log.d(Constants.tag, "Request Success");
+                                                                Log.d(Constants.tag, "Requestac has been sent");
                                                                 Toast.makeText(getBaseContext(), "Request Success", Toast.LENGTH_SHORT).show();
                                                                 requestArrow.setImageResource(R.drawable.tick_white);
                                                                 requestText.setText("Requested");
@@ -424,7 +440,7 @@ public class displayOrder extends AppCompatActivity {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
                                                                 Log.d(Constants.tag, "error: " + e + " add");
-                                                                Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
                                                             }
                                                         });
                                             }
@@ -433,14 +449,111 @@ public class displayOrder extends AppCompatActivity {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d(Constants.tag, "error: " + e + " add");
-                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
                                 }
                             });
 
 
                         }
+                        if(From.equals("requestItem"))
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(displayOrder.this);
+                            builder.setCancelable(true);
+                            builder.setTitle("Remove Donation");
+                            builder.setMessage("Are you sure want to remove your donation? \n(All requests will be automatically declined)");
+                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog1, int which) {
+                                    dialog1.dismiss();
 
+                                    dialog.setMessage("Removing Donation...");
+                                    dialog.show();
+                                    DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
+                                    orderRef.update(Constants.order_list_field, FieldValue.arrayRemove(orderID))
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
 
+                                                    db.collection(Constants.rest_fire).document(user.getUid()).get()
+                                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                                    if (documentSnapshot.exists()) {
+                                                                        ArrayList<Boolean> orderNum;
+                                                                        orderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
+                                                                        char no = orderID.charAt(orderID.length()-1);
+                                                                        int number = Integer.parseInt(""+no);
+                                                                        orderNum.set(number,false);
+
+                                                                        HashMap<String, Object> updateMap = new HashMap<>();
+                                                                        updateMap.put(Constants.order_id_num, orderNum);
+                                                                        db.collection(Constants.rest_fire).document(user.getUid())
+                                                                                .update(updateMap)
+                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(Void aVoid) {
+
+                                                                                        mDatabaseReference.child("Orders").child(orderID).removeValue()
+                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                    @Override
+                                                                                                    public void onSuccess(Void aVoid) {
+                                                                                                        dialog.dismiss();
+                                                                                                        Toast.makeText(displayOrder.this,"Donation Removed",Toast.LENGTH_LONG).show();
+                                                                                                        Log.d("tag","Donation Remove Success");
+                                                                                                        Intent intent = new Intent(displayOrder.this,Main_Activity.class);
+                                                                                                        startActivity(intent);
+                                                                                                    }
+                                                                                                })
+                                                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                                                    @Override
+                                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                                        Log.d(Constants.tag, "error: " + e + " add");
+                                                                                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                                                        dialog.dismiss();
+                                                                                                    }
+                                                                                                });
+                                                                                    }
+                                                                                })
+                                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                                    @Override
+                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                        Log.d(Constants.tag, "error: " + e + " add");
+                                                                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                                        dialog.dismiss();
+                                                                                    }
+                                                                                });
+                                                                    }
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.d(Constants.tag, "error: " + e + " add");
+                                                            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d(Constants.tag, "error: " + e + " add");
+                                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                }
+                            });
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog1, int which) {
+                                }
+                            });
+
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+
+                        }
 
 
 
@@ -547,6 +660,7 @@ public class displayOrder extends AppCompatActivity {
                     categoriesBar.setVisibility(View.VISIBLE);
                     categoriesBar.setItemActiveIndex(0);
                     categoryWeight.setVisibility(View.VISIBLE);
+                    norequeststext.setVisibility(View.GONE);
                     categoryName.setText("Fruits Summary");
                     if ( isFruits && fruitsList.size()>0 && fruitsWeight>0.0f) {
                         displayOrderRecycler.setVisibility(View.VISIBLE);
@@ -558,14 +672,20 @@ public class displayOrder extends AppCompatActivity {
                         categoryWeight.setText("0.0kg");
                         displayOrderRecycler.setVisibility(View.INVISIBLE);
                     }
+                    totalWeightText.setText(Float.toString(total_Weight) + "kg");
                 }
 
                 else if (i==1)
                 {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
                     categoriesBar.setVisibility(View.GONE);
                     categoryName.setText("Requests");
-                    displayOrderRecycler.setAdapter(new displayRequestsAdapter(requestedItemList));
+                    displayOrderRecycler.setAdapter(new displayRequestsAdapter(displayOrder.this,requestedItemList));
                     categoryWeight.setVisibility(View.GONE);
+                    if(requestedItemList.size()==0)
+                    {
+                        norequeststext.setVisibility(View.VISIBLE);
+                    }
                 }
                 return false;
             }
@@ -612,7 +732,7 @@ public class displayOrder extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             if(From.equals("mainItem")) {
-                mDatabase.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabaseReference.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -638,31 +758,38 @@ public class displayOrder extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                        Log.d(Constants.tag, "error: " + databaseError + " add");
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
                     }
                 });
             }
 
             if(From.equals("requestItem"))
             {
-                mDatabase.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabaseReference.child("Orders").child(orderID).child("Requests").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+                            norequeststext.setVisibility(View.GONE);
                             Log.d("TAG", "doInBackground: getting requests");
                             boolean found = false;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 String req = snapshot.getValue().toString();
                                 String[] split = req.split(";;");
-                                requestedItemList.add(new displayRequestsItem(split[0],split[1]));
+                                requestedItemList.add(new displayRequestsItem(split[0],split[1],orderID));
 
                             }
                             onPostExecute(true);
                         }
+                        else
+                        {
+                            norequeststext.setVisibility(View.VISIBLE);
+                        }
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                        Log.d(Constants.tag, "error: " + databaseError + " add");
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -820,8 +947,9 @@ public class displayOrder extends AppCompatActivity {
 
                         displayOrderRecycler.setLayoutManager(verticalLayout);
                         displayOrderRecycler.setItemAnimator(new DefaultItemAnimator());
-                        displayOrderRecycler.setAdapter(new displayRequestsAdapter(requestedItemList));
+                        displayOrderRecycler.setAdapter(new displayRequestsAdapter(displayOrder.this,requestedItemList));
                         categoryName.setText("Requests");
+                        totalWeightText.setText(Float.toString(total_Weight) + "kg");
                         loadingAnimation1.setVisibility(View.INVISIBLE);
                         loadingAnimation1.cancelAnimation();
                         loadingAnimation2.setVisibility(View.INVISIBLE);

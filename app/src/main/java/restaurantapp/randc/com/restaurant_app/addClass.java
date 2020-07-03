@@ -557,7 +557,7 @@ public class addClass extends AppCompatActivity {
                            }
 
                            if(!(orderId.equals(""))) {
-                               addAllFood(uid + "-" + orderId);
+
 
 
                                HashMap<String, Object> updateMap = new HashMap<>();
@@ -567,7 +567,20 @@ public class addClass extends AppCompatActivity {
                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                            @Override
                                            public void onSuccess(Void aVoid) {
-
+                                               DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
+                                               orderRef.update(Constants.order_list_field, FieldValue.arrayUnion(uid + "-" + orderId))
+                                                       .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                           @Override
+                                                           public void onSuccess(Void aVoid) {
+                                                               addAllFood(uid + "-" + orderId);
+                                                           }
+                                                       }).addOnFailureListener(new OnFailureListener() {
+                                                   @Override
+                                                   public void onFailure(@NonNull Exception e) {
+                                                       Log.d(Constants.tag, "error: " + e + " add");
+                                                       Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+                                                   }
+                                               });
                                            }
                                        })
                                        .addOnFailureListener(new OnFailureListener() {
@@ -579,10 +592,7 @@ public class addClass extends AppCompatActivity {
                                        });
 
 
-                               DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
 
-                                // Atomically add a new region to the "regions" array field.
-                               orderRef.update(Constants.order_list_field, FieldValue.arrayUnion(uid + "-" + orderId));
 
 
 

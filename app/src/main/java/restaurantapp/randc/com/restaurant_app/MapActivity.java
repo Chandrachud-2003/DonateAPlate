@@ -29,6 +29,10 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.GeocodingResult;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -48,7 +52,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     private static final float DEFAULT_ZOOM = 17f;
-
+    private com.google.maps.model.LatLng latLng;
     private String address;
     private double latitude;
     private double longitude;
@@ -121,19 +125,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             if(currentLocation!=null) {
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                         DEFAULT_ZOOM, "My Location");
-                                Geocoder geocoder;
-                                List<Address> addresses;
-                                geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
-
                                 latitude = currentLocation.getLatitude();
                                 longitude = currentLocation.getLongitude();
-                                try {
-                                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                                    address = addresses.get(0).getAddressLine(0);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                Log.d("TAG", "LAT:" + latitude + "/nLONG:" + longitude + "/nAddress" + address);
+                                currentMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)));
+                                latLng = new com.google.maps.model.LatLng(latitude,longitude);
                             }
                             else
                                 Toast.makeText(MapActivity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
@@ -168,7 +163,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d("TAG", "onMapReady: map is ready");
         mMap = googleMap;
         getDeviceLocation();
@@ -186,32 +181,35 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if(currentMarker!=null) {
                     currentMarker.remove();
                 }
-                currentMarker = mMap.addMarker(new MarkerOptions().position(point));
-
-                Geocoder geocoder;
-                List<Address> addresses;
-                geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
-
                 latitude = point.latitude;
                 longitude = point.longitude;
-                try {
-                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                    address = addresses.get(0).getAddressLine(0);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                currentMarker.setTitle(address);
-                Log.d("TAG", "LAT:" + latitude + "/nLONG:" + longitude + "/nAddress" + address);
+                currentMarker = mMap.addMarker(new MarkerOptions().position(point));
+                latLng = new com.google.maps.model.LatLng(latitude,longitude);
+
+
+
             }
         });
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {
+
+                    GeocodingResult[] addresses;
+                    GeoApiContext context = new GeoApiContext.Builder()
+                            .apiKey("AIzaSyDinB_qTH7KMRrlK5-_NmBnpoCMxZhBB9A")
+                            .build();
+                    addresses =  GeocodingApi.reverseGeocode(context,latLng).await();
+                    address = addresses[0].formattedAddress;
+                } catch (IOException | ApiException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 Intent intent = new Intent(MapActivity.this,registration4.class);
                 intent.putExtra("Lat",latitude);
                 intent.putExtra("Lon",longitude);
                 intent.putExtra("Add",address);
-
+                Log.d("TAG", "LAT:" + latitude + "/nLONG:" + longitude + "/nAddress" + address);
                 startActivity(intent);
             }
         });

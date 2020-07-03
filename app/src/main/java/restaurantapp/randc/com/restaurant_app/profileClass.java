@@ -96,8 +96,6 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         AddressView.setKeyListener(null);
         phnoView.setKeyListener(null);
         emailView.setKeyListener(null);
-        uid = user.getUid();
-        main_collection = user.getDisplayName();
         gmaps.setVisibility(View.GONE);
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
         height = (int) ((width*2)/3.0);
@@ -110,11 +108,15 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
             uid = getIntent().getStringExtra("uid");
             main_collection = "Restaurant";
         }
-        if(getIntent().getStringExtra("what").equals("ongoingItem"))
+        if(getIntent().getStringExtra("From").equals("ongoingItem"))
         {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "NGO";
+        }
+        if(getIntent().getStringExtra("From").equals("Navigation")) {
+            uid = user.getUid();
+            main_collection = user.getDisplayName();
         }
 
         updateDetails();

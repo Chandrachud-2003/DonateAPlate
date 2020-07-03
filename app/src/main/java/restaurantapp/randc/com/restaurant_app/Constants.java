@@ -14,8 +14,8 @@ public class Constants {
     public static final String fruitPref = "Fruits";
     public static final String vegetablePref = "Vegetables";
     public static final String dishesPref = "Dishes";
-
     public static final String userIdPref = "UID";
+
     public static final String item_fire = "Items";
     public static final String orderName_fire = "Orders";
     public static final String fruitName_fire = "Fruits";
@@ -28,7 +28,6 @@ public class Constants {
 
     public static final String order_list_fire = "Order List";
     public static final String order_list_field = "Order Ids";
-    public static final String ongoing_fire = "Ongoing Donations";
     public static final String order_id_num = "order_array";
     public static final String rest_fire = "Restaurant";
     public static final String ngo_fire = "NGO";
@@ -48,6 +47,7 @@ public class Constants {
     public static final String isGrains_intent = "isGrains";
     public static final String address_intent = "Address";
 
+    public static final String ngo_ongoing_list_fire = "Ongoing List";
 
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002;

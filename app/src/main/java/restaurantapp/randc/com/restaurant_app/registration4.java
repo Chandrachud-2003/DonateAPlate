@@ -116,6 +116,7 @@ public class registration4 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.setMessage("Creating Account...");
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
 
 
@@ -157,20 +158,25 @@ public class registration4 extends AppCompatActivity {
                                     note.put("Location",location);
                                     note.put("Address",getIntent().getStringExtra("Add"));
                                     note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
-
+                                    ArrayList<String> ngoOngoingList=new ArrayList<>();
                                     ArrayList<Boolean> orderArray=new ArrayList<>();
                                     for (int i=0;i<=4;i++)
                                     {
                                         orderArray.add(false);
                                     }
-                                    note.put(Constants.order_id_num,orderArray);
-                                    if(sharedPreferences.getString("rType",null).equals("NGO"))
-                                        note.put("Url","https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultNGO.png?alt=media&token=b0de6cb2-bce8-4c5e-9441-e1edadf3cbdf");
-                                    else if (sharedPreferences.getString("rType",null).equals("Restaurant"))
-                                        note.put("Url","https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultRestaurant.png?alt=media&token=31a9b9ce-03da-4e09-9128-b69c14c59322");
-                                    else
-                                        note.put("Url","https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/default_induvidual.png?alt=media&token=c618b327-8dfd-458f-84a1-19b8023436b2");
-                                    note.put("Ongoing Donations",0);
+
+                                    if(sharedPreferences.getString("rType",null).equals("NGO")) {
+                                        note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultNGO.png?alt=media&token=b0de6cb2-bce8-4c5e-9441-e1edadf3cbdf");
+                                        note.put(Constants.ngo_ongoing_list_fire,ngoOngoingList);
+                                    }
+                                    else if (sharedPreferences.getString("rType",null).equals("Restaurant")) {
+                                        note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultRestaurant.png?alt=media&token=31a9b9ce-03da-4e09-9128-b69c14c59322");
+                                        note.put(Constants.order_id_num,orderArray);
+                                    }
+                                    else {
+                                        note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/default_induvidual.png?alt=media&token=c618b327-8dfd-458f-84a1-19b8023436b2");
+                                        note.put(Constants.order_id_num, orderArray);
+                                    }
                                     if(sharedPreferences.getString("rType",null).equals("Individual")||sharedPreferences.getString("rType",null).equals("Restaurant"))
                                         note.put("Type",typeSpinner.getSelectedItem().toString());
                                     else
