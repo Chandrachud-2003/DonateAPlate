@@ -26,6 +26,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import me.ibrahimsn.lib.SmoothBottomBar;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,6 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.auth.User;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
@@ -73,22 +75,16 @@ public class Main_Activity extends AppCompatActivity {
 
     private LinearLayout searchBarLayout;
     private Button settingsButton;
-
     private  RecyclerView filterView;
-
-    private Button logoutButton;
-
     private ArrayList<filterItem> filterItemList;
-
     private RecyclerView.LayoutManager RecyclerViewLayoutManager;
-
     private LinearLayoutManager HorizontalLayout;
-
     private RecyclerView searchRecycler;
     private ArrayList<searchItem> searchList;
     private searchAdapter searchAdapter;
-    private LinearLayoutManager verticalLayout;
 
+
+    private LinearLayoutManager verticalLayout;
     private  RecyclerView mainRecycler;
     private MainAdapter mainAdapter;
     private ArrayList<MainItem> mainItems;
@@ -98,15 +94,15 @@ public class Main_Activity extends AppCompatActivity {
     private int currentPage = PAGE_START;
 
     private NestedScrollView nestedScrollView;
-
+    private Button logoutButton;
     private boolean atBottom;
-
     private AVLoadingIndicatorView mainRecyclerLoader;
     private String MyUID;
     private ArrayList<String> orderIds;
     private FirebaseFirestore db ;
     private double currectLat;
     private double currentLon;
+
     private String tempName;
     private String tempType;
     private double tempLat;
@@ -116,19 +112,19 @@ public class Main_Activity extends AppCompatActivity {
     private boolean tempVeg;
     private String tempTotalWeight;
     private boolean tempMeat;
-    private CustomSmoothViewPager ongoingRecycler;
-    private CustomSmoothViewPager requestedRecycler;
     private String tempUrl;
     private boolean tempGrain;
-    private TextView nodonations;
     private boolean tempDairy;
+
+
+    private CustomSmoothViewPager ongoingRecycler;
+    private CustomSmoothViewPager requestedRecycler;
+    private TextView nodonations;
     private   DatabaseReference rootRef;
     private ArrayList<Boolean> allOrderNum;
     private String dis;
     private ArrayList<OngoingItems> ongoingItems;
-    //temp
     private ArrayList<OngoingItems> requestedItems;
-    //
     private ArrayList<String> currentOrderIds;
 
 
@@ -146,6 +142,7 @@ public class Main_Activity extends AppCompatActivity {
         currentLon=0.0;
         searchBarLayout = findViewById(R.id.searchBarLayout);
         nestedScrollView = findViewById(R.id.mainNestedScrollView);
+
         db = FirebaseFirestore.getInstance();
         filterView = findViewById(R.id.filterView);
         menuButton = findViewById(R.id.menuButton);
@@ -228,15 +225,16 @@ public class Main_Activity extends AppCompatActivity {
       //      searchList = new ArrayList<>();
 
             getOrderIDS();
+
             Log.d("TAG", "run: listIntitialPos: " + TOTAL_PAGES);
             getDeviceLocation();
-//            searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
-//            searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
-//            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
-//            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
-     //       searchAdapter = new searchAdapter(searchList, Main_Activity.this);
-            // searchRecycler.setLayoutManager(verticalLayout);
-            // searchRecycler.setAdapter(searchAdapter);
+/*            searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
+            searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
+            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 1", R.drawable.ngo1));
+            searchList.add(new searchItem("Bangalore", "NGO", "Ngo 2", R.drawable.ngo2));
+            searchAdapter = new searchAdapter(searchList, Main_Activity.this);
+             searchRecycler.setLayoutManager(verticalLayout);
+             searchRecycler.setAdapter(searchAdapter);*/
 
 
             verticalLayout = new LinearLayoutManager(
@@ -281,11 +279,6 @@ public class Main_Activity extends AppCompatActivity {
                             }
                         }
                     });
-
-
-            RecyclerViewLayoutManager
-                    = new LinearLayoutManager(
-                    getApplicationContext());
 
 /*            filterItemList = new ArrayList<filterItem>();
 
@@ -365,6 +358,8 @@ public class Main_Activity extends AppCompatActivity {
 
 
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -691,7 +686,7 @@ public class Main_Activity extends AppCompatActivity {
                                                         tempTotalWeight = snapshot.getValue().toString();
 
                                                         Log.d("CHECK", "TEMP WEIGHT:" + tempTotalWeight);
-                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                                       mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
                                                         retriever(i + 1, max, check, intitialPos);
                                                     }
 
@@ -731,6 +726,7 @@ public class Main_Activity extends AppCompatActivity {
         else {
             if (!check) {
 
+
                 mainAdapter = new MainAdapter(Main_Activity.this, mainItems);
                 mainRecycler.setLayoutManager(verticalLayout);
                 mainRecycler.setAdapter(mainAdapter);
@@ -746,7 +742,6 @@ public class Main_Activity extends AppCompatActivity {
             }
         }
         }
-
 
     private void loadNextPage() {
 
@@ -781,12 +776,10 @@ public class Main_Activity extends AppCompatActivity {
     private void getOrderIDS()
     {
         orderIds = new ArrayList<>();
-
         db.collection(Constants.orderName_fire).document(Constants.order_list_fire)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-
                 if (documentSnapshot.exists())
                 {
                     orderIds = (ArrayList) documentSnapshot.get(Constants.order_list_field);
@@ -800,19 +793,11 @@ public class Main_Activity extends AppCompatActivity {
                         mainRecyclerLoader.setVisibility(View.GONE);
                         nodonations.setVisibility(View.VISIBLE);
                     }
-
-
                 }
-
             }
         });
-
-
-
-
-
-
     }
+
     private void getDeviceLocation(){
         Log.d("TAG", "getDeviceLocation: getting the devices current location");
 

@@ -77,6 +77,8 @@ public class loginpage extends AppCompatActivity {
                     passwordView.setError("Enter Password");
                 }
                 else {
+                    Toast.makeText(loginpage.this, "Logging in...",
+                            Toast.LENGTH_SHORT).show();
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -84,8 +86,6 @@ public class loginpage extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d("TAG", "signInWithEmail:success");
-                                        Toast.makeText(loginpage.this, "Logging in...",
-                                                Toast.LENGTH_SHORT).show();
                                         FirebaseAuth auth = mAuth.getInstance();
 
                                         //getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE).edit().putString(Constants.userIdPref, mAuth.getUid()).apply();
@@ -105,7 +105,7 @@ public class loginpage extends AppCompatActivity {
                                         // If sign in fails, display a message to the user.
                                         Log.w("TAG", "signInWithEmail:failure", task.getException());
                                         Toast.makeText(loginpage.this, "Incorrect username or password.",
-                                                Toast.LENGTH_SHORT).show();
+                                                Toast.LENGTH_LONG).show();
                                         //updateUI(null);
                                     }
 

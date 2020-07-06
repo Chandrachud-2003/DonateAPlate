@@ -283,32 +283,40 @@
         app:iconTintActive="@color/white"
         app:menu="@menu/menu_request"
         />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+
     <TextView
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/gilroy_extrabold"
         android:text="Donation"
-        android:textSize="21sp"
+        android:textSize="20sp"
         android:id="@+id/donatetext"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="@+id/bubbleRequestBar"
         app:layout_constraintBottom_toBottomOf="@+id/bubbleRequestBar"
         app:layout_constraintStart_toStartOf="@id/bubbleRequestBar"
-        android:layout_marginStart="50dp"/>
+        app:layout_constraintEnd_toEndOf="@+id/guideline1"/>
     <TextView
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/gilroy_extrabold"
         android:text="Requests"
-        android:textSize="21sp"
+        android:textSize="20sp"
         android:textColor="@color/black"
         android:id="@+id/requeststext"
         app:layout_constraintTop_toTopOf="@+id/bubbleRequestBar"
         app:layout_constraintBottom_toBottomOf="@+id/bubbleRequestBar"
         app:layout_constraintEnd_toEndOf="@id/bubbleRequestBar"
-        android:layout_marginEnd="50dp"/>
+        app:layout_constraintStart_toStartOf="@+id/guideline1"/>
 
     <me.ibrahimsn.lib.SmoothBottomBar
         android:id="@+id/bubbleBottomSheetBar"
@@ -339,7 +347,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="21sp"
+        android:textSize="20sp"
         android:text="Fruits Summary"
         android:fontFamily="@font/gilroy_extrabold"
         app:layout_constraintTop_toBottomOf="@id/bubbleBottomSheetBar"
