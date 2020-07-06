@@ -62,6 +62,10 @@ public class Main_Activity extends AppCompatActivity {
     private static final int POS_PLUS = 2;
     private static final int POS_PROFILE = 3;
 
+    private TextView donationtxt;
+    private TextView ongiongtxt;
+    private TextView pendingtxt;
+
     private String[] screenTitles;
     private Drawable[] screenIcons;
 
@@ -128,6 +132,9 @@ public class Main_Activity extends AppCompatActivity {
     private ArrayList<String> currentOrderIds;
 
 
+    private int  requestsCount =0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +155,10 @@ public class Main_Activity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         MyUID = user.getUid();
         nodonations.setVisibility(View.GONE);
+        donationtxt = findViewById(R.id.nearbyText);
         mainRecyclerLoader = findViewById(R.id.mainRecycler_loader);
+        pendingtxt = findViewById(R.id.pendingDonationsHeading);
+        ongiongtxt = findViewById(R.id.ongoingDonationsHeading);
         mainRecyclerLoader.setVisibility(View.GONE);
         ongoingRecycler = findViewById(R.id.ongoingSmoolider);
         requestedRecycler = findViewById(R.id.requestSmoolider);
@@ -164,7 +174,11 @@ public class Main_Activity extends AppCompatActivity {
         if(user.getDisplayName().equals("Restaurant")) {
             ongoingRecycler.setVisibility(View.VISIBLE);
             ongoingRecycler.setPadding(150, 0, 150, 0);
-
+            requestedRecycler.setVisibility(View.VISIBLE);
+            requestedRecycler.setPadding(150, 0, 150, 0);
+            donationtxt.setVisibility(View.GONE);
+            ongiongtxt.setVisibility(View.VISIBLE);
+            pendingtxt.setVisibility(View.VISIBLE);
 
             db.collection(Constants.rest_fire).document(MyUID).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -206,6 +220,11 @@ public class Main_Activity extends AppCompatActivity {
         if(user.getDisplayName().equals("NGO")) {
             mainRecycler.setVisibility(View.VISIBLE);
             mainRecyclerLoader.setVisibility(View.VISIBLE);
+            ongiongtxt.setVisibility(View.GONE);
+            pendingtxt.setVisibility(View.GONE);
+            donationtxt.setVisibility(View.VISIBLE);
+            requestedRecycler.setVisibility(View.GONE);
+            ongoingRecycler.setVisibility(View.GONE);
       //      searchList = new ArrayList<>();
 
             getOrderIDS();
@@ -468,6 +487,7 @@ public class Main_Activity extends AppCompatActivity {
     public void myDonationsRetriever(int i, int num)
     {
         if (i < num) {
+            requestsCount = 0;
             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
@@ -475,39 +495,58 @@ public class Main_Activity extends AppCompatActivity {
 
                         Log.d("tag", "State:" + snapshotInfo.child("State").getValue().toString());
                         if (snapshotInfo.child("State").getValue().toString().equals("New")) {
-                            rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.requests_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshotFood) {
-                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
-                                    Log.d("tag", "Entered food");
-                                    if (snapshotFood.hasChild(Constants.dairyName_fire)) {
-                                        tempDairy = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.fruitName_fire)) {
-                                        tempFruit = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.vegName_fire)) {
-                                        tempVeg = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.meatName_fire)) {
-                                        tempMeat = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.grainsName_fire)) {
-                                        tempGrain = true;
-                                    }
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    if(snapshot.exists())
+                                        requestsCount = (int) snapshot.getChildrenCount();
+                                    else
+                                        requestsCount = 0;
+                                    rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshotFood) {
+                                            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
+                                            Log.d("tag", "Entered food");
+                                            if (snapshotFood.hasChild(Constants.dairyName_fire)) {
+                                                tempDairy = true;
+                                            }
+                                            if (snapshotFood.hasChild(Constants.fruitName_fire)) {
+                                                tempFruit = true;
+                                            }
+                                            if (snapshotFood.hasChild(Constants.vegName_fire)) {
+                                                tempVeg = true;
+                                            }
+                                            if (snapshotFood.hasChild(Constants.meatName_fire)) {
+                                                tempMeat = true;
+                                            }
+                                            if (snapshotFood.hasChild(Constants.grainsName_fire)) {
+                                                tempGrain = true;
+                                            }
 
 
-                                    requestedItems.add(new OngoingItems("", null, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, currentOrderIds.get(i), MyUID, ""));
-                                    myDonationsRetriever(i + 1, num);
+                                            requestedItems.add(new OngoingItems(requestsCount+" Requests", null, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, currentOrderIds.get(i), MyUID, ""));
+                                            myDonationsRetriever(i + 1, num);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Log.d("TAG", "onFailure: " + error.toString());
+                                        }
+
+                                    });
+
+
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.d("TAG", "onFailure: " + error.toString());
-                                }
 
+                                }
                             });
-                        } else if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")) {
+
+                                                    } else if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")) {
                             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshotFood) {

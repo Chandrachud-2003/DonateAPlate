@@ -109,9 +109,25 @@ public class RequestAdapter extends PagerAdapter{
                 .density;
 
         int width = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int height = (int) ((width * 2) / 5);
+        int height = (int) (((width)* 2) / 5);
+        char a = item.getOrderID().charAt(item.getOrderID().length()-1);
+        int res;
+        if(a=='1')
+           res = R.drawable.donation4;
+        else if(a=='2')
+            res = R.drawable.donation5;
+        else if(a=='3')
+            res = R.drawable.donation2;
+        else if(a=='4')
+            res = R.drawable.donation;
+        else
+            res = R.drawable.donation3;
 
-        picture.setImageDrawable(null);
+        Picasso.get()
+                .load(res)
+                .resize(width, height)
+                .centerInside()
+                .into(picture);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +157,8 @@ public class RequestAdapter extends PagerAdapter{
 
     @Override
     public void destroyItem (ViewGroup container,int position, Object object){
-        container.removeView((View) object);
+        Log.d("TAG", "destroyItem: entered, position: "+position+" Object: "+object.toString());
+        //container.removeView((View) object);
     }
 
     @Override

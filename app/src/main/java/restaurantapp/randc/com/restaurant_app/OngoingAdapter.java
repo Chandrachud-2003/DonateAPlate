@@ -149,7 +149,8 @@ public class OngoingAdapter extends PagerAdapter{
 
         @Override
         public void destroyItem (ViewGroup container,int position, Object object){
-            container.removeView((View) object);
+            Log.d("TAG", "destroyItem: entered, position: "+position+" Object: "+object.toString());
+            //container.removeView((View) object);
         }
 
         @Override

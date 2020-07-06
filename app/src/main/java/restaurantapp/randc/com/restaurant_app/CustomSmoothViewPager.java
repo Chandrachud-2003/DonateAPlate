@@ -2,6 +2,7 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -29,6 +30,7 @@ public class CustomSmoothViewPager extends SmoothViewpager {
             int h = child.getMeasuredHeight();
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY);
         }
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 

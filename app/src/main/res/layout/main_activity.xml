@@ -230,9 +230,25 @@
 
 
             />
+
+        <TextView
+            android:id="@+id/pendingDonationsHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue"
+            android:textSize="23sp"
+            android:fontFamily="@font/gilroy_extrabold"
+            android:text="Pending Donations"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchBarLayout"
+            android:layout_marginTop="20dp"
+
+            />
+
         <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
             android:id="@+id/requestSmoolider"
-            app:layout_constraintTop_toBottomOf="@+id/nearbyText"
+            app:layout_constraintTop_toBottomOf="@+id/pendingDonationsHeading"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"
@@ -245,9 +261,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <TextView
+            android:id="@+id/ongoingDonationsHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue"
+            android:textSize="23sp"
+            android:fontFamily="@font/gilroy_extrabold"
+            android:text="Ongoing Donations"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/requestSmoolider"
+            android:layout_marginTop="20dp"
+
+            />
+
         <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
             android:id="@+id/ongoingSmoolider"
-            app:layout_constraintTop_toBottomOf="@+id/requestSmoolider"
+            app:layout_constraintTop_toBottomOf="@+id/ongoingDonationsHeading"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"
