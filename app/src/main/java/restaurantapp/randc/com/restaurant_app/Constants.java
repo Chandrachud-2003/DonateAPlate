@@ -55,6 +55,11 @@ public class Constants {
 
     public static final String requests_fire = "Requests";
 
+    public static final String notifications = "Notifications";
+    public static final String notify_fire = "ToNotify";
+
+    public static final String workManager_tag = "WorkManager-Restaurant-App";
+
 
 
 

@@ -331,7 +331,7 @@
             android:text="Ongoing Donations"
             android:layout_marginLeft="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/requestSmoolider"
+            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
             android:layout_marginTop="20dp"
 
             />

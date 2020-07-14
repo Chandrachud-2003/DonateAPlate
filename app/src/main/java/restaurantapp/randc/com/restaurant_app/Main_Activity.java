@@ -26,6 +26,12 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+
+import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
 
 
@@ -53,6 +59,7 @@ import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class Main_Activity extends AppCompatActivity {
 
@@ -130,6 +137,14 @@ public class Main_Activity extends AppCompatActivity {
 
     private int  requestsCount =0;
 
+    private SmoothBottomBar switchBar;
+
+    private int currentSwitchBarPos;
+
+    private ArrayList<String> ongoingItems_NGO;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,11 +179,21 @@ public class Main_Activity extends AppCompatActivity {
         ongoingItems = new ArrayList<>();
         requestedItems = new ArrayList<>();
         rootRef = FirebaseDatabase.getInstance().getReference();
-        //  searchRecycler = findViewById(R.id.searchRecycler);
+        switchBar = findViewById(R.id.SwitchBar);
+        currentSwitchBarPos = 0;
+
+
+        PeriodicWorkRequest.Builder periodicWorkRequest =
+                new PeriodicWorkRequest.Builder(BackgroundWork.class, 15,
+                        TimeUnit.MINUTES);
+        PeriodicWorkRequest periodicWork = periodicWorkRequest.build();
+        WorkManager instance = WorkManager.getInstance();
+        instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE , periodicWork);
 
 
 
         if(user.getDisplayName().equals("Restaurant")) {
+            switchBar.setVisibility(View.GONE);
             ongoingRecycler.setVisibility(View.VISIBLE);
             ongoingRecycler.setPadding(150, 0, 150, 0);
             requestedRecycler.setVisibility(View.VISIBLE);
@@ -215,6 +240,9 @@ public class Main_Activity extends AppCompatActivity {
 
 
         if(user.getDisplayName().equals("NGO")) {
+            switchBar.setVisibility(View.VISIBLE);
+            switchBar.setItemActiveIndex(0);
+            currentSwitchBarPos = 0;
             mainRecycler.setVisibility(View.VISIBLE);
             mainRecyclerLoader.setVisibility(View.VISIBLE);
             ongiongtxt.setVisibility(View.GONE);
@@ -302,6 +330,54 @@ public class Main_Activity extends AppCompatActivity {
 
             // Set adapter on recycler view
             filterView.setAdapter(filterAdapter1);*/
+
+            switchBar.setOnItemSelectedListener(new OnItemSelectedListener() {
+                @Override
+                public boolean onItemSelect(int i) {
+                    if (i==0 && currentSwitchBarPos!=i)
+                    {
+                        currentSwitchBarPos =i;
+                        getOrderIDS();
+                        ongoingRecycler.setVisibility(View.GONE);
+
+                    }
+                    else if (i==1 && currentSwitchBarPos!=i)
+                    {
+                        currentSwitchBarPos = i;
+
+                        ongoingRecycler.setVisibility(View.VISIBLE);
+                        ongoingRecycler.setPadding(150, 0, 150, 0);
+
+                        nodonations.setVisibility(View.GONE);
+
+
+                        db.collection(Constants.ngo_fire).document(MyUID).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        if (documentSnapshot.exists()) {
+
+                                            ongoingItems_NGO = (ArrayList) documentSnapshot.get(Constants.ngo_ongoing_list_fire);
+
+                                            Log.d("tag", "Current IDS:" + currentOrderIds);
+
+                                            myDonationsRetriever_NGO(0,ongoingItems_NGO.size());
+
+                                        }
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                                Log.d("TAG", "onFailure: " + e.toString());
+                            }
+                        });
+                    }
+
+                    return  true;
+                }
+            });
         }
 
         slidingRootNav = new SlidingRootNavBuilder(this)
@@ -617,6 +693,95 @@ public class Main_Activity extends AppCompatActivity {
             requestedRecycler.setAdapter(new RequestAdapter(requestedItems,Main_Activity.this));
         }
     }
+
+    public void myDonationsRetriever_NGO(int i, int num)
+    {
+        if (i < num) {
+            requestsCount = 0;
+            rootRef.child(Constants.orderName_fire).child(ongoingItems_NGO.get(i)).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
+                    if(snapshotInfo.exists()) {
+
+                        Log.d("tag", "State:" + snapshotInfo.child("State").getValue().toString());
+                        if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")) {
+                            rootRef.child(Constants.orderName_fire).child(ongoingItems_NGO.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshotFood) {
+                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
+                                    Log.d("tag", "Entered food");
+                                    if (snapshotFood.hasChild(Constants.dairyName_fire)) {
+                                        tempDairy = true;
+                                    }
+                                    if (snapshotFood.hasChild(Constants.fruitName_fire)) {
+                                        tempFruit = true;
+                                    }
+                                    if (snapshotFood.hasChild(Constants.vegName_fire)) {
+                                        tempVeg = true;
+                                    }
+                                    if (snapshotFood.hasChild(Constants.meatName_fire)) {
+                                        tempMeat = true;
+                                    }
+                                    if (snapshotFood.hasChild(Constants.grainsName_fire)) {
+                                        tempGrain = true;
+                                    }
+                                    String restUid = ongoingItems_NGO.get(i);
+                                    final String rUid=restUid.substring(0, restUid.indexOf('-'));
+                                    Log.d("tag", "NGO ID:" + rUid);
+                                    db.collection(Constants.rest_fire).document(
+                                            rUid).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    if (documentSnapshot.exists()) {
+                                                        Log.d("tag", "entered NGO");
+                                                        String name = documentSnapshot.get("Name").toString();
+                                                        String url = documentSnapshot.get("Url").toString();
+                                                        String address = documentSnapshot.get("Address").toString();
+                                                        ongoingItems.add(new OngoingItems(name, url, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, ongoingItems_NGO.get(i), rUid, address));
+                                                        myDonationsRetriever_NGO(i + 1, num);
+                                                    }
+                                                }
+
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d("TAG", "onFailure: " + e.toString());
+
+                                        }
+                                    });
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.d("TAG", "onFailure: " + error.toString());
+                                }
+                            });
+
+
+                        }
+                    }
+                    else
+                        myDonationsRetriever_NGO(i + 1, num);
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("TAG", "onFailure: " + error.toString());
+                }
+            });
+        }
+        else
+        {
+            ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
+        }
+    }
+
+
 
 
     public void retriever(int i, int max, boolean check, int intitialPos) {

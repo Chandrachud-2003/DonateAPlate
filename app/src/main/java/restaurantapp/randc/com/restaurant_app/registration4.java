@@ -140,8 +140,8 @@ public class registration4 extends AppCompatActivity {
                                     // FirebaseDatabase.
 //                                  FirebaseUser user = mAuth.getCurrentUser();
                                     user = mAuth.getCurrentUser();
-//SEND VERIFICATION MAIL
-              /*  user.sendEmailVerification()
+                        //SEND VERIFICATION MAIL
+                    /*  user.sendEmailVerification()
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
