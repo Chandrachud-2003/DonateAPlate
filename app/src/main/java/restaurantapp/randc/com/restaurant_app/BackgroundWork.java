@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,9 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+
 public class BackgroundWork extends Worker {
 
-    private int count;
+
     int notificationId=1001;
     private String uid;
     private DatabaseReference mDatabaseReference;
@@ -38,6 +42,7 @@ public class BackgroundWork extends Worker {
     @Override
     public Result doWork() {
 
+        notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         if (uid!=null && uid.length()>0)
         {
             mDatabaseReference.child(Constants.notifications).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -50,18 +55,15 @@ public class BackgroundWork extends Worker {
                         if (notify)
                         {
                             showNotification(true);
-
                         }
 
                         else {
-
                             showNotification(false);
                         }
                     }
 
                     else {
                         showNotification(false);
-
                     }
 
                 }
@@ -93,45 +95,54 @@ public class BackgroundWork extends Worker {
 
         if (success)
         {
-            mBuilder.setContentText("You have new notifications");
 
+            mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d("TAG", "doInBackground: getting requests");
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                            mBuilder.setContentText(snapshot.getValue().toString());
+                            NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+                            if (manager != null) {
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    String channelId = "Restaurant App";
+                                    NotificationChannel channel = new NotificationChannel(
+                                            channelId,
+                                            "Background Task",
+                                            NotificationManager.IMPORTANCE_HIGH);
+                                    manager.createNotificationChannel(channel);
+                                    mBuilder.setChannelId(channelId);
+                                }
+
+
+                                manager.notify(notificationId, mBuilder.build());
+                                notificationId++;
+                                Log.d("TAG", "doWork: notification sent");
+                            } else {
+                                Log.d("TAG", "doWork: manager is null");
+
+                            }
+                        }
+                    }
+                    mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(false);
+                    mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).removeValue();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+                });
 
         }
-
-        else {
-
-            mBuilder.setContentText("No New Notifications");
-
-
+        else
+        {
+            Log.d("tag","No notifications");
         }
-
-        NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (manager != null) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            {
-                String channelId = "Restaurant App";
-                NotificationChannel channel = new NotificationChannel(
-                        channelId,
-                        "Background Task",
-                        NotificationManager.IMPORTANCE_HIGH);
-                manager.createNotificationChannel(channel);
-                mBuilder.setChannelId(channelId);
-            }
-
-
-            manager.notify(1001, mBuilder.build());
-            Log.d("TAG", "doWork: work finished");
-        }
-        else {
-            Log.d("TAG", "doWork: manager is null");
-
-        }
-
-
-
-
     }
 
 

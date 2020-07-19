@@ -2,6 +2,9 @@ package restaurantapp.randc.com.restaurant_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 
 import android.app.ProgressDialog;
@@ -25,6 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -33,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class registration4 extends AppCompatActivity {
     private Button next_button;
@@ -44,6 +50,7 @@ public class registration4 extends AppCompatActivity {
     private TextView titleView;
     private TextView question1View;
     private ToggleSwitch freqToggle;
+    private DatabaseReference mDatabaseReference;
     private ProgressDialog dialog;
     private  String freq;
     @Override
@@ -51,6 +58,7 @@ public class registration4 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration4);
         mAuth = FirebaseAuth.getInstance();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         titleView = findViewById(R.id.titleView);
         typeSpinner = findViewById(R.id.spinner3);
         freqToggle = findViewById(R.id.toggle);
@@ -130,7 +138,7 @@ public class registration4 extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d("TAG", "createUserWithEmail:success");
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    user = FirebaseAuth.getInstance().getCurrentUser();
 
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(sharedPreferences.getString("rType","ERROR")).build();
@@ -190,7 +198,17 @@ public class registration4 extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
+
                                                     Toast.makeText(registration4.this, "Account Created!", Toast.LENGTH_SHORT).show();
+
+
+                                                    PeriodicWorkRequest.Builder periodicWorkRequest =
+                                                            new PeriodicWorkRequest.Builder(BackgroundWork.class, 15,
+                                                                    TimeUnit.MINUTES);
+                                                    PeriodicWorkRequest periodicWork = periodicWorkRequest.build();
+                                                    WorkManager instance = WorkManager.getInstance();
+                                                    instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE , periodicWork);
+
 
                                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                                     editor.remove("rEmail");

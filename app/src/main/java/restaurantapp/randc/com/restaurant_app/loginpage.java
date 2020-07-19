@@ -2,6 +2,9 @@ package restaurantapp.randc.com.restaurant_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.TimeUnit;
 
 public class loginpage extends AppCompatActivity {
 
@@ -89,6 +93,16 @@ public class loginpage extends AppCompatActivity {
                                         FirebaseAuth auth = mAuth.getInstance();
 
                                         //getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE).edit().putString(Constants.userIdPref, mAuth.getUid()).apply();
+
+
+                                        PeriodicWorkRequest.Builder periodicWorkRequest =
+                                                new PeriodicWorkRequest.Builder(BackgroundWork.class, 15,
+                                                        TimeUnit.MINUTES);
+                                        PeriodicWorkRequest periodicWork = periodicWorkRequest.build();
+                                        WorkManager instance = WorkManager.getInstance();
+                                        instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE , periodicWork);
+
+
 
                                         Handler handler = new Handler();
                                         handler.postDelayed(new Runnable() {

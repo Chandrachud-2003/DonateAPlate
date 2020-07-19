@@ -189,14 +189,6 @@ public class Main_Activity extends AppCompatActivity {
         currentSwitchBarPos = 0;
 
 
-        PeriodicWorkRequest.Builder periodicWorkRequest =
-                new PeriodicWorkRequest.Builder(BackgroundWork.class, 15,
-                        TimeUnit.MINUTES);
-        PeriodicWorkRequest periodicWork = periodicWorkRequest.build();
-        WorkManager instance = WorkManager.getInstance();
-        instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE , periodicWork);
-
-
 
         if(user.getDisplayName().equals("Restaurant")) {
             switchBar.setVisibility(View.GONE);

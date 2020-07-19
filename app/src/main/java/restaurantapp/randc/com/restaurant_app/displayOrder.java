@@ -640,6 +640,9 @@ public class displayOrder extends AppCompatActivity {
                                                                 requestArrow.setImageResource(R.drawable.tick_white);
                                                                 requestText.setText("Requested");
                                                                 requestButton.setClickable(false);
+
+                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("You have requests for your donation!");
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
