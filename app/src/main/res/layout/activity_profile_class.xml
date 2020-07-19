@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
 
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetScroll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".profileClass"
-
-
     >
-
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".profileClass">
+        android:background="@color/white"
+        tools:context=".profileClass"
+      >
 
 
 
         <ImageView
             android:id="@+id/profilePic"
             android:layout_width="match_parent"
-            android:layout_height="275dp"
+            android:layout_height="300dp"
             android:scaleType="centerCrop"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/white" />
+            app:srcCompat="@color/lightBlue" />
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,59 +43,34 @@
             android:visibility="gone"
             android:id="@+id/editPicture"
             />
-        <View
-            android:id="@+id/divider"
-            android:layout_width="409dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="35dp"
-            android:background="?android:attr/listDivider"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profilePic" />
-
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="409dp"
-            android:layout_height="1dp"
-            android:layout_marginBottom="35dp"
-            android:background="?android:attr/listDivider"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/profilePic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.6"
-            app:layout_constraintStart_toStartOf="parent" />
 
 
-        <ImageButton
-            android:layout_width="24dp"
-            android:layout_height="35dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/gmaps"
-            android:background="@color/colorTransparent"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginEnd="40dp"
-            android:id="@+id/gmaps"
 
-            />
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/profilePic">
+            android:background="@drawable/profileclassbg"
+                >
 
 
             <EditText
                 android:id="@+id/nameView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Loading.."
+                android:layout_marginStart="30dp"
+
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/average_sans"
+                android:text="Pizza Hut"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textSize="28sp"
                 android:background="@null"
                 android:clickable="false"
                 />
@@ -101,63 +78,30 @@
             <TextView
                 android:id="@+id/type"
                 android:layout_width="wrap_content"
+                android:fontFamily="@font/average_sans"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="5sp"
-                android:text=""
-                android:textSize="18sp"
+                android:text="Italian"
+                android:textSize="22sp"
 
                 />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
 
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5sp"
-                    android:text="0"
-                    android:textColor="@color/black"
-                    android:textSize="40dp"
-                    android:textStyle="bold"
-
-
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5sp"
-                    android:layout_marginBottom="10dp"
-                    android:text="points"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-
-
-                    />
-
-            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="45dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center_horizontal"
                     android:layout_alignParentStart="true"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="30dp"
 
                     >
@@ -165,13 +109,14 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/icons8_clock"
+                        android:src="@drawable/truck_icon_yellow"
                         android:layout_gravity="center"
                         />
                     <TextView
+                        android:id="@+id/distanceText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="10pm to 11pm"
+                        android:text="0 Kilometers"
                         android:textSize="15dp"
                         android:layout_gravity="center"
                         android:gravity="center"
@@ -184,16 +129,42 @@
 
 
                 </LinearLayout>
-
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
+
+
+                    >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/points_icon" />
+
+                <TextView
+                    android:id="@+id/pointsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0 Points"
+                    android:textSize="15dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="5dp"
+                    />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="45dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
 
                     >
 
@@ -204,6 +175,7 @@
                         android:src="@drawable/icons8_order_profile" />
 
                     <TextView
+                        android:id="@+id/numberofdonationText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="No Donations"
@@ -231,17 +203,19 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="30dp"
                 android:layout_marginBottom="20dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="45dp"
                 android:layout_marginRight="30dp"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Your Details"
+                    android:fontFamily="@font/average_sans"
+                    android:text="Details"
                     android:textColor="@color/black"
-                    android:textSize="20dp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
 
@@ -249,20 +223,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/average_sans"
                         android:text="Email"
                         android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textSize="22sp" />
 
                     <EditText
                         android:id="@+id/emailView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="@font/average_sans"
                         android:paddingTop="10dp"
                         android:text="Loading.."
                         android:clickable="false"
@@ -271,76 +248,63 @@
                         android:background="@null"/>
 
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/grey" />
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="25dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/average_sans"
                         android:text="Phone"
                         android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textSize="22sp" />
 
                     <EditText
                         android:id="@+id/phoneView"
                         android:inputType="phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="@font/average_sans"
                         android:paddingTop="10dp"
                         android:clickable="false"
                         android:background="@null"
                         android:text="Loading.."
                         android:textColor="#000000"
                         android:textSize="18sp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/grey" />
+
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="25dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/average_sans"
                         android:text="Address"
                         android:textColor="@color/headings"
-                        android:textSize="13sp" />
+                        android:textSize="22sp" />
 
                     <EditText
                         android:id="@+id/addressView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="@font/average_sans"
                         android:layout_marginTop="10dp"
                         android:text="Loading.."
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:background="@null"/>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/grey" />
 
                 </LinearLayout>
 
@@ -366,6 +330,7 @@
 
 
         </LinearLayout>
+
 
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fabfab"
@@ -434,6 +399,41 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginBottom="40dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePic" />
 
-</ScrollView>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/gmap_icon"
+        android:background="@color/colorTransparent"
+        app:layout_constraintTop_toBottomOf="@id/divider2"
+        android:layout_marginTop="25dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="40dp"
+        android:id="@+id/gmaps"
+
+        />
+    <TextView
+        app:layout_constraintTop_toBottomOf="@+id/gmaps"
+        app:layout_constraintStart_toStartOf="@+id/gmaps"
+        app:layout_constraintEnd_toEndOf="@+id/gmaps"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/average_sans"
+        android:layout_height="wrap_content"
+        android:text="Open with GMaps"
+        android:textSize="12sp"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+

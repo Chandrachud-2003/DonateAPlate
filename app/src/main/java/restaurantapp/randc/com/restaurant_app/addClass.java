@@ -88,7 +88,7 @@ public class addClass extends AppCompatActivity {
     private float totalDairyWeight=0.0f;
 
     private ArrayList<categoryItem> dairyList;
-    private ProgressDialog dialog;
+    private ProgressDialog progressdialog;
 
 
 
@@ -116,7 +116,7 @@ public class addClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_activity);
 
-        dialog = new ProgressDialog(addClass.this);
+        progressdialog = new ProgressDialog(addClass.this);
 // ...
         mDatabase = FirebaseDatabase.getInstance().getReference();
         selectCategory = findViewById(R.id.categorySelectView);
@@ -257,8 +257,8 @@ public class addClass extends AppCompatActivity {
                     editor.remove(Constants.grainsPref);
                     editor.remove(Constants.grainsPref+"weights");
                     editor.apply();
-                    dialog.setMessage("Adding Donation...");
-                    dialog.show();
+                    progressdialog.setMessage("Adding Donation...");
+                    progressdialog.show();
                     String uid = auth.getUid();
                     addToFirebase(uid);
 
@@ -598,17 +598,17 @@ public class addClass extends AppCompatActivity {
 
 
                            }
-                           else
-                               Toast.makeText(getBaseContext(),"LIMIT OF 5 DONATIONS REACHED",Toast.LENGTH_LONG).show();
-                                dialog.dismiss();
-
+                           else {
+                               Toast.makeText(getBaseContext(), "LIMIT OF 5 DONATIONS REACHED", Toast.LENGTH_LONG).show();
+                               progressdialog.dismiss();
+                           }
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        dialog.dismiss();
+                        progressdialog.dismiss();
                         Log.d("TAG", e.toString());
                     }
                 });
@@ -675,7 +675,7 @@ public class addClass extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Donation Added", Toast.LENGTH_SHORT).show();
 
 
-                        dialog.dismiss();
+                        progressdialog.dismiss();
 
 
                         Intent intent = new Intent(addClass.this, Main_Activity.class);

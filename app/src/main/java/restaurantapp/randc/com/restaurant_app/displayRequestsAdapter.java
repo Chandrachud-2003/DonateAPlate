@@ -2,6 +2,7 @@ package restaurantapp.randc.com.restaurant_app;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -33,11 +34,13 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
 
     private Context mContext;
     private ArrayList<displayRequestsItem> list;
+    private ProgressDialog dialog;
 
     // RecyclerView recyclerView;
     public displayRequestsAdapter(Context context, ArrayList<displayRequestsItem> list) {
         this.list = list;
         this.mContext = context;
+        dialog = new ProgressDialog(context);
     }
 
     @Override
@@ -68,6 +71,8 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.setMessage("Accepting Donation Request...");
+                dialog.show();
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Map<String, Object> infoMap = new HashMap<>();
@@ -88,6 +93,7 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
                                                                 Log.d(Constants.tag, "Accept Success");
+                                                                dialog.dismiss();
                                                                 Toast.makeText(mContext, "Request Accepted", Toast.LENGTH_SHORT).show();
                                                                 Intent intent = new Intent((Activity)mContext, Main_Activity.class);
                                                                 mContext.startActivity(intent);
@@ -96,6 +102,7 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
                                                         .addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
+                                                                dialog.dismiss();
                                                                 Log.d(Constants.tag, "error: " + e + " add");
                                                                 Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                                                             }
@@ -105,6 +112,7 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                dialog.dismiss();
                                                 Log.d(Constants.tag, "error: " + e + " add");
                                                 Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                                             }
@@ -115,6 +123,7 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                dialog.dismiss();
                                 Log.d(Constants.tag, "error: " + e + " add");
                                 Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                             }

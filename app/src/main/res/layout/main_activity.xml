@@ -171,21 +171,6 @@
             />
 
         <TextView
-            android:id="@+id/nearbyText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Donations"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/searchBarLayout"
-            android:layout_marginLeft="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="20dp"
-
-            />
-        <TextView
             android:id="@+id/no_donations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -196,7 +181,7 @@
             android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nearbyText"
+            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
   android:layout_marginTop="65dp"
             android:visibility="gone"
 
@@ -210,12 +195,11 @@
             android:background="@color/colorTransparent"
             android:scrollbars="none"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/nearbyText"
+            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_goneMarginTop="70dp"
-
             />
+
 
 
         <com.wang.avi.AVLoadingIndicatorView
@@ -304,7 +288,23 @@
             android:layout_marginTop="20dp"
 
             />
+        <TextView
+            android:id="@+id/no_pending_donations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No pending donations"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pendingDonationsHeading"
+            android:layout_marginTop="65dp"
+            android:visibility="gone"
 
+
+            />
         <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
             android:id="@+id/requestSmoolider"
             app:layout_constraintTop_toBottomOf="@+id/pendingDonationsHeading"
@@ -331,8 +331,9 @@
             android:text="Ongoing Donations"
             android:layout_marginLeft="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
+            app:layout_constraintTop_toBottomOf="@id/requestSmoolider"
             android:layout_marginTop="20dp"
+            app:layout_goneMarginTop="130dp"
 
             />
 
@@ -347,10 +348,27 @@
             android:layout_alignParentBottom="true"
             android:visibility="gone"
             android:clipToPadding = "false"
+            app:layout_goneMarginTop="80dp"
             android:layout_marginBottom="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/no_ongoing_donations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No ongoing donations"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ongoingDonationsHeading"
+            android:layout_marginTop="65dp"
+            android:visibility="gone"
 
+
+            />
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline1"
             android:layout_width="wrap_content"

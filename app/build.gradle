@@ -79,7 +79,6 @@ dependencies {
     implementation 'hanks.xyz:htextview-library:0.1.5'
     implementation 'com.github.lguipeng:AnimCheckBox:1.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.ramotion.circlemenu:circle-menu:0.3.2'
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

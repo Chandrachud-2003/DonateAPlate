@@ -94,7 +94,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 address = place.getAddress();
                 latitude = place.getLatLng().latitude;
                 longitude = place.getLatLng().longitude;
-                Log.d("TAG","LAT:"+latitude+"/nLONG:"+longitude+"/nAddress"+address);
+                latLng = new com.google.maps.model.LatLng(latitude,longitude);
             }
 
             @Override

@@ -3,6 +3,7 @@
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/mainlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    tools:context=".displayInfoActivity"
+    tools:context=".displayOrder"
 
     >
   <View
@@ -116,18 +117,6 @@
 
       >
 
-    <ImageButton
-        android:id="@+id/infoIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="10dp"
-        android:background="@color/colorTransparent"
-        android:src="@drawable/info_50"
-        android:scaleType="centerCrop"
-        />
 
     <TextView
         android:id="@+id/totalText"
@@ -135,8 +124,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/infoIcon"
-        android:layout_marginLeft="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="15dp"
         android:fontFamily="@font/gilroy_extrabold"
         android:textColor="@color/black"
         android:textSize="23sp"
@@ -173,7 +162,23 @@
 
         />
 
-
+  <Button
+      android:layout_width="match_parent"
+      android:id="@+id/completeButton"
+      android:visibility="gone"
+      android:layout_height="wrap_content"
+      android:background="@drawable/request_button_bg"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:paddingHorizontal="20dp"
+      android:paddingVertical="10dp"
+      android:layout_marginHorizontal="25dp"
+      android:layout_marginBottom="5dp"
+      android:text="Complete Donation"
+      android:textColor="@color/white"
+      android:fontFamily="@font/gilroy_extrabold"
+      android:textSize="18sp"
+    />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/requestButtonLayout"

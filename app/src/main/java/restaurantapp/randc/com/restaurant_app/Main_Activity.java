@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.Worker;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -51,7 +50,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.auth.User;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
@@ -71,9 +69,12 @@ public class Main_Activity extends AppCompatActivity {
     private static final int POS_PLUS = 2;
     private static final int POS_PROFILE = 3;
 
-    private TextView donationtxt;
     private TextView ongiongtxt;
     private TextView pendingtxt;
+    private TextView newdonationstxt;
+    private TextView accepteddonationstxt;
+    private TextView nopendingdonations;
+    private TextView noongoingdonations;
 
     private String[] screenTitles;
     private Drawable[] screenIcons;
@@ -93,6 +94,7 @@ public class Main_Activity extends AppCompatActivity {
 
     private LinearLayoutManager verticalLayout;
     private  RecyclerView mainRecycler;
+    private OngoingAdapter ongoingAdapter;
     private MainAdapter mainAdapter;
     private ArrayList<MainItem> mainItems;
 
@@ -123,7 +125,6 @@ public class Main_Activity extends AppCompatActivity {
     private boolean tempGrain;
     private boolean tempDairy;
 
-
     private CustomSmoothViewPager ongoingRecycler;
     private CustomSmoothViewPager requestedRecycler;
     private TextView nodonations;
@@ -134,6 +135,7 @@ public class Main_Activity extends AppCompatActivity {
     private ArrayList<OngoingItems> requestedItems;
     private ArrayList<String> currentOrderIds;
 
+    private int currentInputCode;
 
     private int  requestsCount =0;
 
@@ -166,15 +168,19 @@ public class Main_Activity extends AppCompatActivity {
         nodonations = findViewById(R.id.no_donations);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         MyUID = user.getUid();
+        currentInputCode = 0;
         nodonations.setVisibility(View.GONE);
-        donationtxt = findViewById(R.id.nearbyText);
         mainRecyclerLoader = findViewById(R.id.mainRecycler_loader);
         pendingtxt = findViewById(R.id.pendingDonationsHeading);
         ongiongtxt = findViewById(R.id.ongoingDonationsHeading);
         mainRecyclerLoader.setVisibility(View.GONE);
+        noongoingdonations = findViewById(R.id.no_ongoing_donations);
+        nopendingdonations = findViewById(R.id.no_pending_donations);
         ongoingRecycler = findViewById(R.id.ongoingSmoolider);
         requestedRecycler = findViewById(R.id.requestSmoolider);
         mainRecycler = findViewById(R.id.mainRecycler);
+        newdonationstxt = findViewById(R.id.newdonationstxt);
+        accepteddonationstxt = findViewById(R.id.accepteddonationstxt);
         currentOrderIds = new ArrayList<>();
         ongoingItems = new ArrayList<>();
         requestedItems = new ArrayList<>();
@@ -198,9 +204,10 @@ public class Main_Activity extends AppCompatActivity {
             ongoingRecycler.setPadding(150, 0, 150, 0);
             requestedRecycler.setVisibility(View.VISIBLE);
             requestedRecycler.setPadding(150, 0, 150, 0);
-            donationtxt.setVisibility(View.GONE);
             ongiongtxt.setVisibility(View.VISIBLE);
             pendingtxt.setVisibility(View.VISIBLE);
+            newdonationstxt.setVisibility(View.INVISIBLE);
+            accepteddonationstxt.setVisibility(View.INVISIBLE);
 
             db.collection(Constants.rest_fire).document(MyUID).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -242,19 +249,19 @@ public class Main_Activity extends AppCompatActivity {
         if(user.getDisplayName().equals("NGO")) {
             switchBar.setVisibility(View.VISIBLE);
             switchBar.setItemActiveIndex(0);
+            newdonationstxt.setVisibility(View.VISIBLE);
+            accepteddonationstxt.setVisibility(View.VISIBLE);
             currentSwitchBarPos = 0;
             mainRecycler.setVisibility(View.VISIBLE);
             mainRecyclerLoader.setVisibility(View.VISIBLE);
             ongiongtxt.setVisibility(View.GONE);
             pendingtxt.setVisibility(View.GONE);
-            donationtxt.setVisibility(View.VISIBLE);
             requestedRecycler.setVisibility(View.GONE);
             ongoingRecycler.setVisibility(View.GONE);
-      //      searchList = new ArrayList<>();
+            //      searchList = new ArrayList<>();
 
             getOrderIDS();
 
-            Log.d("TAG", "run: listIntitialPos: " + TOTAL_PAGES);
             getDeviceLocation();
 /*            searchList.add(new searchItem("Bangalore", "Restaurant", "Pizza Hut", R.drawable.restaurant2));
             searchList.add(new searchItem("Mumbai", "Restaurant", "Dominos", R.drawable.restaurant3));
@@ -276,8 +283,6 @@ public class Main_Activity extends AppCompatActivity {
             };
             mainRecyclerLoader.setVisibility(View.VISIBLE);
             mainRecyclerLoader.show();
-
-
             nestedScrollView.getViewTreeObserver()
                     .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                         @Override
@@ -291,8 +296,7 @@ public class Main_Activity extends AppCompatActivity {
                                     if (orderIds.size() > 10) {
                                         mainRecyclerLoader.setVisibility(View.VISIBLE);
                                         mainRecyclerLoader.show();
-                                        loadNextPage();
-                                        Log.d("tag", "onScrollChanged:loaded items");
+                                        loadNextPage(currentInputCode);
                                     }
 
 
@@ -336,21 +340,33 @@ public class Main_Activity extends AppCompatActivity {
                 public boolean onItemSelect(int i) {
                     if (i==0 && currentSwitchBarPos!=i)
                     {
-                        currentSwitchBarPos =i;
-                        getOrderIDS();
-                        ongoingRecycler.setVisibility(View.GONE);
+                            currentInputCode++;
+                            int size = mainItems.size();
+                            mainItems.clear();
+                            if (mainAdapter != null)
+                                mainAdapter.notifyItemRangeRemoved(0, size);
+
+                            currentSwitchBarPos = i;
+                            getOrderIDS();
+                            ongoingRecycler.setVisibility(View.GONE);
+                            mainRecycler.setVisibility(View.VISIBLE);
+                            mainRecyclerLoader.setVisibility(View.VISIBLE);
+                            mainRecyclerLoader.show();
+
 
                     }
                     else if (i==1 && currentSwitchBarPos!=i)
                     {
+                        currentInputCode++;
+                        int size = mainItems.size();
+                        mainItems.clear();
+                        if(mainAdapter!=null)
+                            mainAdapter.notifyItemRangeRemoved(0,size);
+
                         currentSwitchBarPos = i;
-
-                        ongoingRecycler.setVisibility(View.VISIBLE);
-                        ongoingRecycler.setPadding(150, 0, 150, 0);
-
                         nodonations.setVisibility(View.GONE);
-
-
+                        mainRecyclerLoader.setVisibility(View.VISIBLE);
+                        mainRecyclerLoader.show();
                         db.collection(Constants.ngo_fire).document(MyUID).get()
                                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
@@ -358,10 +374,7 @@ public class Main_Activity extends AppCompatActivity {
                                         if (documentSnapshot.exists()) {
 
                                             ongoingItems_NGO = (ArrayList) documentSnapshot.get(Constants.ngo_ongoing_list_fire);
-
-                                            Log.d("tag", "Current IDS:" + currentOrderIds);
-
-                                            myDonationsRetriever_NGO(0,ongoingItems_NGO.size());
+                                            myDonationsRetriever_NGO(0,ongoingItems_NGO.size(), currentInputCode);
 
                                         }
 
@@ -374,7 +387,6 @@ public class Main_Activity extends AppCompatActivity {
                             }
                         });
                     }
-
                     return  true;
                 }
             });
@@ -542,7 +554,7 @@ public class Main_Activity extends AppCompatActivity {
 
 
 
-    private void loadFirstPage() {
+    private void loadFirstPage(int code) {
         Log.d("TAG", "loadFirstPage: " + orderIds.size());
 
         int max =10;
@@ -552,7 +564,7 @@ public class Main_Activity extends AppCompatActivity {
         }
         db = FirebaseFirestore.getInstance();
 
-        retriever(0,max, false, 0);
+        retriever(0,max, false, 0,code);
 
     }
     public void myDonationsRetriever(int i, int num)
@@ -564,7 +576,6 @@ public class Main_Activity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
                     if(snapshotInfo.exists()) {
 
-                        Log.d("tag", "State:" + snapshotInfo.child("State").getValue().toString());
                         if (snapshotInfo.child("State").getValue().toString().equals("New")) {
 
                             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.requests_fire).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -579,7 +590,7 @@ public class Main_Activity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshotFood) {
                                             tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
-                                            Log.d("tag", "Entered food");
+
                                             if (snapshotFood.hasChild(Constants.dairyName_fire)) {
                                                 tempDairy = true;
                                             }
@@ -617,12 +628,12 @@ public class Main_Activity extends AppCompatActivity {
                                 }
                             });
 
-                                                    } else if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")) {
+                        } else if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")||snapshotInfo.child("State").getValue().toString().equals("CompletedNGO")||snapshotInfo.child("State").getValue().toString().equals("CompletedRest")) {
                             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshotFood) {
                                     tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
-                                    Log.d("tag", "Entered food");
+
                                     if (snapshotFood.hasChild(Constants.dairyName_fire)) {
                                         tempDairy = true;
                                     }
@@ -639,14 +650,13 @@ public class Main_Activity extends AppCompatActivity {
                                         tempGrain = true;
                                     }
                                     String NGOuid = snapshotInfo.child("Accepted").getValue().toString();
-                                    Log.d("tag", "NGO ID:" + NGOuid);
                                     db.collection(Constants.ngo_fire).document(
                                             NGOuid).get()
                                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                     if (documentSnapshot.exists()) {
-                                                        Log.d("tag", "entered NGO");
+
                                                         String name = documentSnapshot.get("Name").toString();
                                                         String url = documentSnapshot.get("Url").toString();
                                                         String address = documentSnapshot.get("Address").toString();
@@ -689,102 +699,155 @@ public class Main_Activity extends AppCompatActivity {
         }
         else
         {
-            ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
-            requestedRecycler.setAdapter(new RequestAdapter(requestedItems,Main_Activity.this));
+            if(ongoingItems.size()>0) {
+                ongoingRecycler.setVisibility(View.VISIBLE);
+                ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
+                noongoingdonations.setVisibility(View.GONE);
+            }
+            else
+            {
+                ongoingRecycler.setVisibility(View.GONE);
+                noongoingdonations.setVisibility(View.VISIBLE);
+            }
+            if(requestedItems.size()>0) {
+                requestedRecycler.setVisibility(View.VISIBLE);
+                requestedRecycler.setAdapter(new RequestAdapter(requestedItems,Main_Activity.this));
+                nopendingdonations.setVisibility(View.GONE);
+            }
+            else
+            {
+                requestedRecycler.setVisibility(View.GONE);
+                nopendingdonations.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 
-    public void myDonationsRetriever_NGO(int i, int num)
+
+    public void myDonationsRetriever_NGO(int i, int num , int code)
     {
         if (i < num) {
-            requestsCount = 0;
-            rootRef.child(Constants.orderName_fire).child(ongoingItems_NGO.get(i)).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
-                    if(snapshotInfo.exists()) {
+            String id = ongoingItems_NGO.get(i);
+            String userId = id.substring(0, id.indexOf("-")).trim();
 
-                        Log.d("tag", "State:" + snapshotInfo.child("State").getValue().toString());
-                        if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")) {
-                            rootRef.child(Constants.orderName_fire).child(ongoingItems_NGO.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshotFood) {
-                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
-                                    Log.d("tag", "Entered food");
-                                    if (snapshotFood.hasChild(Constants.dairyName_fire)) {
-                                        tempDairy = true;
+            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempVeg = false;
+            tempName = tempUrl = tempType = "";
+
+
+            db.collection(Constants.rest_fire).document(
+                    userId).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                tempName = (String) documentSnapshot.get(Constants.username);
+                                tempAddress = (String) documentSnapshot.getString("Address");
+                                tempUrl = (String) documentSnapshot.get(Constants.url_user);
+
+                                tempType = (String) documentSnapshot.get(Constants.type_user);
+                                dis = "-";
+                                try {
+                                    GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
+                                    tempLat = geoPoint.getLatitude();
+                                    tempLon = geoPoint.getLongitude();
+
+
+                                    if(currectLat!=0&&currentLon!=0) {
+                                        float[] results = new float[1];
+                                        Location.distanceBetween(tempLat, tempLon,
+                                                currectLat, currentLon, results);
+                                        dis = Math. round(results[0] / 100) / 10.0+"KM";
                                     }
-                                    if (snapshotFood.hasChild(Constants.fruitName_fire)) {
-                                        tempFruit = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.vegName_fire)) {
-                                        tempVeg = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.meatName_fire)) {
-                                        tempMeat = true;
-                                    }
-                                    if (snapshotFood.hasChild(Constants.grainsName_fire)) {
-                                        tempGrain = true;
-                                    }
-                                    String restUid = ongoingItems_NGO.get(i);
-                                    final String rUid=restUid.substring(0, restUid.indexOf('-'));
-                                    Log.d("tag", "NGO ID:" + rUid);
-                                    db.collection(Constants.rest_fire).document(
-                                            rUid).get()
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                }catch (Exception e) { }
+
+
+
+
+                                rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists()) {
+                                            if (snapshot.hasChild(Constants.dairyName_fire)) {
+                                                tempDairy = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.fruitName_fire)) {
+                                                tempFruit = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.vegName_fire)) {
+                                                tempVeg = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.meatName_fire)) {
+                                                tempMeat = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.grainsName_fire)) {
+                                                tempGrain = true;
+                                            }
+
+                                            rootRef.child(Constants.orderName_fire).child(id).child("Info").child("Total Weight").addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
-                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                    if (documentSnapshot.exists()) {
-                                                        Log.d("tag", "entered NGO");
-                                                        String name = documentSnapshot.get("Name").toString();
-                                                        String url = documentSnapshot.get("Url").toString();
-                                                        String address = documentSnapshot.get("Address").toString();
-                                                        ongoingItems.add(new OngoingItems(name, url, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, ongoingItems_NGO.get(i), rUid, address));
-                                                        myDonationsRetriever_NGO(i + 1, num);
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                    tempTotalWeight = snapshot.getValue().toString();
+
+                                                    Log.d("CHECK", "TEMP WEIGHT:" + tempTotalWeight);
+                                                    if(code== currentInputCode)
+                                                    {
+                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                                        myDonationsRetriever_NGO(i + 1, num,code);
                                                     }
                                                 }
 
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d("TAG", "onFailure: " + e.toString());
-
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Log.d("TAG", "onFailure: " + error.toString());
+                                                }
+                                            });
                                         }
-                                    });
+                                        else
+                                            myDonationsRetriever_NGO(i + 1, num,code);
 
 
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.d("TAG", "onFailure: " + error.toString());
-                                }
-                            });
+                                    }
 
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.d("TAG", "onFailure: " + error.toString());
+                                    }
+                                });
+
+                            }
 
                         }
-                    }
-                    else
-                        myDonationsRetriever_NGO(i + 1, num);
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("TAG", "onFailure: " + e.toString());
+                        }
+                    });
 
 
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("TAG", "onFailure: " + error.toString());
-                }
-            });
         }
-        else
-        {
-            ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
+
+        else {
+            if(code== currentInputCode) {
+                mainAdapter = new MainAdapter(Main_Activity.this, mainItems,"Accepted");
+                mainRecycler.setLayoutManager(verticalLayout);
+                mainRecycler.setAdapter(mainAdapter);
+                mainRecycler.setItemAnimator(new DefaultItemAnimator());
+                mainRecyclerLoader.setVisibility(View.GONE);
+                mainRecyclerLoader.hide();
+            }
         }
     }
 
 
 
 
-    public void retriever(int i, int max, boolean check, int intitialPos) {
+
+
+    public void retriever(int i, int max, boolean check, int intitialPos,int code) {
         if (i < max) {
             String id = orderIds.get(i).trim();
             String userId = id.substring(0, id.indexOf("-")).trim();
@@ -796,119 +859,121 @@ public class Main_Activity extends AppCompatActivity {
 
 
             db.collection(Constants.rest_fire).document(
-                        userId).get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                if (documentSnapshot.exists()) {
-                                    tempName = (String) documentSnapshot.get(Constants.username);
-                                    tempAddress = (String) documentSnapshot.getString("Address");
-                                    tempUrl = (String) documentSnapshot.get(Constants.url_user);
-                                    Log.d("TAG", "URL:" + tempUrl);
-                                    tempType = (String) documentSnapshot.get(Constants.type_user);
-                                    dis = "-";
-                                    try {
-                                        GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
-                                        tempLat = geoPoint.getLatitude();
-                                        tempLon = geoPoint.getLongitude();
+                    userId).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                tempName = (String) documentSnapshot.get(Constants.username);
+                                tempAddress = (String) documentSnapshot.getString("Address");
+                                tempUrl = (String) documentSnapshot.get(Constants.url_user);
+                                tempType = (String) documentSnapshot.get(Constants.type_user);
+                                dis = "-";
+                                try {
+                                    GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
+                                    tempLat = geoPoint.getLatitude();
+                                    tempLon = geoPoint.getLongitude();
 
 
-                                        if(currectLat!=0&&currentLon!=0) {
-                                            float[] results = new float[1];
-                                            Location.distanceBetween(tempLat, tempLon,
-                                                    currectLat, currentLon, results);
-                                            dis = Math. round(results[0] / 100) / 10.0+"KM";
-                                        }
-                                    }catch (Exception e) { }
+                                    if(currectLat!=0&&currentLon!=0) {
+                                        float[] results = new float[1];
+                                        Location.distanceBetween(tempLat, tempLon,
+                                                currectLat, currentLon, results);
+                                        dis = Math. round(results[0] / 100) / 10.0+"KM";
+                                    }
+                                }catch (Exception e) { }
 
 
 
 
-                                    rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if(snapshot.exists()) {
-                                                if (snapshot.hasChild(Constants.dairyName_fire)) {
-                                                    tempDairy = true;
-                                                }
-                                                if (snapshot.hasChild(Constants.fruitName_fire)) {
-                                                    tempFruit = true;
-                                                }
-                                                if (snapshot.hasChild(Constants.vegName_fire)) {
-                                                    tempVeg = true;
-                                                }
-                                                if (snapshot.hasChild(Constants.meatName_fire)) {
-                                                    tempMeat = true;
-                                                }
-                                                if (snapshot.hasChild(Constants.grainsName_fire)) {
-                                                    tempGrain = true;
-                                                }
-
-                                                rootRef.child(Constants.orderName_fire).child(id).child("Info").child("Total Weight").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                                        tempTotalWeight = snapshot.getValue().toString();
-
-                                                        Log.d("CHECK", "TEMP WEIGHT:" + tempTotalWeight);
-                                                       mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
-                                                        retriever(i + 1, max, check, intitialPos);
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {
-                                                        Log.d("TAG", "onFailure: " + error.toString());
-                                                    }
-                                                });
+                                rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists()) {
+                                            if (snapshot.hasChild(Constants.dairyName_fire)) {
+                                                tempDairy = true;
                                             }
-                                            else
-                                                retriever(i + 1, max, check, intitialPos);
+                                            if (snapshot.hasChild(Constants.fruitName_fire)) {
+                                                tempFruit = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.vegName_fire)) {
+                                                tempVeg = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.meatName_fire)) {
+                                                tempMeat = true;
+                                            }
+                                            if (snapshot.hasChild(Constants.grainsName_fire)) {
+                                                tempGrain = true;
+                                            }
+
+                                            rootRef.child(Constants.orderName_fire).child(id).child("Info").child("Total Weight").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                    tempTotalWeight = snapshot.getValue().toString();
+
+                                                    if(code== currentInputCode) {
+                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                                        retriever(i + 1, max, check, intitialPos,code);
+                                                    }
+
+                                                }
 
 
-
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Log.d("TAG", "onFailure: " + error.toString());
+                                                }
+                                            });
                                         }
+                                        else
+                                            retriever(i + 1, max, check, intitialPos,code);
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            Log.d("TAG", "onFailure: " + error.toString());
-                                        }
-                                    });
 
-                                }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.d("TAG", "onFailure: " + error.toString());
+                                    }
+                                });
 
                             }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("TAG", "onFailure: " + e.toString());
-                            }
-                        });
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("TAG", "onFailure: " + e.toString());
+                        }
+                    });
 
 
-            }
+        }
 
         else {
-            if (!check) {
+            if(code== currentInputCode) {
+                if (!check) {
 
 
-                mainAdapter = new MainAdapter(Main_Activity.this, mainItems);
-                mainRecycler.setLayoutManager(verticalLayout);
-                mainRecycler.setAdapter(mainAdapter);
-                mainRecycler.setItemAnimator(new DefaultItemAnimator());
-                mainRecyclerLoader.setVisibility(View.GONE);
-                mainRecyclerLoader.hide();
-            }
-
-            else {
-                mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
-                mainRecyclerLoader.setVisibility(View.GONE);
-                mainRecyclerLoader.hide();
+                    mainAdapter = new MainAdapter(Main_Activity.this, mainItems,"New");
+                    mainRecycler.setLayoutManager(verticalLayout);
+                    mainRecycler.setAdapter(mainAdapter);
+                    mainRecycler.setItemAnimator(new DefaultItemAnimator());
+                    mainRecyclerLoader.setVisibility(View.GONE);
+                    mainRecyclerLoader.hide();
+                } else {
+                    mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
+                    mainRecyclerLoader.setVisibility(View.GONE);
+                    mainRecyclerLoader.hide();
+                }
             }
         }
-        }
+    }
 
-    private void loadNextPage() {
+    private void loadNextPage(int code) {
 
 
         if (mainItems != null && mainAdapter != null &&mainItems.size()<orderIds.size()) {
@@ -916,19 +981,18 @@ public class Main_Activity extends AppCompatActivity {
             //List<MainItem> newItems = new ArrayList<>();
 
 
-                    int intitialPos = mainItems.size() - 1;
-                     int listIntitialPos = currentPage * 10;
-                     int listFinalPos = ((currentPage+1)*10-1);
+            int intitialPos = mainItems.size() - 1;
+            int listIntitialPos = currentPage * 10;
+            int listFinalPos = ((currentPage+1)*10-1);
 
 
-                    if (currentPage==(TOTAL_PAGES-1)) {
+            if (currentPage==(TOTAL_PAGES-1)) {
 
-                        listFinalPos = orderIds.size()-1;
+                listFinalPos = orderIds.size()-1;
 
-                    }
-                    Log.d("TAG", "run: listFinalPos: "+listFinalPos);
-                    currentPage+=1;
-                    retriever(intitialPos, listFinalPos, true, intitialPos);
+            }
+            currentPage+=1;
+            retriever(intitialPos, listFinalPos, true, intitialPos,code);
         }
         else
         {
@@ -950,7 +1014,7 @@ public class Main_Activity extends AppCompatActivity {
                     orderIds = (ArrayList) documentSnapshot.get(Constants.order_list_field);
                     if (orderIds!=null && orderIds.size()>0) {
                         TOTAL_PAGES = (int) Math.ceil(orderIds.size() / (10.0f));
-                        loadFirstPage();
+                        loadFirstPage(currentInputCode);
                         nodonations.setVisibility(View.GONE);
                     }
                     else {
@@ -980,8 +1044,8 @@ public class Main_Activity extends AppCompatActivity {
                         Location currentLocation = (Location) task.getResult();
 
                         if(currentLocation!=null) {
-                           currectLat = currentLocation.getLatitude();
-                           currentLon = currentLocation.getLongitude();
+                            currectLat = currentLocation.getLatitude();
+                            currentLon = currentLocation.getLongitude();
                         }
 
                     }else{

@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
     public class MainAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private List<MainItem> list;
         private Context mContext;
+        private String newOrAccepted;
 
         public class donationView
                 extends RecyclerView.ViewHolder {
@@ -76,10 +77,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
         // Constructor for adapter class
         // which takes a list of String type
-        public MainAdapter(Context context, ArrayList<MainItem> mainItems)
+        public MainAdapter(Context context, ArrayList<MainItem> mainItems, String newOrAccepted)
         {
             list = mainItems;
             mContext = context;
+            this.newOrAccepted = newOrAccepted;
         }
 
         public List<MainItem> getList() {
@@ -200,7 +202,13 @@ import androidx.recyclerview.widget.RecyclerView;
                             intent.putExtra(Constants.isMeat_intent, list.get(position).isMeat());
                             intent.putExtra(Constants.address_intent, address);
                             intent.putExtra(Constants.total_weight_intent,list.get(position).getWeight());
-                            intent.putExtra("From","mainItem");
+                            if(newOrAccepted.equals("New")) {
+                                intent.putExtra("From", "mainItem");
+                            }
+                            else
+                            {
+                                intent.putExtra("From", "ongoingNGOItem");
+                            }
                             mContext.startActivity(intent);
 
 

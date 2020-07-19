@@ -1,5 +1,6 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.squareup.picasso.Picasso;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -60,15 +63,19 @@ public class displayOrder extends AppCompatActivity {
     private SmoothBottomBar categoriesBar;
     private TextView categoryName;
     private TextView categoryWeight;
+    private Button completeButton;
     private String From;
     private RecyclerView displayOrderRecycler;
     private displayOrderAdapter mDisplayOrderAdapter;
     private LinearLayoutManager verticalLayout;
     private TextView totalWeightText;
+    private ConstraintLayout requestLayout;
     private ConstraintLayout requestButton;
+    private ConstraintLayout mainConstraintLayout;
     private View profileClick;
     private TextView requestText;
     private ProgressDialog dialog;
+    private TextView totaltxt;
     private SmoothBottomBar requestsBar;
     private LottieAnimationView displayAnimation;
     private LottieAnimationView categoryLoadingAnimation;
@@ -79,6 +86,7 @@ public class displayOrder extends AppCompatActivity {
     private String orderID;
     private String  name;
     private String address;
+    private String restid;
     private boolean isFruits;
     private boolean isVeggies;
     private boolean isMeat;
@@ -89,6 +97,7 @@ public class displayOrder extends AppCompatActivity {
 
     private DatabaseReference mDatabaseReference;
     private FirebaseFirestore db;
+
 
     private ArrayList<categoryItem> fruitsList;
     private ArrayList<categoryItem> veggiesList;
@@ -132,7 +141,7 @@ public class displayOrder extends AppCompatActivity {
         {
 
         }
-        else if (From.equals("ongoingItem"))
+        else if (From.equals("ongoingItem")||From.equals("ongoingNGOItem"))
         {
             uid = intent.getStringExtra(Constants.uid_intent);
             name = intent.getStringExtra(Constants.name_intent);
@@ -149,6 +158,19 @@ public class displayOrder extends AppCompatActivity {
         findViewsById();
         setOnClickOnListeners();
 
+
+
+/*
+        MenuObject mo1 = new MenuObject("Phone Call");
+        mo1.setDrawable(getDrawable(R.drawable.icons8_phone2));
+        mo1.setBgColorValue(R.color.phoneColor);
+        ArrayList<MenuObject> menuObjects = new ArrayList<>();
+        menuObjects.add(mo1);
+        MenuParams menuParams = new MenuParams();
+        menuParams.setMenuObjects(menuObjects);
+        menuParams.setClosableOutside(true);
+        // set other settings to meet your needs
+        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);*/
     }
 
     private void findViewsById()
@@ -295,17 +317,21 @@ public class displayOrder extends AppCompatActivity {
         nameText = findViewById(R.id.nameText);
         nameText.setText(name);
         backButton = findViewById(R.id.backButton);
+        totaltxt = findViewById(R.id.totalText);
         addressText = findViewById(R.id.addressText);
         addressText.setText(address);
         requestsbardonatetxt = findViewById(R.id.donatetext);
+        completeButton = findViewById(R.id.completeButton);
         requestsbarreqtxt = findViewById(R.id.requeststext);
         categoriesBar = findViewById(R.id.bubbleBottomSheetBar);
         categoryName = findViewById(R.id.categoryHeading);
         categoryWeight = findViewById(R.id.categoryWeight);
+        mainConstraintLayout = findViewById(R.id.mainlayout);
         norequeststext = findViewById(R.id.noRequestsText);
         requestsBar = findViewById(R.id.bubbleRequestBar);
         displayOrderRecycler = findViewById(R.id.categoryRecycler);
         requestText = findViewById(R.id.requestText);
+        requestLayout = findViewById(R.id.requestLayout);
         verticalLayout = new LinearLayoutManager(
                 displayOrder.this,
                 LinearLayoutManager.VERTICAL,
@@ -372,7 +398,10 @@ public class displayOrder extends AppCompatActivity {
         float density = displayOrder.this.getResources()
                 .getDisplayMetrics()
                 .density;
-
+        if(From.equals("mainItem"))
+        {
+            requestButton.setClickable(false);
+        }
         if(From.equals("requestItem"))
         {
 
@@ -381,7 +410,16 @@ public class displayOrder extends AppCompatActivity {
             requestButton.setPadding((int)(20 * density),(int)(5 * density),(int)(20 * density),(int)(5 * density));
             requestArrow.setImageResource(R.drawable.cancel_white);
         }
-
+        if(From.equals("ongoingItem")||From.equals("ongoingNGOItem"))
+        {
+            requestButton.setVisibility(View.GONE);
+            completeButton.setVisibility(View.VISIBLE);
+            completeButton.setClickable(false);
+            requestLayout.setBackgroundColor(getResources().getColor(R.color.displayOrderGray));
+            mainConstraintLayout.setBackgroundColor(getResources().getColor(R.color.displayOrderGray));
+            totaltxt.setVisibility(View.GONE);
+            totalWeightText.setVisibility(View.GONE);
+        }
 
     }
 
@@ -410,6 +448,175 @@ public class displayOrder extends AppCompatActivity {
     });
 
 
+        PushDownAnim.setPushDownAnimTo(completeButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(displayOrder.this);
+                        builder.setCancelable(true);
+                        builder.setTitle("Complete Donation");
+                        if(From.equals("ongoingItem"))
+                            builder.setMessage("Are you sure want to complete your donation? \n(Click yes only if the donation has been handed over to the NGO)");
+                        else
+                            builder.setMessage("Are you sure want to complete your donation? \n(Click yes only if you have received the donation)");
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog1, int which) {
+                            }
+                        });
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog1, int which) {
+                                dialog1.dismiss();
+
+                                dialog.setMessage("Completing Donation...");
+                                dialog.show();
+                                mDatabaseReference.child("Orders").child(orderID).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
+                                        if (snapshotInfo.child("State").getValue().toString().equals("CompletedRest")||snapshotInfo.child("State").getValue().toString().equals("CompletedNGO")) {
+                                            DocumentReference orderRef=null;
+
+                                            if(From.equals("ongoingItem"))
+                                              orderRef = db.collection(Constants.ngo_fire).document(uid);
+                                            else if(From.equals("ongoingNGOItem"))
+                                                orderRef = db.collection(Constants.ngo_fire).document(user.getUid());
+                                                orderRef.update("Number of donations", FieldValue.increment(1));
+                                                orderRef.update("Points", FieldValue.increment(50));
+                                               orderRef.update(Constants.ngo_ongoing_list_fire, FieldValue.arrayRemove(orderID))
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            restid="";
+                                                            if(From.equals("ongoingItem"))
+                                                                restid = user.getUid();
+                                                            else if(From.equals("ongoingNGOItem"))
+                                                                restid = uid;
+
+                                                            db.collection(Constants.rest_fire).document(restid).get()
+                                                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                        @Override
+                                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                                            if (documentSnapshot.exists()) {
+                                                                                ArrayList<Boolean> orderNum;
+                                                                                orderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
+                                                                                char no = orderID.charAt(orderID.length()-1);
+                                                                                int number = Integer.parseInt(""+no);
+                                                                                orderNum.set(number,false);
+
+                                                                                HashMap<String, Object> updateMap = new HashMap<>();
+                                                                                updateMap.put(Constants.order_id_num, orderNum);
+                                                                                db.collection(Constants.rest_fire).document(restid).update("Number of donations", FieldValue.increment(1));
+                                                                                db.collection(Constants.rest_fire).document(restid).update("Points", FieldValue.increment(50));
+                                                                                db.collection(Constants.rest_fire).document(restid)
+                                                                                        .update(updateMap)
+                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                            @Override
+                                                                                            public void onSuccess(Void aVoid) {
+
+                                                                                                mDatabaseReference.child("Orders").child(orderID).removeValue()
+                                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onSuccess(Void aVoid) {
+                                                                                                                dialog.dismiss();
+
+                                                                                                                Toast.makeText(displayOrder.this,"Donation Completed",Toast.LENGTH_LONG).show();
+                                                                                                                Log.d("tag","Donation Completion Success");
+                                                                                                                Intent intent = new Intent(displayOrder.this,Main_Activity.class);
+                                                                                                                startActivity(intent);
+                                                                                                            }
+                                                                                                        })
+                                                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                                                            @Override
+                                                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                                                Log.d(Constants.tag, "error: " + e + " add");
+                                                                                                                Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                                                                dialog.dismiss();
+                                                                                                            }
+                                                                                                        });
+                                                                                            }
+                                                                                        })
+                                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                                            @Override
+                                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                                Log.d(Constants.tag, "error: " + e + " add");
+                                                                                                Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                                                dialog.dismiss();
+                                                                                            }
+                                                                                        });
+                                                                            }
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.d(Constants.tag, "error: " + e + " add");
+                                                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.d(Constants.tag, "error: " + e + " add");
+                                                            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+
+                                        }
+                                        else
+                                        {
+                                            String value = "";
+                                            if(From.equals("ongoingItem"))
+                                                value = "CompletedRest";
+                                            else if(From.equals("ongoingNGOItem"))
+                                                value = "CompletedNGO";
+
+                                            mDatabaseReference.child("Orders").child(orderID).child("Info").child("State").setValue(value)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            if(From.equals("ongoingItem"))
+                                                                completeButton.setText("Awaiting NGO's confirmation");
+                                                            else if(From.equals("ongoingNGOItem"))
+                                                                completeButton.setText("Awaiting confirmation");
+                                                            completeButton.setClickable(false);
+                                                            dialog.dismiss();
+
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.d(Constants.tag, "error: " + e + " add");
+                                                            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.d(Constants.tag, "error: " + error + " add");
+                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                });
+
+
         PushDownAnim.setPushDownAnimTo(requestButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
                 .setOnClickListener(new View.OnClickListener() {
@@ -429,8 +636,7 @@ public class displayOrder extends AppCompatActivity {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
-                                                                Log.d(Constants.tag, "Requestac has been sent");
-                                                                Toast.makeText(getBaseContext(), "Request Success", Toast.LENGTH_SHORT).show();
+                                                                Log.d(Constants.tag, "Request has been sent");
                                                                 requestArrow.setImageResource(R.drawable.tick_white);
                                                                 requestText.setText("Requested");
                                                                 requestButton.setClickable(false);
@@ -554,7 +760,11 @@ public class displayOrder extends AppCompatActivity {
                             alertDialog.show();
 
                         }
+                        if (From.equals("ongoingItem"))
+                        {
 
+
+                        }
 
 
 
@@ -752,6 +962,10 @@ public class displayOrder extends AppCompatActivity {
                                 requestText.setText("Requested");
                                 requestButton.setClickable(false);
                             }
+                            else
+                            {
+                                requestButton.setClickable(true);
+                            }
 
                         }
                     }
@@ -784,6 +998,50 @@ public class displayOrder extends AppCompatActivity {
                         else
                         {
                             norequeststext.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(Constants.tag, "error: " + databaseError + " add");
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            if(From.equals("ongoingItem"))
+            {
+                mDatabaseReference.child("Orders").child(orderID).child("Info").child("State").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue().toString().equals("CompletedRest"))
+                        {
+                            completeButton.setText("Awaiting NGO's confirmation");
+                            completeButton.setClickable(false);
+                        }
+                        else
+                        {
+                            completeButton.setClickable(true);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(Constants.tag, "error: " + databaseError + " add");
+                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            if(From.equals("ongoingNGOItem"))
+            {
+                mDatabaseReference.child("Orders").child(orderID).child("Info").child("State").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue().toString().equals("CompletedNGO"))
+                        {
+                            completeButton.setText("Awaiting confirmation");
+                            completeButton.setClickable(false);
+                        }
+                        else
+                        {
+                            completeButton.setClickable(true);
                         }
                     }
                     @Override
@@ -886,7 +1144,7 @@ public class displayOrder extends AppCompatActivity {
 
                 if (done)
                 {
-                    if(From.equals("mainItem")||From.equals("ongoingItem")) {
+                    if(From.equals("mainItem")||From.equals("ongoingItem")||From.equals("ongoingNGOItem")) {
                         float currentWeight = 0.0f;
                         String currentCategory = "";
                         if (isFruits && fruitsList != null && fruitsList.size() > 0) {
@@ -992,6 +1250,23 @@ public class displayOrder extends AppCompatActivity {
 
 
     }
+
+   /* @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.context_menu:
+                mMenuDialogFragment.show(fragmentManager, "ContextMenuDialogFragment");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }*/
 
 }
 

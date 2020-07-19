@@ -157,6 +157,8 @@ public class registration4 extends AppCompatActivity {
                                     GeoPoint location  = new GeoPoint(getIntent().getDoubleExtra("Lat",0.0f),getIntent().getDoubleExtra("Lon",0.0f));
                                     note.put("Location",location);
                                     note.put("Address",getIntent().getStringExtra("Add"));
+                                    note.put("Points",0);
+                                    note.put("Number of donations",0);
                                     note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
                                     ArrayList<String> ngoOngoingList=new ArrayList<>();
                                     ArrayList<Boolean> orderArray=new ArrayList<>();

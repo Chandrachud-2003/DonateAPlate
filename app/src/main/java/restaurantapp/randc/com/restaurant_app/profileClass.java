@@ -3,6 +3,7 @@ package restaurantapp.randc.com.restaurant_app;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,11 +54,17 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     private Uri mImageUri;
     private ImageButton cancelButton;
     private EditText emailView;
+    private TextView pointsView;
+    private TextView distanceView;
+    private TextView noofdonationsView;
     private EditText AddressView;
     private EditText phnoView;
     private EditText nameView;
     private String uid;
+    private double currectLat;
+    private double currentLon;
     private String main_collection;
+    private TextView detailsText;
     private KeyListener listener;
     private KeyListener listener2;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -85,10 +94,14 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         cancelButton = findViewById(R.id.cancel_button);
         emailView = findViewById(R.id.emailView);
         phnoView = findViewById(R.id.phoneView);
+        distanceView = findViewById(R.id.distanceText);
+        noofdonationsView = findViewById(R.id.numberofdonationText);
+        pointsView = findViewById(R.id.pointsText);
         AddressView = findViewById(R.id.addressView);
         nameView = findViewById(R.id.nameView);
         userProfileImage = findViewById(R.id.profilePic);
         listener = emailView.getKeyListener();
+        detailsText = findViewById(R.id.details);
         listener2 = phnoView.getKeyListener();
         editPicture = findViewById(R.id.editPicture);
         typeView = findViewById(R.id.type);
@@ -100,23 +113,24 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
         height = (int) ((width*2)/3.0);
 
-
-
         if(getIntent().getStringExtra("From").equals("mainItem"))
         {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "Restaurant";
+            getDeviceLocation();
         }
         if(getIntent().getStringExtra("From").equals("ongoingItem"))
         {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "NGO";
+            getDeviceLocation();
         }
         if(getIntent().getStringExtra("From").equals("Navigation")) {
             uid = user.getUid();
             main_collection = user.getDisplayName();
+            detailsText.setText("Your Details");
         }
 
         updateDetails();
@@ -157,6 +171,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 editPicture.setVisibility(View.VISIBLE);
             }
         });
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,7 +258,6 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
             }
         });
 
-
         gmaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -292,7 +306,6 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         });
 
     }
-
     void updateDetails()
     {
 
@@ -309,12 +322,25 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
                             emailView.setText(documentSnapshot.getString("Email"));
                             phnoView.setText(documentSnapshot.getString("Phone Number"));
-
+                            String points = documentSnapshot.get("Points").toString()+" Points";
+                            pointsView.setText(points);
+                            String donations = documentSnapshot.get("Number of donations").toString()+" Donations";
+                            noofdonationsView.setText(donations);
                             name = documentSnapshot.getString("Name");
                             nameView.setText(name);
                             GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
                             lat = geoPoint.getLatitude();
                             lon = geoPoint.getLongitude();
+                            String dis = "-";
+                            try {
+                                if(currectLat!=0&&currentLon!=0) {
+                                    float[] results = new float[1];
+                                    Location.distanceBetween(lat, lon,
+                                            currectLat, currentLon, results);
+                                    dis = Math. round(results[0] / 100) / 10.0+" KMS";
+                                }
+                            }catch (Exception e) { }
+                            distanceView.setText(dis);
                             AddressView.setText(documentSnapshot.getString("Address"));
                             gmaps.setVisibility(View.VISIBLE);
                             if(main_collection.equals("Restaurant")) {
@@ -484,6 +510,38 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         } else {
             Toast.makeText(this, "No Image Selected", Toast.LENGTH_LONG);
 
+        }
+    }
+    private void getDeviceLocation(){
+        Log.d("TAG", "getDeviceLocation: getting the devices current location");
+
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+
+
+            final Task location = mFusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if(task.isSuccessful()){
+                        Log.d("TAG", "onComplete: found location");
+                        Location currentLocation = (Location) task.getResult();
+
+                        if(currentLocation!=null) {
+                            currectLat = currentLocation.getLatitude();
+                            currentLon = currentLocation.getLongitude();
+                        }
+
+                    }else{
+                        Log.d("TAG", "onComplete: current location is null");
+                        Toast.makeText(profileClass.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }catch (SecurityException e){
+            Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
 }

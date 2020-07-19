@@ -19,7 +19,6 @@
         <activity android:name=".addClass" />
         <activity android:name=".resetpassword" />
         <activity android:name=".Main_Activity" />
-        <activity android:name=".displayInfoActivity" />
         <activity android:name=".categoryAdd" />
         <activity android:name=".registration3" />
         <activity android:name=".registration4" />
