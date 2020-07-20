@@ -2,7 +2,9 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -29,11 +31,11 @@ public class BackgroundWork extends Worker {
     int notificationId=1001;
     private String uid;
     private DatabaseReference mDatabaseReference;
-
+    private Context context;
 
     public BackgroundWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-
+        this.context = context;
         uid = FirebaseAuth.getInstance().getUid();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     }
@@ -105,7 +107,11 @@ public class BackgroundWork extends Worker {
 
                             mBuilder.setContentText(snapshot.getValue().toString());
                             NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
+                            mBuilder.setStyle( new NotificationCompat.BigTextStyle().bigText(snapshot.getValue().toString())) ;
+                            PendingIntent contentIntent =
+                                    PendingIntent.getActivity(context, 0, new Intent(context,Main_Activity.class ), PendingIntent.FLAG_UPDATE_CURRENT);
+                            mBuilder.setAutoCancel(true);
+                            mBuilder.setContentIntent(contentIntent);
                             if (manager != null) {
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -524,9 +524,24 @@ public class displayOrder extends AppCompatActivity {
 
                                                                                                                 Toast.makeText(displayOrder.this,"Donation Completed",Toast.LENGTH_LONG).show();
                                                                                                                 Log.d("tag","Donation Completion Success");
-                                                                                                                Intent intent = new Intent(displayOrder.this,Main_Activity.class);
-                                                                                                                startActivity(intent);
-                                                                                                            }
+                                                                                                                if(From.equals("ongoingItem")) {
+                                                                                                                    mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                                                                                    mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("Your donation with " + documentSnapshot.get("Name")+ " has been completed");
+                                                                                                                }
+                                                                                                                else {
+                                                                                                                    db.collection(Constants.ngo_fire).document(user.getUid()).get()
+                                                                                                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                                                                                @Override
+                                                                                                                                public void onSuccess(DocumentSnapshot documentSnapshot123) {
+                                                                                                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                                                                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("Your donation with " + documentSnapshot123.get("Name")+ " has been completed");
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                }
+                                                                                                                    Intent intent = new Intent(displayOrder.this, Main_Activity.class);
+                                                                                                                    startActivity(intent);
+
+                                                                                                                }
                                                                                                         })
                                                                                                         .addOnFailureListener(new OnFailureListener() {
                                                                                                             @Override
@@ -587,6 +602,27 @@ public class displayOrder extends AppCompatActivity {
                                                             completeButton.setClickable(false);
                                                             dialog.dismiss();
 
+                                                            if(From.equals("ongoingItem")) {
+                                                                db.collection(Constants.rest_fire).document(user.getUid()).get()
+                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                            @Override
+                                                                            public void onSuccess(DocumentSnapshot documentSnapshot123) {
+                                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot123.get("Name")+ " has marked your donation request as completed. Please confirm by opening the order and clicking on complete");
+                                                                            }
+                                                                        });
+                                                            }
+                                                            else {
+                                                                db.collection(Constants.ngo_fire).document(user.getUid()).get()
+                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                            @Override
+                                                                            public void onSuccess(DocumentSnapshot documentSnapshot123) {
+                                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot123.get("Name")+ " has marked your donation as completed. Please confirm by opening the order and clicking on complete");
+                                                                            }
+                                                                        });
+                                                            }
+
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {
@@ -642,7 +678,7 @@ public class displayOrder extends AppCompatActivity {
                                                                 requestButton.setClickable(false);
 
                                                                 mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
-                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("You have requests for your donation!");
+                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" has requested for your donation!");
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
@@ -709,6 +745,8 @@ public class displayOrder extends AppCompatActivity {
                                                                                                         dialog.dismiss();
                                                                                                         Toast.makeText(displayOrder.this,"Donation Removed",Toast.LENGTH_LONG).show();
                                                                                                         Log.d("tag","Donation Remove Success");
+
+
                                                                                                         Intent intent = new Intent(displayOrder.this,Main_Activity.class);
                                                                                                         startActivity(intent);
                                                                                                     }

@@ -17,9 +17,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -95,6 +98,20 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
                                                                 Log.d(Constants.tag, "Accept Success");
                                                                 dialog.dismiss();
                                                                 Toast.makeText(mContext, "Request Accepted", Toast.LENGTH_SHORT).show();
+                                                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                                                db.collection(Constants.rest_fire).document(user.getUid()).get()
+                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                            @Override
+                                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                                                if (documentSnapshot.exists()) {
+                                                                                    mDatabase.child(Constants.notifications).child(item.getUID()).child(Constants.notify_fire).setValue(true);
+                                                                                    mDatabase.child(Constants.notifications).child(item.getUID()).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" accepted your donation request!");
+                                                                                }
+                                                                            }
+                                                                            });
+
+
+
                                                                 Intent intent = new Intent((Activity)mContext, Main_Activity.class);
                                                                 mContext.startActivity(intent);
                                                             }

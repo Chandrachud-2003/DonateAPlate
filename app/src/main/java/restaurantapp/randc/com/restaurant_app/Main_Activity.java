@@ -64,10 +64,6 @@ public class Main_Activity extends AppCompatActivity {
 
     private SlidingRootNav slidingRootNav;
 
-    private static final int POS_DASHBOARD = 0;
-    private static final int POS_NOTIFICATION= 1;
-    private static final int POS_PLUS = 2;
-    private static final int POS_PROFILE = 3;
 
     private TextView ongiongtxt;
     private TextView pendingtxt;
@@ -82,7 +78,6 @@ public class Main_Activity extends AppCompatActivity {
     private ImageButton menuButton;
 
     private LinearLayout searchBarLayout;
-    private Button settingsButton;
     private  RecyclerView filterView;
     private ArrayList<filterItem> filterItemList;
     private RecyclerView.LayoutManager RecyclerViewLayoutManager;
@@ -94,7 +89,6 @@ public class Main_Activity extends AppCompatActivity {
 
     private LinearLayoutManager verticalLayout;
     private  RecyclerView mainRecycler;
-    private OngoingAdapter ongoingAdapter;
     private MainAdapter mainAdapter;
     private ArrayList<MainItem> mainItems;
 
@@ -103,7 +97,6 @@ public class Main_Activity extends AppCompatActivity {
     private int currentPage = PAGE_START;
 
     private NestedScrollView nestedScrollView;
-    private Button logoutButton;
     private boolean atBottom;
     private AVLoadingIndicatorView mainRecyclerLoader;
     private String MyUID;
@@ -134,7 +127,7 @@ public class Main_Activity extends AppCompatActivity {
     private ArrayList<OngoingItems> ongoingItems;
     private ArrayList<OngoingItems> requestedItems;
     private ArrayList<String> currentOrderIds;
-
+    private DrawerAdapter adapter2;
     private int currentInputCode;
 
     private int  requestsCount =0;
@@ -144,7 +137,7 @@ public class Main_Activity extends AppCompatActivity {
     private int currentSwitchBarPos;
 
     private ArrayList<String> ongoingItems_NGO;
-
+    private  FirebaseUser user;
 
 
 
@@ -166,7 +159,7 @@ public class Main_Activity extends AppCompatActivity {
         mainItems = new ArrayList<>();
         mainRecycler = findViewById(R.id.mainRecycler);
         nodonations = findViewById(R.id.no_donations);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         MyUID = user.getUid();
         currentInputCode = 0;
         nodonations.setVisibility(View.GONE);
@@ -393,15 +386,24 @@ public class Main_Activity extends AppCompatActivity {
                 .inject();
 
 
-
+        DrawerAdapter adapter2;
         screenIcons = loadScreenIcons();
         screenTitles = loadScreenTitles();
-
-        DrawerAdapter adapter2 = new DrawerAdapter(Arrays.asList(
-                createItemFor(POS_DASHBOARD).setChecked(true),
-                createItemFor(POS_NOTIFICATION),
-                createItemFor(POS_PLUS),
-                createItemFor(POS_PROFILE)));
+        if(user.getDisplayName().equals("Restaurant")) {
+           adapter2 = new DrawerAdapter(Arrays.asList(
+                    createItemFor(0).setChecked(true),
+                    createItemFor(1),
+                    createItemFor(2),
+                    createItemFor(3),
+                    createItemFor(4)));
+        }
+        else {
+            adapter2 = new DrawerAdapter(Arrays.asList(
+                    createItemFor(0).setChecked(true),
+                    createItemFor(2),
+                    createItemFor(3),
+                    createItemFor(4)));
+        }
         adapter2.setListener(new DrawerAdapter.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int position) {
@@ -414,7 +416,7 @@ public class Main_Activity extends AppCompatActivity {
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter2);
 
-        adapter2.setSelected(POS_DASHBOARD);
+        adapter2.setSelected(0);
 
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -423,20 +425,23 @@ public class Main_Activity extends AppCompatActivity {
             }
         });
 
-        logoutButton = findViewById(R.id.logoutButton);
-        settingsButton = findViewById(R.id.settingsButton);
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
+        searchBarLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logout();
+                AlertDialog.Builder builder = new AlertDialog.Builder(Main_Activity.this);
+                builder.setCancelable(true);
+                builder.setTitle("Search Feature");
+                builder.setMessage("The search feature is not yet available");
+                builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
-
-
-
-
-
     }
 
 
@@ -451,39 +456,61 @@ public class Main_Activity extends AppCompatActivity {
 
 
         slidingRootNav.closeMenu();
+        if(user.getDisplayName().equals("Restaurant")) {
+            switch (position) {
+                case 0: {
+                    slidingRootNav.closeMenu();
+                    break;
+                }
+                case 1: {
+                    Intent intent = new Intent(Main_Activity.this, addClass.class);
+                    startActivity(intent);
+                    break;
+                }
+                case 2: {
+                    Intent intent = new Intent(Main_Activity.this, profileClass.class);
+                    intent.putExtra("From", "Navigation");
+                    startActivity(intent);
+                    break;
+                }
 
-        switch (position)
-        {
-            case 0:
-            {
-                slidingRootNav.closeMenu();
-                break;
+                case 3: {
+                    break;
+                }
+                case 4: {
+                    logout();
+                    break;
+                }
+
+
             }
-            case 1:
-            {
-
-            }
-            case 2:
-            {
-                Intent intent = new Intent(Main_Activity.this, addClass.class);
-                startActivity(intent);
-                break;
-            }
-
-
-            case 3:
-            {
-                Intent intent = new Intent(Main_Activity.this, profileClass.class);
-                intent.putExtra("From","Navigation");
-                startActivity(intent);
-                break;
-            }
-
-
-
-
-
         }
+        else
+            {
+                switch (position) {
+                    case 0: {
+                        slidingRootNav.closeMenu();
+                        break;
+                    }
+                    case 1: {
+                        Intent intent = new Intent(Main_Activity.this, profileClass.class);
+                        intent.putExtra("From", "Navigation");
+                        startActivity(intent);
+                        break;
+                    }
+                    case 2: {
+                        break;
+                    }
+
+                    case 3: {
+                        logout();
+                        break;
+                    }
+
+
+                }
+            }
+
 
     }
 
@@ -1051,5 +1078,9 @@ public class Main_Activity extends AppCompatActivity {
             Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+    }
 }
