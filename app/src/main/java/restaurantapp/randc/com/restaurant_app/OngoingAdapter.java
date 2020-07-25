@@ -38,6 +38,7 @@ public class OngoingAdapter extends PagerAdapter{
     private TextView meatPop;
     private TextView grainsPop;
     private TextView dairyPop;
+    private TextView dishesPop;
 
 
 
@@ -71,9 +72,12 @@ public class OngoingAdapter extends PagerAdapter{
             meatPop = view.findViewById(R.id.meatPop);
             grainsPop = view.findViewById(R.id.grainsPop);
             dairyPop = view.findViewById(R.id.dairyPop);
+            dishesPop = view.findViewById(R.id.dishesPop);
             picture = view.findViewById(R.id.ongoingImage);
             name.setText(item.getName());
             weights.setText(item.getWeight()+" kg");
+
+            Log.d("TAG", "instantiateItem: Dishes: "+item.isDishes());
 
 
 
@@ -103,6 +107,10 @@ public class OngoingAdapter extends PagerAdapter{
             {
                 veggiesPop.setVisibility(View.VISIBLE);
             }
+            if (item.isDishes())
+            {
+                dishesPop.setVisibility(View.VISIBLE);
+            }
 
             float density = mContext.getResources()
                     .getDisplayMetrics()
@@ -126,11 +134,12 @@ public class OngoingAdapter extends PagerAdapter{
                     intent.putExtra(Constants.uid_intent, item.getNGOID());
                     intent.putExtra(Constants.orderId_intent, item.getOrderID());
                     intent.putExtra(Constants.name_intent, item.getName());
-                    intent.putExtra(Constants.isDairy_intent,item.isDairy );
-                    intent.putExtra(Constants.isGrains_intent, item.isGrains);
-                    intent.putExtra(Constants.isFruits_intent, item.isFruits);
-                    intent.putExtra(Constants.isVeggies_intent, item.isVeggies);
-                    intent.putExtra(Constants.isMeat_intent,item.isMeat);
+                    intent.putExtra(Constants.isDairy_intent,item.isDairy() );
+                    intent.putExtra(Constants.isGrains_intent, item.isGrains());
+                    intent.putExtra(Constants.isFruits_intent, item.isFruits());
+                    intent.putExtra(Constants.isVeggies_intent, item.isVeggies());
+                    intent.putExtra(Constants.isMeat_intent,item.isMeat());
+                    intent.putExtra(Constants.isDishes_intent, item.isDishes());
                     intent.putExtra(Constants.address_intent, item.getAddress());
                     intent.putExtra(Constants.total_weight_intent,item.getWeight());
                     intent.putExtra("From","ongoingItem");

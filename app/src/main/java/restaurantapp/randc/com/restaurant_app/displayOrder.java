@@ -91,7 +91,7 @@ public class displayOrder extends AppCompatActivity {
     private boolean isVeggies;
     private boolean isMeat;
     private boolean isGrains;
-    //private boolean isDishes;
+    private boolean isDishes;
     private boolean isDairy;
     private ImageView requestArrow;
 
@@ -104,6 +104,7 @@ public class displayOrder extends AppCompatActivity {
     private ArrayList<categoryItem> grainsList;
     private ArrayList<categoryItem> dairyList;
     private ArrayList<categoryItem> meatList;
+    private ArrayList<categoryItem> dishesList;
     private ArrayList<displayRequestsItem> requestedItemList;
 
 
@@ -113,6 +114,7 @@ public class displayOrder extends AppCompatActivity {
     private float dairyWeight;
     private float veggiesWeight;
     private float meatWeight;
+    private float dishesWeight;
 
 
     @Override
@@ -130,6 +132,7 @@ public class displayOrder extends AppCompatActivity {
         isGrains = intent.getBooleanExtra(Constants.isGrains_intent, false);
         isVeggies = intent.getBooleanExtra(Constants.isVeggies_intent, false);
         isMeat = intent.getBooleanExtra(Constants.isMeat_intent, false);
+        isDishes = intent.getBooleanExtra(Constants.isDishes_intent, false);
 
         total_Weight = Float.parseFloat(intent.getStringExtra(Constants.total_weight_intent));
 
@@ -374,6 +377,10 @@ public class displayOrder extends AppCompatActivity {
         {
             categoriesBar.setItemActiveIndex(4);
         }
+        else if (isDishes)
+        {
+            categoriesBar.setItemActiveIndex(5);
+        }
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
@@ -383,6 +390,7 @@ public class displayOrder extends AppCompatActivity {
         grainsList = new ArrayList<>();
         meatList = new ArrayList<>();
         dairyList = new ArrayList<>();
+        dishesList = new ArrayList<>();
 
         requestedItemList = new ArrayList<>();
 
@@ -391,6 +399,7 @@ public class displayOrder extends AppCompatActivity {
         meatWeight=0;
         grainsWeight=0;
         dairyWeight=0;
+        dishesWeight = 0;
 
         GetBackgroundInfo backgroundInfo = new GetBackgroundInfo();
         backgroundInfo.execute();
@@ -900,6 +909,22 @@ public class displayOrder extends AppCompatActivity {
                     }
                 }
 
+                else if (i==5)
+                {
+                    categoryName.setText("Dishes Summary");
+                    if (isDishes && dishesList.size()>0 && dishesWeight>0.0f) {
+                        displayOrderRecycler.setVisibility(View.VISIBLE);
+                        mDisplayOrderAdapter = new displayOrderAdapter(dishesList);
+                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                        categoryWeight.setText(Float.toString(dishesWeight)+"kg");
+                    }
+                    else {
+                        categoryWeight.setText("0.0kg");
+
+                        displayOrderRecycler.setVisibility(View.INVISIBLE);
+                    }
+                }
+
                 return false;
             }
         });
@@ -1152,6 +1177,16 @@ public class displayOrder extends AppCompatActivity {
 
                     }
 
+                    if (isDishes && snapshot.hasChild(Constants.dishesName_fire))
+                    {
+
+                        dishesList = snapshot.child(Constants.dishesName_fire).child("Items").getValue(t);
+                        if (dishesList != null &&dishesList.size()>0) {
+                            dishesWeight = getTotalWeight(dishesList);
+                        }
+
+                    }
+
                     onPostExecute(true);
 
 
@@ -1217,6 +1252,14 @@ public class displayOrder extends AppCompatActivity {
                             categoriesBar.setItemActiveIndex(4);
                             currentCategory = "Meat";
                             currentWeight = meatWeight;
+
+                        }
+
+                        else if (isDishes && dishesList != null && dishesList.size() > 0) {
+                            mDisplayOrderAdapter = new displayOrderAdapter(dishesList);
+                            categoriesBar.setItemActiveIndex(4);
+                            currentCategory = "Dishes";
+                            currentWeight = dishesWeight;
 
                         }
 
@@ -1292,22 +1335,10 @@ public class displayOrder extends AppCompatActivity {
 
     }
 
-   /* @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu:
-                mMenuDialogFragment.show(fragmentManager, "ContextMenuDialogFragment");
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
+    public void onBackPressed() {
+        // Disabling back button for current activity
+    }
 
 }
 

@@ -104,6 +104,10 @@ dependencies {
 
     implementation 'com.baoyz.pullrefreshlayout:library:1.2.0'
 
+    implementation 'com.balysv:material-ripple:1.0.2'
+
+    implementation 'com.ramotion.fluidslider:fluid-slider:0.3.1'
+
 
 
 

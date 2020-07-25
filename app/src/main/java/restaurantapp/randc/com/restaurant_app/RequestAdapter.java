@@ -38,6 +38,7 @@ public class RequestAdapter extends PagerAdapter{
     private TextView meatPop;
     private TextView grainsPop;
     private TextView dairyPop;
+    private TextView dishesPop;
 
 
 
@@ -71,6 +72,8 @@ public class RequestAdapter extends PagerAdapter{
         meatPop = view.findViewById(R.id.meatPop);
         grainsPop = view.findViewById(R.id.grainsPop);
         dairyPop = view.findViewById(R.id.dairyPop);
+        dishesPop = view.findViewById(R.id.dishesPop);
+
         picture = view.findViewById(R.id.ongoingImage);
         name.setText(item.getName());
         weights.setText(item.getWeight()+" kg");
@@ -102,6 +105,10 @@ public class RequestAdapter extends PagerAdapter{
         if (item.isVeggies())
         {
             veggiesPop.setVisibility(View.VISIBLE);
+        }
+        if (item.isDishes())
+        {
+            dishesPop.setVisibility(View.VISIBLE);
         }
 
         float density = mContext.getResources()
@@ -135,11 +142,12 @@ public class RequestAdapter extends PagerAdapter{
                 Intent intent = new Intent((Activity)mContext, displayOrder.class);
 
                 intent.putExtra(Constants.orderId_intent, item.getOrderID());
-                intent.putExtra(Constants.isDairy_intent,item.isDairy );
-                intent.putExtra(Constants.isGrains_intent, item.isGrains);
-                intent.putExtra(Constants.isFruits_intent, item.isFruits);
-                intent.putExtra(Constants.isVeggies_intent, item.isVeggies);
-                intent.putExtra(Constants.isMeat_intent,item.isMeat);
+                intent.putExtra(Constants.isDairy_intent,item.isDairy() );
+                intent.putExtra(Constants.isGrains_intent, item.isGrains());
+                intent.putExtra(Constants.isFruits_intent, item.isFruits());
+                intent.putExtra(Constants.isVeggies_intent, item.isVeggies());
+                intent.putExtra(Constants.isMeat_intent,item.isMeat());
+                intent.putExtra(Constants.isDishes_intent, item.isDishes());
                 intent.putExtra(Constants.total_weight_intent,item.getWeight());
                 intent.putExtra("From","requestItem");
 

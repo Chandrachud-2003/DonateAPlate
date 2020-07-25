@@ -179,4 +179,9 @@ public class registration3 extends AppCompatActivity {
         editor.apply();
         Log.d("TAG","DONE3");
     }
+
+    @Override
+    public void onBackPressed() {
+        // Disabling back button for current activity
+    }
 }

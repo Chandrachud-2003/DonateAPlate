@@ -88,6 +88,10 @@ public class addClass extends AppCompatActivity {
     private float totalDairyWeight=0.0f;
 
     private ArrayList<categoryItem> dairyList;
+
+    private float totalDishesWeight = 0;
+    private ArrayList<categoryItem> dishesList;
+
     private ProgressDialog progressdialog;
 
 
@@ -133,6 +137,8 @@ public class addClass extends AppCompatActivity {
 
         vegPercent = findViewById(R.id.veggiesPercentText);
 
+        dishPercent = findViewById(R.id.dishesPercentText);
+
         donateButton = findViewById(R.id.donateTextView);
 
 
@@ -143,6 +149,7 @@ public class addClass extends AppCompatActivity {
         grainsList = new ArrayList<>();
         dairyList = new ArrayList<>();
         meatList = new ArrayList<>();
+        dishesList = new ArrayList<>();
 
         setOnClickListeners();
 
@@ -174,6 +181,8 @@ public class addClass extends AppCompatActivity {
                         editor.remove(Constants.DairyPref+"weights");
                         editor.remove(Constants.grainsPref);
                         editor.remove(Constants.grainsPref+"weights");
+                        editor.remove(Constants.dishesPref);
+                        editor.remove(Constants.dishesPref+"weights");
                         editor.apply();
                         editor.apply();
                         setUpBottomDonation();
@@ -185,6 +194,8 @@ public class addClass extends AppCompatActivity {
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
                     }
                 });
 
@@ -256,6 +267,8 @@ public class addClass extends AppCompatActivity {
                     editor.remove(Constants.DairyPref+"weights");
                     editor.remove(Constants.grainsPref);
                     editor.remove(Constants.grainsPref+"weights");
+                    editor.remove(Constants.dishesPref);
+                    editor.remove(Constants.dishesPref+"weights");
                     editor.apply();
                     progressdialog.setMessage("Adding Donation...");
                     progressdialog.show();
@@ -294,7 +307,7 @@ public class addClass extends AppCompatActivity {
 
         //FRUITS
         String retrievedCategoryItems = sharedPreferences.getString(Constants.fruitPref, "");
-        if(retrievedCategoryItems!="") {
+        if(!retrievedCategoryItems.equals("")) {
 
             fruitList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
@@ -314,7 +327,7 @@ public class addClass extends AppCompatActivity {
 
         //Veggies
         retrievedCategoryItems = sharedPreferences.getString(Constants.vegetablePref, "");
-        if(retrievedCategoryItems!="") {
+        if(!retrievedCategoryItems.equals("")) {
             veggiesList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
             Log.d("TAG", "retrieveValuesFromMem: entered "+veggiesList.toString());
 
@@ -333,7 +346,7 @@ public class addClass extends AppCompatActivity {
 
         //Meat
         retrievedCategoryItems = sharedPreferences.getString(Constants.meatPref, "");
-        if(retrievedCategoryItems!="") {
+        if(!retrievedCategoryItems.equals("")) {
             meatList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<meatList.size();i++)
@@ -349,7 +362,7 @@ public class addClass extends AppCompatActivity {
 
         //Grains
         retrievedCategoryItems = sharedPreferences.getString(Constants.grainsPref, "");
-        if(retrievedCategoryItems!="") {
+        if(!retrievedCategoryItems.equals("")) {
             grainsList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<grainsList.size();i++)
@@ -365,7 +378,7 @@ public class addClass extends AppCompatActivity {
 
         //Grains
         retrievedCategoryItems = sharedPreferences.getString(Constants.DairyPref, "");
-        if(retrievedCategoryItems!="") {
+        if(!retrievedCategoryItems.equals("")) {
             dairyList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<dairyList.size();i++)
@@ -377,6 +390,22 @@ public class addClass extends AppCompatActivity {
         else {
             dairyList = null;
             totalDairyWeight = 0;
+        }
+
+        //Dishes
+        retrievedCategoryItems = sharedPreferences.getString(Constants.dishesPref, "");
+        if(!retrievedCategoryItems.equals("")) {
+            dishesList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
+
+            for (int i=0;i<dishesList.size();i++)
+            {
+                totalDishesWeight+=dishesList.get(i).getFoodWeight();
+            }
+
+        }
+        else {
+            dishesList = null;
+            totalDishesWeight = 0.0f;
         }
 
 
@@ -401,6 +430,7 @@ public class addClass extends AppCompatActivity {
         mEntries.add(new PieEntry(totalMeatWeight, 3));
         mEntries.add(new PieEntry(totalGrainsWeight, 4));
         mEntries.add(new PieEntry(totalDairyWeight, 5));
+        mEntries.add(new PieEntry(totalDishesWeight, 6));
 
         mPieDataSet = new PieDataSet(mEntries, "");
 
@@ -459,19 +489,20 @@ public class addClass extends AppCompatActivity {
 
     private void setUpPieText()
     {
-        float total = totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight;
+        float total = totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight+totalDishesWeight;
         float dairyPercentage = (totalDairyWeight/total)*100.0f;
         float meatPercentage = (totalMeatWeight/total)*100.0f;
         float fruitPercentage = (totalFruitWeight/total)*100.0f;
         float vegPercentage = (totalVeggesWeight/total)*100.0f;
         float grainsPercentage = (totalGrainsWeight/total)*100.0f;
-        float dishesPercentage = (totalDairyWeight/total)*100.0f;
+        float dishesPercentage = (totalDishesWeight/total)*100.0f;
 
         dairyPercent.setText((int)dairyPercentage+"%");
         meatPercent.setText((int)meatPercentage+"%");
         grainPercent.setText((int)grainsPercentage+"%");
         fruitPercent.setText((int)fruitPercentage+"%");
         vegPercent.setText((int)vegPercentage+"%");
+        dishPercent.setText((int)dishesPercentage+"%");
 
 
     }
@@ -479,7 +510,7 @@ public class addClass extends AppCompatActivity {
     private void setUpBottomDonation()
     {
         donateButton.setVisibility(View.GONE);
-        float total = totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight;
+        float total = totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight+totalDishesWeight;
 
         ArrayList<donationBottomItem> foodList= new ArrayList<>();
 
@@ -505,6 +536,11 @@ public class addClass extends AppCompatActivity {
             foodList.add(new donationBottomItem("Grains", totalGrainsWeight, grainsList, R.drawable.grains_donation_bottom));
         }
 
+        if (totalDishesWeight!=0)
+        {
+            foodList.add(new donationBottomItem("Dishes", totalDishesWeight, dishesList, R.drawable.dishes_donation_bottom));
+        }
+
 
         if (foodList.size()!=0) {
 
@@ -528,10 +564,6 @@ public class addClass extends AppCompatActivity {
 
     private void addToFirebase(String uid)
     {
-
-
-
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection(Constants.rest_fire).document(uid).get()
@@ -659,10 +691,17 @@ public class addClass extends AppCompatActivity {
 
         }
 
+        if (totalDishesWeight!=0 && dishesList.size()>0)
+        {
+            Map<String, Object> map = new HashMap<>();
+            map.put(Constants.item_fire, dishesList);
+            addFood(Constants.dishesName_fire, map, uid);
+        }
+
         Map<String, Object> infoMap = new HashMap<>();
         infoMap.put("Name", restName);
         infoMap.put("Address", restAddress);
-        infoMap.put("Total Weight", totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight);
+        infoMap.put("Total Weight", totalDairyWeight+totalFruitWeight+totalGrainsWeight+totalMeatWeight+totalVeggesWeight+totalDishesWeight);
         infoMap.put("State","New");
 
 

@@ -206,5 +206,7 @@ public class registration5 extends AppCompatActivity {
     public void onBackPressed() {
         // Disabling back button for current activity
     }
+
+
 }
 

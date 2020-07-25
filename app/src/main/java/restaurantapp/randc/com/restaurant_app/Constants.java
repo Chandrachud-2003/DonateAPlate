@@ -1,5 +1,7 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import java.util.ArrayList;
+
 public class Constants {
 
     public static final String tag = "tag";
@@ -45,6 +47,7 @@ public class Constants {
     public static final String isMeat_intent = "isMeat";
     public static final String isDairy_intent = "isDairy";
     public static final String isGrains_intent = "isGrains";
+    public static final String isDishes_intent = "isDishes";
     public static final String address_intent = "Address";
 
     public static final String ngo_ongoing_list_fire = "Ongoing List";
@@ -61,8 +64,84 @@ public class Constants {
 
     public static final String workManager_tag = "WorkManager-Restaurant-App";
 
+    public static final ArrayList<Integer> fruit_imgs = new ArrayList<Integer>() {
+        {
+            add(R.drawable.circle_apple);
+            add(R.drawable.circle_banana);
+            add(R.drawable.mango_img);
+            add(R.drawable.pineapple);
+            add(R.drawable.watermellon_img);
+            add(R.drawable.lemon);
+            add(R.drawable.strawberry);
+            add(R.drawable.orange);
+            add(R.drawable.grapes);
+            add(R.drawable.avacado_img);
+        }
+    };
 
 
+    public static final ArrayList<Integer> veg_imgs = new ArrayList<Integer>() {
+        {
+            add(R.drawable.carrot);
+            add(R.drawable.tomato);
+            add(R.drawable.potato);
+            add(R.drawable.onion);
+            add(R.drawable.corn);
+            add(R.drawable.cucumber);
+            add(R.drawable.capsicum);
+            add(R.drawable.garlic);
+            add(R.drawable.mushrooms);
+            add(R.drawable.greenbeans);
+            add(R.drawable.lettuce);
+            add(R.drawable.spinach);
+            add(R.drawable.broccoli);
+            add(R.drawable.cabbage);
+        }
+    };
 
-    //consts
+    public static final ArrayList<Integer> dairy_imgs = new ArrayList<Integer>() {
+        {
+            add(R.drawable.milk);
+            add(R.drawable.paneer);
+            add(R.drawable.butter);
+            add(R.drawable.cheese);
+            add(R.drawable.tofu);
+            add(R.drawable.curd);
+
+        }
+    };
+
+    public static final ArrayList<Integer> meat_imgs = new ArrayList<Integer>() {
+        {
+            add(R.drawable.chicken);
+            add(R.drawable.lamb);
+            add(R.drawable.fish);
+            add(R.drawable.pork);
+            add(R.drawable.beef);
+
+        }
+    };
+
+    public static final ArrayList<Integer> grains_imgs = new ArrayList<Integer>() {
+        {
+            add(R.drawable.rice);
+            add(R.drawable.wheat);
+            add(R.drawable.dal);
+            add(R.drawable.oats);
+            add(R.drawable.millets);
+            add(R.drawable.barley);
+
+        }
+    };
+
+    public static final ArrayList<Integer> dishes_imgs = new ArrayList<Integer>() {
+        {
+            add(R.drawable.dishes_custom_1);
+            add(R.drawable.dishes_custom_2);
+            add(R.drawable.dishes_custom_3);
+
+
+        }
+    };
+
 }

@@ -148,6 +148,11 @@
         <item>@drawable/curd</item>
     </integer-array>
 
+    <integer-array name="dishes_img">
+        <item>@drawable/dishes_custom_1</item>
+
+    </integer-array>
+
     <string-array name="category_items">
         <item>Fruits</item>
         <item>Veggies</item>

@@ -150,4 +150,9 @@ public class registration1 extends AppCompatActivity {
         Log.d("TAG","DONE1");
     }
 
+    @Override
+    public void onBackPressed() {
+        // Disabling back button for current activity
+    }
+
 }

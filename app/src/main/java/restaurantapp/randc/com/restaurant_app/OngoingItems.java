@@ -10,11 +10,12 @@ public class OngoingItems {
     boolean isDairy;
     boolean isGrains;
     boolean isMeat;
+    boolean isDishes;
     String OrderID;
     String NGOID;
     String Address;
 
-    public OngoingItems(String name, String image, String weight, boolean isVeggies, boolean isFruits, boolean isDairy, boolean isGrains, boolean isMeat, String orderID, String NGOID, String address) {
+    public OngoingItems(String name, String image, String weight, boolean isVeggies, boolean isFruits, boolean isDairy, boolean isGrains, boolean isMeat, boolean isDishes, String orderID, String NGOID, String address) {
         this.name = name;
         this.image = image;
         this.weight = weight;
@@ -26,6 +27,7 @@ public class OngoingItems {
         OrderID = orderID;
         this.NGOID = NGOID;
         Address = address;
+        this.isDishes = isDishes;
     }
 
     public String getName() {
@@ -114,5 +116,13 @@ public class OngoingItems {
 
     public void setAddress(String address) {
         Address = address;
+    }
+
+    public boolean isDishes() {
+        return isDishes;
+    }
+
+    public void setDishes(boolean dishes) {
+        isDishes = dishes;
     }
 }

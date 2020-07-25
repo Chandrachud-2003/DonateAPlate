@@ -168,6 +168,9 @@ import androidx.recyclerview.widget.RecyclerView;
                     } else {
                         holder.meatview.setVisibility(View.GONE);
                     }
+
+
+
                     int height = (int) ((width * 2) / 3);
 
                     Transformation transformation = new RoundedTransformationBuilder()
@@ -200,6 +203,7 @@ import androidx.recyclerview.widget.RecyclerView;
                             intent.putExtra(Constants.isFruits_intent, list.get(position).isFruits());
                             intent.putExtra(Constants.isVeggies_intent, list.get(position).isVegetables());
                             intent.putExtra(Constants.isMeat_intent, list.get(position).isMeat());
+                            intent.putExtra(Constants.isDishes_intent, list.get(position).isDishes());
                             intent.putExtra(Constants.address_intent, address);
                             intent.putExtra(Constants.total_weight_intent,list.get(position).getWeight());
                             if(newOrAccepted.equals("New")) {

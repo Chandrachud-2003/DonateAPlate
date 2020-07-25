@@ -117,6 +117,7 @@ public class Main_Activity extends AppCompatActivity {
     private String tempUrl;
     private boolean tempGrain;
     private boolean tempDairy;
+    private boolean tempDishes;
 
     private CustomSmoothViewPager ongoingRecycler;
     private CustomSmoothViewPager requestedRecycler;
@@ -608,7 +609,7 @@ public class Main_Activity extends AppCompatActivity {
                                     rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshotFood) {
-                                            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
+                                            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes=false;
 
                                             if (snapshotFood.hasChild(Constants.dairyName_fire)) {
                                                 tempDairy = true;
@@ -626,8 +627,13 @@ public class Main_Activity extends AppCompatActivity {
                                                 tempGrain = true;
                                             }
 
+                                            if (snapshotFood.hasChild(Constants.dishesName_fire)) {
+                                                Log.d("TAG", "onDataChange: tempDishes=true");
+                                                tempDishes = true;
+                                            }
 
-                                            requestedItems.add(new OngoingItems(requestsCount+" Requests", null, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, currentOrderIds.get(i), MyUID, ""));
+
+                                            requestedItems.add(new OngoingItems(requestsCount+" Requests", null, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, tempDishes, currentOrderIds.get(i), MyUID, ""));
                                             myDonationsRetriever(i + 1, num);
                                         }
 
@@ -651,7 +657,7 @@ public class Main_Activity extends AppCompatActivity {
                             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshotFood) {
-                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = false;
+                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg=tempDishes = false;
 
                                     if (snapshotFood.hasChild(Constants.dairyName_fire)) {
                                         tempDairy = true;
@@ -668,6 +674,12 @@ public class Main_Activity extends AppCompatActivity {
                                     if (snapshotFood.hasChild(Constants.grainsName_fire)) {
                                         tempGrain = true;
                                     }
+                                    if (snapshotFood.hasChild(Constants.dishesName_fire))
+                                    {
+                                        Log.d("TAG", "onDataChange: tempDishes=true");
+
+                                        tempDishes = true;
+                                    }
                                     String NGOuid = snapshotInfo.child("Accepted").getValue().toString();
                                     db.collection(Constants.ngo_fire).document(
                                             NGOuid).get()
@@ -679,7 +691,7 @@ public class Main_Activity extends AppCompatActivity {
                                                         String name = documentSnapshot.get("Name").toString();
                                                         String url = documentSnapshot.get("Url").toString();
                                                         String address = documentSnapshot.get("Address").toString();
-                                                        ongoingItems.add(new OngoingItems(name, url, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, currentOrderIds.get(i), NGOuid, address));
+                                                        ongoingItems.add(new OngoingItems(name, url, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, tempDishes, currentOrderIds.get(i), NGOuid, address));
                                                         myDonationsRetriever(i + 1, num);
                                                     }
                                                 }
@@ -749,7 +761,7 @@ public class Main_Activity extends AppCompatActivity {
             String id = ongoingItems_NGO.get(i);
             String userId = id.substring(0, id.indexOf("-")).trim();
 
-            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempVeg = false;
+            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg  = tempDishes= false;
             tempName = tempUrl = tempType = "";
 
 
@@ -801,6 +813,12 @@ public class Main_Activity extends AppCompatActivity {
                                             if (snapshot.hasChild(Constants.grainsName_fire)) {
                                                 tempGrain = true;
                                             }
+                                            if(snapshot.hasChild(Constants.dishesName_fire))
+                                            {
+                                                Log.d("TAG", "onDataChange: tempDishes=true");
+
+                                                tempDishes = true;
+                                            }
 
                                             rootRef.child(Constants.orderName_fire).child(id).child("Info").child("Total Weight").addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
@@ -811,7 +829,7 @@ public class Main_Activity extends AppCompatActivity {
                                                     Log.d("CHECK", "TEMP WEIGHT:" + tempTotalWeight);
                                                     if(code== currentInputCode)
                                                     {
-                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
                                                         myDonationsRetriever_NGO(i + 1, num,code);
                                                     }
                                                 }
@@ -871,7 +889,7 @@ public class Main_Activity extends AppCompatActivity {
             String id = orderIds.get(i).trim();
             String userId = id.substring(0, id.indexOf("-")).trim();
 
-            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempVeg = false;
+            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes = false;
             tempName = tempUrl = tempType = "";
 
 
@@ -924,6 +942,12 @@ public class Main_Activity extends AppCompatActivity {
                                             if (snapshot.hasChild(Constants.grainsName_fire)) {
                                                 tempGrain = true;
                                             }
+                                            if (snapshot.hasChild(Constants.dishesName_fire))
+                                            {
+                                                Log.d("TAG", "onDataChange: tempDishes=true");
+
+                                                tempDishes = true;
+                                            }
 
                                             rootRef.child(Constants.orderName_fire).child(id).child("Info").child("Total Weight").addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
@@ -932,7 +956,7 @@ public class Main_Activity extends AppCompatActivity {
                                                     tempTotalWeight = snapshot.getValue().toString();
 
                                                     if(code== currentInputCode) {
-                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, false, tempGrain, tempUrl, userId, id, tempAddress));
+                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
                                                         retriever(i + 1, max, check, intitialPos,code);
                                                     }
 

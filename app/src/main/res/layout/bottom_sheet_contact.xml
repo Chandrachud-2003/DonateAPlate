@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorTransparent"
+
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tempConstraintLayout_BottomContact"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:background="@drawable/bottom_contact_bg"
+        android:paddingBottom="20dp"
+        >
+
+        <TextView
+            android:id="@+id/mainContactHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gilroy_extrabold"
+            android:text="Contact Method"
+            android:textSize="22sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            />
+
+        <TextView
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:textSize="18sp"
+            android:text="Cancel"
+            android:fontFamily="@font/gilroy_extrabold"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@id/mainContactHeading"
+            app:layout_constraintBottom_toBottomOf="@id/mainContactHeading"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="20dp"
+            />
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+
+            android:id="@+id/phoneRippleLayout"
+            app:layout_constraintTop_toBottomOf="@id/mainContactHeading"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:paddingVertical="10dp"
+            android:layout_height="wrap_content"
+            app:mrl_rippleDuration="500"
+            android:layout_marginTop="40dp"
+
+            app:mrl_rippleHover="true"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                >
+
+                <ImageView
+                    android:id="@+id/phoneContactImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@color/transparent"
+                    android:layout_marginLeft="30dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/phone_contact"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="20dp"
+                    app:layout_constraintStart_toEndOf="@id/phoneContactImage"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/gilroy_extrabold"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+
+                    android:text="Phone"
+                    />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+
+            android:id="@+id/emailRippleLayout"
+            app:layout_constraintTop_toBottomOf="@id/phoneRippleLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:paddingVertical="10dp"
+            android:layout_height="wrap_content"
+            app:mrl_rippleDuration="500"
+
+            app:mrl_rippleHover="true"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                >
+
+                <ImageView
+                    android:id="@+id/emailContactImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@color/transparent"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/email_contact"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="20dp"
+                    app:layout_constraintStart_toEndOf="@id/emailContactImage"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/gilroy_extrabold"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+
+                    android:text="Email"
+                    />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+
+            android:id="@+id/whatsappRippleLayout"
+            app:layout_constraintTop_toBottomOf="@id/emailRippleLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:paddingVertical="10dp"
+            android:layout_height="wrap_content"
+            app:mrl_rippleDuration="500"
+
+            app:mrl_rippleHover="true"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                >
+
+                <ImageView
+                    android:id="@+id/whatsappContactImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@color/transparent"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/whatsapp_contact"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="20dp"
+                    app:layout_constraintStart_toEndOf="@id/whatsappContactImage"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/gilroy_extrabold"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+
+                    android:text="WhatsApp"
+                    />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+
+            android:id="@+id/messageRippleLayout"
+            app:layout_constraintTop_toBottomOf="@id/whatsappRippleLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:paddingVertical="10dp"
+            android:layout_height="wrap_content"
+            app:mrl_rippleDuration="500"
+
+            app:mrl_rippleHover="true"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                >
+
+                <ImageView
+                    android:id="@+id/messageContactImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@color/transparent"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/message_contact"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="20dp"
+                    app:layout_constraintStart_toEndOf="@id/messageContactImage"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/gilroy_extrabold"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+
+                    android:text="SMS"
+                    />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

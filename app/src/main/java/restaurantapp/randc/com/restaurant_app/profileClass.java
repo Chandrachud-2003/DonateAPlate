@@ -39,12 +39,14 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class profileClass extends AppCompatActivity implements PasswordDialog.DialogListener{
 
@@ -81,6 +83,10 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     private boolean pictureChanged = false;
     private double lat;
     private double lon;
+    private CardView contactButton;
+
+    private Bottom_Contact mBottom_contact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +118,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         gmaps.setVisibility(View.GONE);
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
         height = (int) ((width*2)/3.0);
+        contactButton = findViewById(R.id.contactButton);
 
         if(getIntent().getStringExtra("From").equals("mainItem"))
         {
@@ -134,6 +141,22 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         }
 
         updateDetails();
+
+        PushDownAnim.setPushDownAnimTo(contactButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        mBottom_contact = new Bottom_Contact(profileClass.this, emailView.getText().toString(), phnoView.getText().toString());
+                        mBottom_contact.show(getSupportFragmentManager(), "BottomSheetContactFragment");
+
+
+                    }
+
+
+                });
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -543,6 +566,11 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         }catch (SecurityException e){
             Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Disabling back button for current activity
     }
 }
 

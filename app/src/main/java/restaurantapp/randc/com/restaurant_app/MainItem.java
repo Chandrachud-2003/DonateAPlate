@@ -19,7 +19,7 @@ public class MainItem {
     private String address;
 
 
-    public MainItem(String location, String typeRestaurant, String time, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy, boolean dishes, boolean grains, String image, String uid, String orderId, String address) {
+    public MainItem(String location, String typeRestaurant, String time, String weight, String name, boolean fruits, boolean vegetables, boolean meat, boolean dairy,  boolean grains,boolean dishes, String image, String uid, String orderId, String address) {
         this.location = location;
         this.typeRestaurant = typeRestaurant;
         this.time = time;
