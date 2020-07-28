@@ -432,7 +432,7 @@ public class Main_Activity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Main_Activity.this);
                 builder.setCancelable(true);
                 builder.setTitle("Search Feature");
-                builder.setMessage("The search feature is not yet available");
+                builder.setMessage("The search feature coming soon!");
                 builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

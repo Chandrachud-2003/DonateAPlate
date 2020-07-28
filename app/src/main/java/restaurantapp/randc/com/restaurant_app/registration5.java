@@ -31,6 +31,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class registration5 extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class registration5 extends AppCompatActivity {
     private ProgressDialog lbar;
     private StorageReference storageReference;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private Button nextButton;
+    private CardView nextButton;
     private int width;
     private int height;
     private Transformation transformation;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <fragment
@@ -14,27 +14,49 @@
         tools:context=".MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-
-    <fragment android:id="@+id/autocomplete_fragment"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:layout_marginRight="45dp"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        app:cardBackgroundColor="@color/white"
+        >
 
-        />
+        <fragment android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    <Button
+            android:layout_gravity="center"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+
+            />
+
+    </androidx.cardview.widget.CardView>
+
+
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/location_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="25dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/blue"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="7dp"
+        android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
-        android:text="Select This Location"
-        android:background="@drawable/select_locationbg"
-        android:textSize="15sp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:padding="10dp"
+        >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="10dp"
+        android:fontFamily="@font/gilroy_extrabold"
+        android:text="Confirm Location"
+        android:textColor="@color/white"
+        android:textSize="20sp"
 
         />
+  </androidx.cardview.widget.CardView>
+
 </RelativeLayout>

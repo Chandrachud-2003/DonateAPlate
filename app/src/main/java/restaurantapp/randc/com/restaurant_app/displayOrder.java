@@ -193,12 +193,7 @@ public class displayOrder extends AppCompatActivity {
         @Override
         public void onGlobalLayout() {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                displayAnimation.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            } else {
-                displayAnimation.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            }
-
+            displayAnimation.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
 
             int newDimensions = (int) (screen_width*0.28);

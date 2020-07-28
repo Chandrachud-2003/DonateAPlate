@@ -40,6 +40,7 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
 
@@ -55,7 +56,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private double longitude;
     private GoogleMap mMap;
     private Marker currentMarker;
-    private Button select;
+    private CardView select;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
