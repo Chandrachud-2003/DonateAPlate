@@ -20,15 +20,13 @@
         <activity android:name=".profileClass" />
         <activity android:name=".MapActivity" />
         <activity android:name=".displayOrder" />
-        <activity android:name=".registration5" />
+        <activity android:name=".profilePictureClass" />
         <activity android:name=".addClass" />
         <activity android:name=".resetpassword" />
         <activity android:name=".Main_Activity" />
         <activity android:name=".categoryAdd"
             android:windowSoftInputMode="adjustNothing"
             />
-        <activity android:name=".registration3" />
-        <activity android:name=".registration4" />
         <activity android:name=".LoginActivity">
 
         </activity>

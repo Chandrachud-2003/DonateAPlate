@@ -130,6 +130,7 @@
                 android:fontFamily="@font/montserrat"
                 android:textStyle="bold"
                 android:textColorHint="@color/gray"
+                android:inputType="text"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
                 android:textSize="15sp"

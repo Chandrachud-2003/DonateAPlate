@@ -666,6 +666,8 @@ public class displayOrder extends AppCompatActivity {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                         if(From.equals("mainItem")) {
+                            dialog.setMessage("Requesting...");
+                            dialog.show();
                             String id = user.getUid();
                             db.collection("NGO").document(id).get()
                                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -683,6 +685,7 @@ public class displayOrder extends AppCompatActivity {
 
                                                                 mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
                                                                 mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" has requested for your donation!");
+                                                                dialog.dismiss();
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
@@ -690,6 +693,7 @@ public class displayOrder extends AppCompatActivity {
                                                             public void onFailure(@NonNull Exception e) {
                                                                 Log.d(Constants.tag, "error: " + e + " add");
                                                                 Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                dialog.dismiss();
                                                             }
                                                         });
                                             }
@@ -699,6 +703,7 @@ public class displayOrder extends AppCompatActivity {
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d(Constants.tag, "error: " + e + " add");
                                     Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                    dialog.dismiss();
                                 }
                             });
 

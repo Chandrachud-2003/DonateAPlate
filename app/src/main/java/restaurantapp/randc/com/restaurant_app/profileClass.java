@@ -138,6 +138,10 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         if(getIntent().getStringExtra("From").equals("Navigation")) {
             uid = user.getUid();
             main_collection = user.getDisplayName();
+            if(main_collection.equals("Individual"))
+            {
+                main_collection = "Restaurant";
+            }
             detailsText.setText("Your Details");
             contactButton.setVisibility(View.GONE);
         }

@@ -184,7 +184,7 @@ public class Main_Activity extends AppCompatActivity {
 
 
 
-        if(user.getDisplayName().equals("Restaurant")) {
+        if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
             switchBar.setVisibility(View.GONE);
             ongoingRecycler.setVisibility(View.VISIBLE);
             ongoingRecycler.setPadding(150, 0, 150, 0);

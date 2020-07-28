@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,6 +58,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText typeView;
     private String email;
     private FirebaseAuth mAuth;
+    private ProgressDialog lbar;
     private String password;
     private String Type;
     private ConstraintLayout selectorLayout;
@@ -101,6 +103,7 @@ public class SignupActivity extends AppCompatActivity {
         emailView = findViewById(R.id.emailView);
         passwordConfirm = findViewById(R.id.confirmView);
         loginbutton = findViewById(R.id.signin);
+        lbar = new ProgressDialog(this);
         passwordView = findViewById(R.id.passwordView);
         selectorLayout = findViewById(R.id.selectorLayout);
         signupLayout = findViewById(R.id.subSignupLayout);
@@ -311,6 +314,9 @@ public class SignupActivity extends AppCompatActivity {
                         Toast.makeText(SignupActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
                     } else {
 
+                        lbar.setMessage("Please wait...");
+                        lbar.setCanceledOnTouchOutside(false);
+                        lbar.show();
 
                         mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                             @Override
@@ -335,17 +341,22 @@ public class SignupActivity extends AppCompatActivity {
                                             if(mLocationPermissionGranted){
                                                 Intent intent = new Intent(SignupActivity.this, MapActivity.class);
                                                 startActivity(intent);
+                                                lbar.dismiss();
                                             }
                                             else{
                                                 getLocationPermission();
+                                                lbar.dismiss();
                                             }
                                         }
 
                                     } else {
                                         emailView.setError("Email already exists");
+                                        lbar.dismiss();
                                         Toast.makeText(SignupActivity.this, "An account with this email already exists!", Toast.LENGTH_LONG).show();
                                     }
                                 }
+                                else
+                                    lbar.dismiss();
                             }
 
                         });
@@ -363,6 +374,11 @@ public class SignupActivity extends AppCompatActivity {
                         signupLayout.setVisibility(View.VISIBLE);
                         subheading.setText(Type);
                         nameView.setHint(Type+" name");
+                        if(Type.equals("Individual"))
+                        {
+                            nameView.setHint("Your name");
+
+                        }
                         if(Type.equals("Restaurant"))
                         {
                             categoryLayout.setVisibility(View.VISIBLE);
