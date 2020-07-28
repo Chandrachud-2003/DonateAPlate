@@ -17,10 +17,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.L;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.TimeUnit;
@@ -81,15 +84,21 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (passwordView.getText().toString().trim().equals("")) {
                     Toast.makeText(LoginActivity.this, "Enter Email and Password", Toast.LENGTH_SHORT).show();
                     passwordView.setError("Enter Password");
-                } else {
-                    Toast.makeText(LoginActivity.this, "Logging in...",
-                            Toast.LENGTH_SHORT).show();
+                }
+                else if(!(isEmailValid(email))){
+                    emailView.setError("Invalid Email");
+                    Toast.makeText(LoginActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
+                }
+                else {
+
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
+                                        Toast.makeText(LoginActivity.this, "Logging in...",
+                                                Toast.LENGTH_SHORT).show();
                                         Log.d("TAG", "signInWithEmail:success");
                                         FirebaseAuth auth = mAuth.getInstance();
 
@@ -118,9 +127,28 @@ public class LoginActivity extends AppCompatActivity {
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w("TAG", "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(LoginActivity.this, "Incorrect username or password.",
-                                                Toast.LENGTH_LONG).show();
-                                        //updateUI(null);
+                                        try
+                                        {
+                                            throw task.getException();
+                                        }
+                                        catch (FirebaseAuthInvalidUserException invalidEmail)
+                                        {
+                                            Log.d("TAG", "onComplete: invalid_email");
+                                            emailView.setError("Invalid Email");
+                                            passwordView.setText("");
+                                            Toast.makeText(LoginActivity.this, "Account with this email does not exist", Toast.LENGTH_LONG).show();
+                                        }
+                                        catch (FirebaseAuthInvalidCredentialsException wrongPassword)
+                                        {
+                                            Log.d("TAG", "onComplete: wrong_password");
+                                            passwordView.setText("");
+                                            passwordView.setError("Incorrect Password");
+                                            Toast.makeText(LoginActivity.this, "Incorrect Password", Toast.LENGTH_LONG).show();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Log.d("TAG", "onComplete: " + e.getMessage());
+                                        }
                                     }
 
                                     // ...
@@ -134,4 +162,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Disabling back button for current activity
     }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
 }

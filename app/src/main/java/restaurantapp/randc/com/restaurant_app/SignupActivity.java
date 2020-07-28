@@ -1,6 +1,8 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,12 +14,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
+
+import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private Button next_button;
+    private CardView next_button;
     private TextView loginbutton;
     private EditText emailView;
     private EditText passwordView;
@@ -25,6 +32,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText phno;
     private EditText nameView;
     private String email;
+    private FirebaseAuth mAuth;
     private String password;
 
 
@@ -36,6 +44,7 @@ public class SignupActivity extends AppCompatActivity {
         phno = findViewById(R.id.phoneView);
         nameView = findViewById(R.id.nameView);
         next_button = findViewById(R.id.nextButton);
+        mAuth = FirebaseAuth.getInstance();
         emailView = findViewById(R.id.emailView);
         passwordConfirm = findViewById(R.id.confirmView);
         loginbutton = findViewById(R.id.signin);
@@ -74,23 +83,48 @@ public class SignupActivity extends AppCompatActivity {
                 } else if (password.length() < 6) {
                     Toast.makeText(SignupActivity.this, "Password must be atleast 6 charecters long", Toast.LENGTH_SHORT).show();
                     passwordView.setError("Password too short!");
-                } else {
+                }
+                else if(!(isEmailValid(email))){
+                    emailView.setError("Invalid Email");
+                    Toast.makeText(SignupActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
+                }
+                else {
 
 
-                    SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-//Todo Type has to be selected
-                    editor.putString("rType","Restaurant");
-                    editor.apply();
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                            if (task.isSuccessful()) {
+                                SignInMethodQueryResult result = task.getResult();
+                                List<String> signInMethods = result.getSignInMethods();
+                                if(signInMethods.size()==0)
+                                {
+                                    SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    //Todo Type has to be selected
+                                    editor.putString("rType","Restaurant");
+                                    editor.apply();
 
-                    editor.putString("rEmail", email);
-                    editor.putString("rPass", password);
-                    editor.putString("rPhone", phno.getText().toString().trim());
-                    editor.putString("rName", nameView.getText().toString().trim());
-                    editor.apply();
-                    Intent intent = new Intent(SignupActivity.this, registration3.class);
-                    startActivity(intent);
+                                    editor.putString("rEmail", email);
+                                    editor.putString("rPass", password);
+                                    editor.putString("rPhone", phno.getText().toString().trim());
+                                    editor.putString("rName", nameView.getText().toString().trim());
+                                    editor.apply();
+                                    Intent intent = new Intent(SignupActivity.this, registration3.class);
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    emailView.setError("Email already exists");
+                                    Toast.makeText(SignupActivity.this, "An account with this email already exists!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+
+                    });
+
+
+
 
                 }
             }
@@ -107,6 +141,11 @@ public class SignupActivity extends AppCompatActivity {
         });
 
     }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity

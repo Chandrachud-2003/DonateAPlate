@@ -27,6 +27,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.maps.FindPlaceFromTextRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -80,6 +81,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         autocompleteFragment.setCountry("IN");
+
 
 
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ADDRESS));
@@ -197,7 +199,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             .build();
                     addresses =  GeocodingApi.reverseGeocode(context,latLng).await();
                     address = addresses[0].formattedAddress;
-                } catch (IOException | ApiException | InterruptedException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

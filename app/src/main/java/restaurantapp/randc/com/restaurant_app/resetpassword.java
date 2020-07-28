@@ -16,10 +16,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class resetpassword extends AppCompatActivity {
     private ImageButton back_button;
-    private Button submit_button;
+    private CardView submit_button;
     private FirebaseAuth mAuth;
     private EditText emailView;
     @Override

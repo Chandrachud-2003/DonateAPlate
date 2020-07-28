@@ -52,7 +52,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     private List<String> itemName = new ArrayList<>();
 
     private List<Integer> itemImg;
-    private int[] imgs;
+
 
     private ArrayList<Float> weights;
 
@@ -69,7 +69,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     private int pos=0;
 
     private FluidSlider weightSlider;
-    private int previous = 0;
+    private float previous = 0.0f;
 
     private int max = 10;
     private int min = 0;
@@ -98,9 +98,9 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         foodText = findViewById(R.id.foodTextview);
         customButtonText = findViewById(R.id.addcustom);
         weightSlider = findViewById(R.id.weightSlider);
-        weightSlider.setEndText(String.valueOf(max)+ " kg");
-        weightSlider.setStartText(String.valueOf(min)+" kg");
-        weightSlider.setPosition(0.0f);
+        weightSlider.setEndText("5 kg");
+        weightSlider.setStartText(min+" kg");
+        weightSlider.setPosition(0);
         customButton = findViewById(R.id.custom);
         backButton = findViewById(R.id.back);
         confirmButton = findViewById(R.id.confirmButton);
@@ -259,7 +259,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         }
         //foodWeight.setText(weights.get(0).toString());
         weightSlider.setPosition((float) weights.get(0)/total);
-        weightSlider.setBubbleText(weights.get(0) +" kg");
+        weightSlider.setBubbleText(""+weights.get(0));
 
 
         foodText.addTextChangedListener(new TextWatcher() {
@@ -355,19 +355,18 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         });
 */
 
-        // Java 8 lambda
         weightSlider.setPositionListener(pos -> {
-            final String value = String.valueOf( (int)(min + total * pos) );
-            int current = (int) (total * weightSlider.getPosition());
+            final String value = String.valueOf( Math.round((min + total * pos)*0.5 * 2) / 2.0) ;
+            float current = (float)( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0);
             if (current>previous)
             {
-                addWeight((int) (total * weightSlider.getPosition()));
+                addWeight((float)( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0));
             }
             else if (current<previous){
-                removeWeight((int) (total * weightSlider.getPosition()));
+                removeWeight((float)(Math.round(total * weightSlider.getPosition() *0.5* 2) / 2.0));
 
             }
-            previous = (int) current;
+            previous = current;
             weightSlider.setBubbleText(value);
             return Unit.INSTANCE;
         });
@@ -507,7 +506,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
     }
 
-    private void addWeight(int value)
+    private void addWeight(float value)
     {
         Log.d("TAG", "addWeight: "+value);
 
@@ -557,7 +556,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
     }
 
-    private void removeWeight(int value)
+    private void removeWeight(float value)
     {
 
 
