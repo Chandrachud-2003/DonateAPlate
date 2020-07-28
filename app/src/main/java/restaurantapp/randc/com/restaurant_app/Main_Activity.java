@@ -390,7 +390,7 @@ public class Main_Activity extends AppCompatActivity {
         DrawerAdapter adapter2;
         screenIcons = loadScreenIcons();
         screenTitles = loadScreenTitles();
-        if(user.getDisplayName().equals("Restaurant")) {
+        if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
            adapter2 = new DrawerAdapter(Arrays.asList(
                     createItemFor(0).setChecked(true),
                     createItemFor(1),
@@ -457,7 +457,7 @@ public class Main_Activity extends AppCompatActivity {
 
 
         slidingRootNav.closeMenu();
-        if(user.getDisplayName().equals("Restaurant")) {
+        if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
             switch (position) {
                 case 0: {
                     slidingRootNav.closeMenu();

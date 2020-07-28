@@ -7,6 +7,7 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +41,12 @@ public class LoginActivity extends AppCompatActivity {
     private String password;
     private EditText emailView;
     private EditText passwordView;
-
+    private ProgressDialog lbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        lbar = new ProgressDialog(this);
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             Intent intent = new Intent(LoginActivity.this, Main_Activity.class);
@@ -76,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                             email = emailView.getText().toString().trim();
+                email = emailView.getText().toString().trim();
                 password = passwordView.getText().toString().trim();
                 if (emailView.getText().toString().trim().equals("")) {
                     Toast.makeText(LoginActivity.this, "Enter Email and Password", Toast.LENGTH_SHORT).show();
@@ -91,14 +94,16 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
 
+                    lbar.setCanceledOnTouchOutside(false);
+                    lbar.setMessage("Logging in...");
+                    lbar.show();
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Toast.makeText(LoginActivity.this, "Logging in...",
-                                                Toast.LENGTH_SHORT).show();
+
                                         Log.d("TAG", "signInWithEmail:success");
                                         FirebaseAuth auth = mAuth.getInstance();
 
@@ -112,20 +117,16 @@ public class LoginActivity extends AppCompatActivity {
                                         WorkManager instance = WorkManager.getInstance();
                                         instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE, periodicWork);
 
+                                        lbar.dismiss();
+                                        Intent intent = new Intent(LoginActivity.this, Main_Activity.class);
+                                        startActivity(intent);
 
-                                        Handler handler = new Handler();
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Intent intent = new Intent(LoginActivity.this, Main_Activity.class);
-                                                startActivity(intent);
-                                            }
-                                        }, 1000);
 
 
                                         //   updateUI(user);
                                     } else {
                                         // If sign in fails, display a message to the user.
+                                        lbar.dismiss();
                                         Log.w("TAG", "signInWithEmail:failure", task.getException());
                                         try
                                         {
