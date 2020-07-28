@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -214,6 +212,8 @@ import androidx.recyclerview.widget.RecyclerView;
                                 intent.putExtra("From", "ongoingNGOItem");
                             }
                             mContext.startActivity(intent);
+
+
 
 
 

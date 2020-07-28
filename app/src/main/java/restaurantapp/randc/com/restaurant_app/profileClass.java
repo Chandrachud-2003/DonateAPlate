@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +62,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     private EditText phnoView;
     private EditText nameView;
     private String uid;
+    private ImageButton backbutton;
     private double currectLat;
     private double currentLon;
     private String main_collection;
@@ -112,6 +112,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         editPicture = findViewById(R.id.editPicture);
         typeView = findViewById(R.id.type);
         nameView.setKeyListener(null);
+        backbutton = findViewById(R.id.backButton);
         AddressView.setKeyListener(null);
         phnoView.setKeyListener(null);
         emailView.setKeyListener(null);
@@ -138,6 +139,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
             uid = user.getUid();
             main_collection = user.getDisplayName();
             detailsText.setText("Your Details");
+            contactButton.setVisibility(View.GONE);
         }
 
         updateDetails();
@@ -168,7 +170,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                     public void run() {
                         fab.setVisibility(View.GONE);
                         save.setVisibility(View.VISIBLE);
-
+                        backbutton.setVisibility(View.GONE);
                     }
                 }, 300);
 
@@ -254,6 +256,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
                     save.setVisibility(View.GONE);
                     fab.setVisibility(View.VISIBLE);
+                    backbutton.setVisibility(View.VISIBLE);
                     cancelButton.setVisibility(View.GONE);
                     editPicture.setVisibility(View.GONE);
 
@@ -307,6 +310,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 cancelButton.setVisibility(View.GONE);
                 editPicture.setVisibility(View.GONE);
 
+                backbutton.setVisibility(View.VISIBLE);
                 nameView.setKeyListener(null);
                 AddressView.setKeyListener(null);
                 phnoView.setKeyListener(null);
@@ -325,6 +329,13 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 nameView.setBackgroundColor(Color.TRANSPARENT);
 
                 updateDetails();
+            }
+        });
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(profileClass.this,Main_Activity.class);
+                startActivity(intent);
             }
         });
 

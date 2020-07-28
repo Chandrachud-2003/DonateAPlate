@@ -7,14 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,10 +17,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+
 public class BackgroundWork extends Worker {
 
 
-    int notificationId=1001;
+    int notificationId = 1001;
     private String uid;
     private DatabaseReference mDatabaseReference;
     private Context context;
@@ -45,26 +42,19 @@ public class BackgroundWork extends Worker {
     public Result doWork() {
 
         notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        if (uid!=null && uid.length()>0)
-        {
+        if (uid != null && uid.length() > 0) {
             mDatabaseReference.child(Constants.notifications).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    if (snapshot.exists())
-                    {
+                    if (snapshot.exists()) {
                         boolean notify = (Boolean) snapshot.child(Constants.notify_fire).getValue();
-                        if (notify)
-                        {
+                        if (notify) {
                             showNotification(true);
-                        }
-
-                        else {
+                        } else {
                             showNotification(false);
                         }
-                    }
-
-                    else {
+                    } else {
                         showNotification(false);
                     }
 
@@ -81,22 +71,18 @@ public class BackgroundWork extends Worker {
         }
 
 
-
         return Result.success();
-
 
 
     }
 
-    private void showNotification(boolean success)
-    {
+    private void showNotification(boolean success) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
 
         mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);
         mBuilder.setContentTitle("Donation App");
 
-        if (success)
-        {
+        if (success) {
 
             mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -107,9 +93,9 @@ public class BackgroundWork extends Worker {
 
                             mBuilder.setContentText(snapshot.getValue().toString());
                             NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                            mBuilder.setStyle( new NotificationCompat.BigTextStyle().bigText(snapshot.getValue().toString())) ;
+                            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(snapshot.getValue().toString()));
                             PendingIntent contentIntent =
-                                    PendingIntent.getActivity(context, 0, new Intent(context,Main_Activity.class ), PendingIntent.FLAG_UPDATE_CURRENT);
+                                    PendingIntent.getActivity(context, 0, new Intent(context, Main_Activity.class), PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.setAutoCancel(true);
                             mBuilder.setContentIntent(contentIntent);
                             if (manager != null) {
@@ -142,12 +128,10 @@ public class BackgroundWork extends Worker {
                 public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-                });
+            });
 
-        }
-        else
-        {
-            Log.d("tag","No notifications");
+        } else {
+            Log.d("tag", "No notifications");
         }
     }
 

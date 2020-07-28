@@ -32,6 +32,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@color/lightBlue" />
         <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/colorTransparent"
+            android:padding="7dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/back_50"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            />
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icons8_edit"
@@ -244,6 +257,7 @@
                         android:paddingTop="10dp"
                         android:text="Loading.."
                         android:clickable="false"
+                        android:inputType="textEmailAddress"
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:background="@null"/>
@@ -292,12 +306,14 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/average_sans"
                         android:text="Address"
+
                         android:textColor="@color/headings"
                         android:textSize="22sp" />
 
                     <EditText
                         android:id="@+id/addressView"
                         android:layout_width="match_parent"
+                        android:inputType="text"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/average_sans"
                         android:layout_marginTop="10dp"

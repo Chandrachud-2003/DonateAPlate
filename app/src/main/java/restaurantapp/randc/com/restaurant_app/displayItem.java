@@ -1,7 +1,5 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import android.media.Image;
-
 public class displayItem {
 
     private String itemName;

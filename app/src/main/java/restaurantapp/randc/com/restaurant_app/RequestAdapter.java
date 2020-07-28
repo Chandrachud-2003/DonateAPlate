@@ -4,27 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
-
-import static com.av.smoothviewpager.utils.Smoolider_Utils.decodeSampledBitmapFromResource;
-import static com.av.smoothviewpager.utils.Smoolider_Utils.openWebPage;
 
 public class RequestAdapter extends PagerAdapter{
 

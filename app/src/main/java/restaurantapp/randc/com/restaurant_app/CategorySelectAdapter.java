@@ -2,9 +2,6 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +9,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CategorySelectAdapter
         extends RecyclerView.Adapter<CategorySelectAdapter.MyView> {

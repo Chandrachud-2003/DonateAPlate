@@ -1,17 +1,9 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -39,6 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 
 public class registration4 extends AppCompatActivity {
     private Button next_button;
@@ -241,7 +240,7 @@ public class registration4 extends AppCompatActivity {
                                     dialog.dismiss();
                                     Toast.makeText(registration4.this, "Error!", Toast.LENGTH_SHORT).show();
                                     Log.e("TAG", "createUserWithEmail:failure", task.getException());
-                                    Intent intent = new Intent(registration4.this, registration1.class);
+                                    Intent intent = new Intent(registration4.this, SignupActivity.class);
                                     startActivity(intent);
                                 }
                             }

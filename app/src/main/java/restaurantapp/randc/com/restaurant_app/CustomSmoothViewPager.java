@@ -2,13 +2,10 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.av.smoothviewpager.Smoolider.SmoothViewpager;
-
-import androidx.viewpager.widget.ViewPager;
 
 public class CustomSmoothViewPager extends SmoothViewpager {
 

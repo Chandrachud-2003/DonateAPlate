@@ -1,19 +1,14 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class categoryItemAdapter
         extends RecyclerView.Adapter<categoryItemAdapter.MyView> {
@@ -24,6 +19,7 @@ public class categoryItemAdapter
     // with the setting of different data
     // and methods related to clicks on
     // particular items of the RecyclerView.
+    private static RecyclerViewClickListener itemListener;
     @Override
     public void onBindViewHolder(final MyView holder,
                                  final int position)
@@ -42,7 +38,12 @@ public class categoryItemAdapter
                         holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
                     holder.foodWeight.setText(Float.toString(list.get(position).getFoodWeight()));
                 }
-
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        itemListener.recyclerViewListClicked(view, list.get(position).getFoodItem());
+                    }
+                });
 
     }
     private List<categoryItem> list;
@@ -73,9 +74,10 @@ public class categoryItemAdapter
 
     // Constructor for adapter class
     // which takes a list of String type
-    public categoryItemAdapter(List<categoryItem> horizontalList)
+    public categoryItemAdapter(List<categoryItem> horizontalList, RecyclerViewClickListener itemListener)
     {
         this.list = horizontalList;
+        this.itemListener = itemListener;
     }
 
     // Override onCreateViewHolder which deals

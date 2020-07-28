@@ -37,12 +37,12 @@ import java.util.stream.IntStream;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class categoryAdd extends AppCompatActivity {
+public class categoryAdd extends AppCompatActivity implements RecyclerViewClickListener {
 
     private ImageView foodImage;
     private EditText foodText;
     private TextView TitleView;
-
+    private Button customButtonText;
     private ImageButton customButton;
     private ImageButton backButton;
     private Button confirmButton;
@@ -93,10 +93,10 @@ public class categoryAdd extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_add);
 
-
+        customButton = findViewById(R.id.custom);
         foodImage = findViewById(R.id.foodPic);
         foodText = findViewById(R.id.foodTextview);
-
+        customButtonText = findViewById(R.id.addcustom);
         weightSlider = findViewById(R.id.weightSlider);
         weightSlider.setEndText(String.valueOf(max)+ " kg");
         weightSlider.setStartText(String.valueOf(min)+" kg");
@@ -123,17 +123,18 @@ public class categoryAdd extends AppCompatActivity {
             itemImg.add(R.drawable.fruits_custom);
             extraImg = R.drawable.fruits_custom;
             itemName.add("Enter Custom Item");
-
+            customButtonText.setText("Or add a fruit of your own here! ");
 
             TitleView.setText("Fruits");
         }
         if(type == 1)
         {
-            origSize = Constants.fruit_imgs.size()-1;
+            origSize = Constants.veg_imgs.size()-1;
             Title = Constants.vegetablePref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_veg));
             itemImg = Constants.veg_imgs;
             TitleView.setText("Vegetables");
+            customButtonText.setText("Or add a vegetable of your own here! ");
             itemName.add("Enter Custom Item");
             extraImg = R.drawable.veggies_custom;
             itemImg.add(R.drawable.veggies_custom);
@@ -155,7 +156,7 @@ public class categoryAdd extends AppCompatActivity {
             itemName.add("Enter Custom Item");
             itemImg.add(R.drawable.meat_custom);
             extraImg = R.drawable.meat_custom;
-
+            customButtonText.setText("Or add your own meat here!");
             TitleView.setText("Meat");
         }
         if(type == 4)
@@ -167,7 +168,7 @@ public class categoryAdd extends AppCompatActivity {
             itemName.add("Enter Custom Item");
             itemImg.add(R.drawable.grains_custom);
             extraImg = R.drawable.grains_custom;
-
+            customButtonText.setText("Or add a grain of your own here!");
             TitleView.setText("Grains");
         }
         if(type == 5)
@@ -179,7 +180,7 @@ public class categoryAdd extends AppCompatActivity {
             itemName.add("Enter Custom Item");
             itemImg.add(R.drawable.dishes_custom_1);
             extraImg = R.drawable.dishes_custom_1;
-
+            customButtonText.setText("Or add your own dairy product here!");
             TitleView.setText("Dairy");
         }
         if (type==2)
@@ -189,9 +190,9 @@ public class categoryAdd extends AppCompatActivity {
             itemName.add("Enter Custom Item");
             itemImg = Constants.dishes_imgs;
             extraImg = R.drawable.dishes_custom_2;
-
+            customButtonText.setVisibility(View.GONE);
             TitleView.setText("Dishes");
-
+            customButton.setVisibility(View.GONE);
 
         }
 
@@ -241,7 +242,7 @@ public class categoryAdd extends AppCompatActivity {
                 = new LinearLayoutManager(
                 getApplicationContext());
 
-        mCategoryItemAdapter = new categoryItemAdapter(mCategoryItems);
+        mCategoryItemAdapter = new categoryItemAdapter(mCategoryItems, this::recyclerViewListClicked);
         filterView.setLayoutManager(HorizontalLayout);
         filterView.setAdapter(mCategoryItemAdapter);
 
@@ -324,6 +325,7 @@ public class categoryAdd extends AppCompatActivity {
             }
         });
 
+/*
 
 
         weightSlider.setBeginTrackingListener(new Function0<Unit>() {
@@ -351,10 +353,21 @@ public class categoryAdd extends AppCompatActivity {
                 return Unit.INSTANCE;
             }
         });
+*/
 
         // Java 8 lambda
         weightSlider.setPositionListener(pos -> {
             final String value = String.valueOf( (int)(min + total * pos) );
+            int current = (int) (total * weightSlider.getPosition());
+            if (current>previous)
+            {
+                addWeight((int) (total * weightSlider.getPosition()));
+            }
+            else if (current<previous){
+                removeWeight((int) (total * weightSlider.getPosition()));
+
+            }
+            previous = (int) current;
             weightSlider.setBubbleText(value);
             return Unit.INSTANCE;
         });
@@ -403,7 +416,27 @@ public class categoryAdd extends AppCompatActivity {
             }
         });
 
+        customButtonText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                weights.set(pos, (float)((int)(min + total * weightSlider.getPosition())));
+
+                pos=itemName.size()-1;
+                foodImage.setImageResource(itemImg.get(pos));
+                rightButton.setVisibility(View.INVISIBLE);
+                foodText.setText("");
+                leftButton.setVisibility(View.VISIBLE);
+                foodText.setEnabled(true);
+                foodText.setHint("Your Custom Item");
+                weightSlider.setVisibility(View.INVISIBLE);
+                foodText.setFocusable(true);
+                previous = (int) (weights.get(pos)/10.0f);
+                weightSlider.setPosition(weights.get(pos)/10.0f);
+
+                weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
+            }
+        });
 
     }
 
@@ -426,7 +459,7 @@ public class categoryAdd extends AppCompatActivity {
             foodText.setEnabled(false);
             weightSlider.setVisibility(View.VISIBLE);
         }
-
+        previous = (int) (weights.get(pos)/10.0f);
         foodImage.setImageResource(itemImg.get(pos));
         foodText.setText(itemName.get(pos));
 
@@ -468,7 +501,7 @@ public class categoryAdd extends AppCompatActivity {
 
 
         }
-
+        previous = (int) (weights.get(pos)/10.0f);
         weightSlider.setPosition(weights.get(pos)/10.0f);
         weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
 
@@ -545,11 +578,13 @@ public class categoryAdd extends AppCompatActivity {
                 Log.d("TAG", "removeWeight: Entered custom");
                 mCategoryItems.remove(newPos);
                 mCategoryItemAdapter.notifyItemRemoved(newPos);
-                itemName.remove(currentPos);
-                itemImg.remove(currentPos);
-                weights.remove(currentPos);
-                pos-=1;
-                changeRight();
+                Log.d("TAG", "removeWeight: Entered custom :" + itemName.get(currentPos));
+                Log.d("TAG", "removeWeight: Entered custom :" + weights.get(currentPos));
+//                         itemName.remove(currentPos);
+//              itemImg.remove(currentPos);
+//              weights.remove(currentPos);
+//               pos-=1;
+//                changeRight();
 
             }
             else {
@@ -610,6 +645,30 @@ public class categoryAdd extends AppCompatActivity {
         // Disabling back button for current activity
     }
 
+
+
+    @Override
+    public void recyclerViewListClicked(View v, String name){
+        int position = findInNames(name);
+        weights.set(pos, (float)((int)(min + total * weightSlider.getPosition())));
+
+        pos=position;
+        foodImage.setImageResource(itemImg.get(pos));
+
+        rightButton.setVisibility(View.VISIBLE);
+        leftButton.setVisibility(View.VISIBLE);
+        if(position==0)
+        {
+            leftButton.setVisibility(View.INVISIBLE);
+        }
+
+        foodText.setEnabled(false);
+
+        weightSlider.setVisibility(View.VISIBLE);
+        foodText.setText(itemName.get(pos));
+        weightSlider.setPosition(weights.get(pos)/10.0f);
+        weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
+    }
 
 
 }

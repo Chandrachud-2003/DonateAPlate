@@ -1,8 +1,5 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +28,9 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class registration5 extends AppCompatActivity {
 

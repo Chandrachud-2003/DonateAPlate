@@ -22,6 +22,7 @@
             android:id="@+id/signInMainLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:background="@color/white"
 
             >
@@ -114,7 +115,7 @@
                             android:background="@color/colorTransparent"
                             android:backgroundTint="#090909"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/email"
+                            android:src="@drawable/icons8_nameorprofile"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
 
@@ -122,6 +123,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
+                            android:id="@+id/nameView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toEndOf="@id/nameImage"
@@ -133,7 +135,7 @@
                             android:textSize="18sp"
                             android:textColorHint="@color/gray"
                             android:hint="Name"
-                            android:inputType="textEmailAddress"
+                            android:inputType="text"
                             android:paddingLeft="10dp"
                             android:textColor="@color/black"
 
@@ -182,7 +184,7 @@
                             android:background="@color/colorTransparent"
                             android:backgroundTint="#090909"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/email"
+                            android:src="@drawable/icons8_phonenumber"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
 
@@ -190,6 +192,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
+                            android:id="@+id/phoneView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toEndOf="@id/phoneImage"
@@ -201,7 +204,7 @@
                             android:textSize="18sp"
                             android:textColorHint="@color/gray"
                             android:hint="Phone Number"
-                            android:inputType="textEmailAddress"
+                            android:inputType="phone"
                             android:paddingLeft="10dp"
                             android:textColor="@color/black"
 
@@ -251,7 +254,7 @@
                             android:background="@color/colorTransparent"
                             android:backgroundTint="#090909"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/email"
+                            android:src="@drawable/lock"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
 
@@ -259,6 +262,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
+                            android:id="@+id/confirmView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toEndOf="@id/confirmImage"
@@ -270,7 +274,7 @@
                             android:textSize="18sp"
                             android:textColorHint="@color/gray"
                             android:hint="Confirm Password"
-                            android:inputType="textEmailAddress"
+                            android:inputType="textPassword"
                             android:paddingLeft="10dp"
                             android:textColor="@color/black"
 
@@ -327,6 +331,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
+                            android:id="@+id/emailView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toEndOf="@id/emailImage"
@@ -396,6 +401,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
+                            android:id="@+id/passwordView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toEndOf="@id/passwordImage"
@@ -428,7 +434,7 @@
 
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/loginButton"
+                    android:id="@+id/nextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="25dp"
@@ -447,7 +453,7 @@
                         android:layout_gravity="center"
                         android:layout_marginVertical="10dp"
                         android:fontFamily="@font/gilroy_extrabold"
-                        android:text="Create Account"
+                        android:text="Next"
                         android:textColor="@color/white"
                         android:textSize="20sp"
 
@@ -460,7 +466,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    app:layout_constraintTop_toBottomOf="@id/loginButton"
+                    app:layout_constraintTop_toBottomOf="@id/nextButton"
                     android:layout_marginTop="25dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -478,6 +484,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/signin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/blue"

@@ -53,6 +53,7 @@ public class addClass extends AppCompatActivity {
     private RecyclerView bottomRecycler;
     private Button clearButton;
     private PieChart mPieChart;
+    private ImageButton backbutton;
     private PieDataSet mPieDataSet;
     private PieData mPieData;
 
@@ -126,6 +127,7 @@ public class addClass extends AppCompatActivity {
         selectCategory = findViewById(R.id.categorySelectView);
         mPieChart = findViewById(R.id.categoryChart);
         clearButton = findViewById(R.id.clearButton1);
+        backbutton = findViewById(R.id.backButton);
         menuButton = findViewById(R.id.menuButton);
         recentLayout = findViewById(R.id.recentLayout);
         dairyPercent = findViewById(R.id.dairyPercentText);
@@ -236,10 +238,19 @@ public class addClass extends AppCompatActivity {
 
         setUpBottomDonation();
 
-
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(addClass.this,Main_Activity.class);
+                startActivity(intent);
+            }
+        });
 
     }
-
+    @Override
+    public void onBackPressed() {
+        // Disabling back button for current activity
+    }
     private void setOnClickListeners()
     {
         PushDownAnim.setPushDownAnimTo(donateButton)
@@ -282,7 +293,7 @@ public class addClass extends AppCompatActivity {
 
                     Toast.makeText(addClass.this, "Please Sign in First", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(addClass.this, loginpage.class);
+                    Intent intent = new Intent(addClass.this, LoginActivity.class);
                     startActivity(intent);
 
                 }
@@ -426,11 +437,11 @@ public class addClass extends AppCompatActivity {
     {
         mEntries.add(new PieEntry(totalFruitWeight, 0));
         mEntries.add(new PieEntry(totalVeggesWeight, 1));
-        mEntries.add(new PieEntry(0, 2));
+        mEntries.add(new PieEntry(totalDishesWeight, 2));
         mEntries.add(new PieEntry(totalMeatWeight, 3));
         mEntries.add(new PieEntry(totalGrainsWeight, 4));
         mEntries.add(new PieEntry(totalDairyWeight, 5));
-        mEntries.add(new PieEntry(totalDishesWeight, 6));
+
 
         mPieDataSet = new PieDataSet(mEntries, "");
 
@@ -457,7 +468,7 @@ public class addClass extends AppCompatActivity {
 
         colors.add(Color.parseColor("#FFE101"));
         colors.add(Color.parseColor("#3DC073"));
-        colors.add(Color.parseColor("#2F4F4F"));
+        colors.add(Color.parseColor("#C0C0C0"));
         colors.add(Color.parseColor("#FF2B5B"));
         colors.add(Color.parseColor("#796DFF"));
         colors.add(Color.parseColor("#02BDE0"));

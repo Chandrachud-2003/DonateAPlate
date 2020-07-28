@@ -1,24 +1,24 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class resetpassword extends AppCompatActivity {
-    private Button back_button;
+    private ImageButton back_button;
     private Button submit_button;
     private FirebaseAuth mAuth;
     private EditText emailView;
@@ -26,15 +26,15 @@ public class resetpassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resetpassword);
-        emailView = findViewById(R.id.editText2);
-        back_button = findViewById(R.id.next_button2);
-        submit_button = findViewById(R.id.next_button3);
+        emailView = findViewById(R.id.emailView);
+        back_button = findViewById(R.id.backButton);
+        submit_button = findViewById(R.id.submit_button);
         mAuth = FirebaseAuth.getInstance();
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(resetpassword.this, loginpage.class);
+                Intent intent = new Intent(resetpassword.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -60,7 +60,7 @@ public class resetpassword extends AppCompatActivity {
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Intent intent = new Intent(resetpassword.this, loginpage.class);
+                                                Intent intent = new Intent(resetpassword.this, LoginActivity.class);
                                                 startActivity(intent);
                                             }
                                         }, 1000);
@@ -75,4 +75,5 @@ public class resetpassword extends AppCompatActivity {
             }
         });
     }
+
 }

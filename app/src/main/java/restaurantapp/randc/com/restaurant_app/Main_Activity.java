@@ -557,7 +557,7 @@ public class Main_Activity extends AppCompatActivity {
                 dialog.dismiss();
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(getApplicationContext(), "Signed Out", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Main_Activity.this, loginpage.class);
+                Intent intent = new Intent(Main_Activity.this, LoginActivity.class);
                 startActivity(intent);
 
             }

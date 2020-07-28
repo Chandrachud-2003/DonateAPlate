@@ -2,17 +2,11 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -20,6 +14,8 @@ import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class donationBottomAdapter
         extends RecyclerView.Adapter<donationBottomAdapter.MyView> {

@@ -4,11 +4,11 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder> {
 

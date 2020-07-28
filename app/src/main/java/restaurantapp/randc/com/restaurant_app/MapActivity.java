@@ -2,10 +2,7 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,8 +34,6 @@ import com.google.maps.model.GeocodingResult;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
