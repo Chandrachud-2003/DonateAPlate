@@ -140,19 +140,18 @@ public class profilePictureClass extends AppCompatActivity {
                                     user.updateProfile(profileUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            // FirebaseDatabase.
-//                                  FirebaseUser user = mAuth.getCurrentUser();
+
                                             user = mAuth.getCurrentUser();
                                             //SEND VERIFICATION MAIL
-                    /*  user.sendEmailVerification()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("TAG", "Email sent.");
-                                }u
-                            }
-                        });*/
+                                            user.sendEmailVerification()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("TAG", "Email sent.");
+                                                    }
+                                                }
+                                            });
                                             Log.d("tag","UID:"+user.getUid());
                                             Map<String, Object> note = new HashMap<>();
                                             note.put("Name",sharedPreferences.getString("rName","ERROR"));
@@ -213,6 +212,7 @@ public class profilePictureClass extends AppCompatActivity {
                                                                 dialog.dismiss();
                                                                 Toast.makeText(profilePictureClass.this, "Account Created!", Toast.LENGTH_SHORT).show();
                                                                 Intent intent = new Intent(profilePictureClass.this,Main_Activity.class);
+                                                                intent.putExtra("Registered", true);
                                                                 startActivity(intent);
                                                             }
                                                             PeriodicWorkRequest.Builder periodicWorkRequest =

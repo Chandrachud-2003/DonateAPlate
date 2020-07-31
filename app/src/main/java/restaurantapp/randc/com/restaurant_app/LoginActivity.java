@@ -96,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     lbar.setCanceledOnTouchOutside(false);
                     lbar.setMessage("Logging in...");
+                    lbar.setCanceledOnTouchOutside(false);
                     lbar.show();
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

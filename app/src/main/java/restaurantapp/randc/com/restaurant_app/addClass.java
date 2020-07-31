@@ -29,9 +29,12 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -267,9 +270,9 @@ public class addClass extends AppCompatActivity {
                 SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                if (auth.getUid()!=null) {
+                if (user.isEmailVerified()) {
 
                     editor.remove(Constants.fruitPref);
                     editor.remove(Constants.fruitPref+"weights");
@@ -287,8 +290,9 @@ public class addClass extends AppCompatActivity {
                     editor.remove(Constants.dishesPref+"weights");
                     editor.apply();
                     progressdialog.setMessage("Adding Donation...");
+                    progressdialog.setCanceledOnTouchOutside(false);
                     progressdialog.show();
-                    String uid = auth.getUid();
+                    String uid = user.getUid();
                     addToFirebase(uid);
 
 
@@ -296,11 +300,34 @@ public class addClass extends AppCompatActivity {
 
                 else {
 
-                    Toast.makeText(addClass.this, "Please Sign in First", Toast.LENGTH_SHORT).show();
+                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(addClass.this);
+                    builder.setTitle("Oh! Looks like you have not verified your email.");
+                    builder.setNegativeButton("Resend Email", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("TAG", "Email sent.");
+                                            }
+                                        }
+                                    });
+                        }
+                    });
+                    builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                    Intent intent = new Intent(addClass.this, LoginActivity.class);
-                    startActivity(intent);
+                        }
+                    });
 
+                    builder.setMessage("Please verify your email using the link sent to "+ user.getEmail()+" during registration\n If you have not received the mail, please click on Resend Email.");
+
+                    android.app.AlertDialog alertDialog = builder.create();
+
+                    alertDialog.show();
                 }
 
 

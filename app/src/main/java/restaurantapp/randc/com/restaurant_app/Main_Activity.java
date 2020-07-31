@@ -205,6 +205,30 @@ public class Main_Activity extends AppCompatActivity {
         });
         mRefreshLayout.setRefreshing(false);
 
+        if(getIntent().getBooleanExtra("Registered",false));
+        {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Main_Activity.this);
+            builder.setTitle("Almost done!");
+            builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            });
+
+            builder.setMessage("A verification Email has been sent to "+ user.getEmail() +"\nPlease click on the link in the email to unlock all the features of this app!");
+
+            android.app.AlertDialog alertDialog = builder.create();
+
+            alertDialog.show();
+        }
+
+
+        PeriodicWorkRequest.Builder periodicWorkRequest =
+                new PeriodicWorkRequest.Builder(BackgroundWork.class, 15,
+                        TimeUnit.MINUTES);
+        PeriodicWorkRequest periodicWork = periodicWorkRequest.build();
+        WorkManager instance = WorkManager.getInstance();
+        instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.KEEP, periodicWork);
 
 
         if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
@@ -303,8 +327,6 @@ public class Main_Activity extends AppCompatActivity {
                             //int scrollX = nestedScrollView.getScrollX();
                             int scrollY = nestedScrollView.getScrollY();
 
-                            Log.d("TAG", "onScrollChanged: "+scrollY);
-
                             if (scrollY==0)
                             {
                                 onTop = true;
@@ -373,7 +395,8 @@ public class Main_Activity extends AppCompatActivity {
                             mainItems.clear();
                             if (mainAdapter != null)
                                 mainAdapter.notifyItemRangeRemoved(0, size);
-
+                            newdonationstxt.setTextColor(getResources().getColor(R.color.white));
+                            accepteddonationstxt.setTextColor(getResources().getColor(R.color.black));
                             currentSwitchBarPos = i;
                             getOrderIDS();
                             ongoingRecycler.setVisibility(View.GONE);
@@ -390,7 +413,8 @@ public class Main_Activity extends AppCompatActivity {
                         mainItems.clear();
                         if(mainAdapter!=null)
                             mainAdapter.notifyItemRangeRemoved(0,size);
-
+                        newdonationstxt.setTextColor(getResources().getColor(R.color.black));
+                        accepteddonationstxt.setTextColor(getResources().getColor(R.color.white));
                         currentSwitchBarPos = i;
                         nodonations.setVisibility(View.GONE);
                         mainRecyclerLoader.setVisibility(View.VISIBLE);

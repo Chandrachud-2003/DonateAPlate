@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/category_bg"
+    android:background="@color/blue"
     tools:context=".Main_Activity">
 
 
@@ -26,7 +26,7 @@
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/category_bg"
+        android:background="@color/blue"
         android:paddingTop="40dp"
         android:paddingBottom="60dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -210,9 +210,6 @@
                 app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginHorizontal="20dp"
-                app:cardCornerRadius="7dp"
-                app:cardElevation="15dp"
-
                 app:cardBackgroundColor="@color/blue"
                 >
 
@@ -220,8 +217,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:fontFamily="@font/gilroy_extrabold"
-                    android:text="Add a New Item"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Add a Custom Item"
+                    android:textStyle="bold"
                     android:textSize="20sp"
                     android:layout_gravity="center"
                     android:layout_marginVertical="10dp"

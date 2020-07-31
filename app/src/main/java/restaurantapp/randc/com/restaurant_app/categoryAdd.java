@@ -2,42 +2,29 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.ramotion.fluidslider.FluidSlider;
+import com.thekhaeng.pushdownanim.PushDownAnim;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.gson.Gson;
-import com.hanks.htextview.HTextView;
-import com.ramotion.fluidslider.FluidSlider;
-import com.thekhaeng.pushdownanim.PushDownAnim;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 
 public class categoryAdd extends AppCompatActivity implements RecyclerViewClickListener, Bottom_Custom_Item.ButtonClickListener {
 
@@ -68,18 +55,12 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
     private categoryItemAdapter mCategoryItemAdapter;
 
-    private int pos=0;
+    private int pos = 0;
 
     private FluidSlider weightSlider;
-    private float previous = 0.0f;
-
     private int max = 10;
     private int min = 0;
-    private int total = max-min;
-
-
-    private int extraImg;
-
+    private int total = max - min;
 
     private int origSize;
 
@@ -89,11 +70,6 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     private View weightDivider;
 
     private Bottom_Custom_Item mBottomCustomItem;
-
-
-
-
-
 
 
     @Override
@@ -107,7 +83,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         customButtonText = findViewById(R.id.addcustom);
         weightSlider = findViewById(R.id.weightSlider);
         weightSlider.setEndText("5 kg");
-        weightSlider.setStartText(min+" kg");
+        weightSlider.setStartText(min + " kg");
         weightSlider.setPosition(0);
         customButton = findViewById(R.id.custom);
         backButton = findViewById(R.id.back);
@@ -127,23 +103,21 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         itemImg = new ArrayList<>();
         itemName = new ArrayList<>();
 
-        int type = getIntent().getIntExtra("type",-1);
-        if(type == 0)
-        {
-            origSize = Constants.fruit_imgs.size()-1;
+        int type = getIntent().getIntExtra("type", -1);
+        if (type == 0) {
+            origSize = Constants.fruit_imgs.size() - 1;
             Title = Constants.fruitPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_fruits));
             itemImg = Constants.fruit_imgs;
             itemImg.add(R.drawable.fruits_custom);
             //extraImg = R.drawable.fruits_custom;
-            itemName.add("Enter Custom Item");
+            itemName.add("Custom Item");
             customButtonText.setText("Or add a fruit of your own here! ");
 
             TitleView.setText("Fruits");
         }
-        if(type == 1)
-        {
-            origSize = Constants.veg_imgs.size()-1;
+        if (type == 1) {
+            origSize = Constants.veg_imgs.size() - 1;
             Title = Constants.vegetablePref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_veg));
             itemImg = Constants.veg_imgs;
@@ -154,16 +128,10 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             itemImg.add(R.drawable.veggies_custom);
 
         }
-        if(type == 2)
-        {
-         //   Title = "Vegetables";
-         //   Collections.addAll(itemName, getResources().getStringArray(R.array.common_veg));
-          //  itemImg = getResources().obtainTypedArray(R.array.vegge_img);
-          //  TitleView.setText("Vegetables");
+        if (type == 2) {
         }
-        if(type == 3)
-        {
-            origSize = Constants.meat_imgs.size()-1;
+        if (type == 3) {
+            origSize = Constants.meat_imgs.size() - 1;
             Title = Constants.meatPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_meat));
             itemImg = Constants.meat_imgs;
@@ -173,9 +141,8 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             customButtonText.setText("Or add your own meat here!");
             TitleView.setText("Meat");
         }
-        if(type == 4)
-        {
-            origSize = Constants.grains_imgs.size()-1;
+        if (type == 4) {
+            origSize = Constants.grains_imgs.size() - 1;
             Title = Constants.grainsPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_grains));
             itemImg = Constants.grains_imgs;
@@ -185,9 +152,8 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             customButtonText.setText("Or add a grain of your own here!");
             TitleView.setText("Grains");
         }
-        if(type == 5)
-        {
-            origSize = Constants.dairy_imgs.size()-1;
+        if (type == 5) {
+            origSize = Constants.dairy_imgs.size() - 1;
             Title = Constants.DairyPref;
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_dairy));
             itemImg = Constants.dairy_imgs;
@@ -197,13 +163,12 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             customButtonText.setText("Or add your own dairy product here!");
             TitleView.setText("Dairy");
         }
-        if (type==2)
-        {
+        if (type == 2) {
             origSize = 0;
             Title = Constants.dishesPref;
             itemName.add("Custom Dish");
             itemImg = Constants.dishes_imgs;
-           // extraImg = R.drawable.dishes_custom_2;
+            // extraImg = R.drawable.dishes_custom_2;
             customButtonText.setVisibility(View.GONE);
             TitleView.setText("Dishes");
             customButton.setVisibility(View.GONE);
@@ -216,26 +181,23 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         List<Float> mmweights;
 
 
-
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE);
         Gson gson = new Gson();
         String retrievedCategoryItems = sharedPreferences.getString(Title, null);
-        String retrievedweights = sharedPreferences.getString(Title+"weights", null);
-        if(retrievedCategoryItems!=null && !retrievedCategoryItems.equals("")) {
+        String retrievedweights = sharedPreferences.getString(Title + "weights", null);
+        if (retrievedCategoryItems != null && !retrievedCategoryItems.equals("")) {
             mmCategoryItems = Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class));
             mCategoryItems = new ArrayList(mmCategoryItems);
             mmweights = Arrays.asList(gson.fromJson(retrievedweights, Float[].class));
             weights = new ArrayList(mmweights);
 
-        }
-        else {
+        } else {
             mCategoryItems = new ArrayList<>();
             weights = new ArrayList<>();
             for (int i = 0; i < itemName.size(); i++) {
                 weights.add(0.0f);
             }
         }
-
 
 
         HorizontalLayout
@@ -254,8 +216,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
         foodImage.setImageResource(itemImg.get(0));
         foodText.setText(itemName.get(0));
-        if (type==2)
-        {
+        if (type == 2) {
             leftButton.setVisibility(View.INVISIBLE);
             rightButton.setVisibility(View.INVISIBLE);
             weightSlider.setVisibility(View.GONE);
@@ -265,9 +226,9 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             addCustomButton.setVisibility(View.VISIBLE);
 
         }
-        //foodWeight.setText(weights.get(0).toString());
-        weightSlider.setPosition((float) weights.get(0)/total);
-        weightSlider.setBubbleText(""+weights.get(0));
+
+        weightSlider.setPosition((float) weights.get(0) / total);
+        weightSlider.setBubbleText("" + weights.get(0));
 
 
         PushDownAnim.setPushDownAnimTo(leftButton)
@@ -296,60 +257,40 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
                         mBottomCustomItem = new Bottom_Custom_Item(categoryAdd.this, Title);
                         mBottomCustomItem.show(getSupportFragmentManager(), "BottomSheetCustomFragment");
-
+                    }
+                });
+        PushDownAnim.setPushDownAnimTo(customButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mBottomCustomItem = new Bottom_Custom_Item(categoryAdd.this, Title);
+                        mBottomCustomItem.show(getSupportFragmentManager(), "BottomSheetCustomFragment");
+                    }
+                });
+        PushDownAnim.setPushDownAnimTo(customButtonText)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mBottomCustomItem = new Bottom_Custom_Item(categoryAdd.this, Title);
+                        mBottomCustomItem.show(getSupportFragmentManager(), "BottomSheetCustomFragment");
                     }
                 });
 
-/*
 
-
-        weightSlider.setBeginTrackingListener(new Function0<Unit>() {
-            @Override
-            public Unit invoke() {
-
-                previous = (int) (total * weightSlider.getPosition());
-                return Unit.INSTANCE;
-            }
-        });
-
-        weightSlider.liste
-        weightSlider.setEndTrackingListener(new Function0<Unit>() {
-            @Override
-            public Unit invoke() {
-
-                int current = (int) (total * weightSlider.getPosition());
-                if (current>previous)
-                {
-                    addWeight((int) (total * weightSlider.getPosition()));
-                }
-                else if (current<previous){
-                    removeWeight((int) (total * weightSlider.getPosition()));
-
-                }
-                return Unit.INSTANCE;
-            }
-        });
-*/
 
         weightSlider.setPositionListener(pos -> {
-            final String value = String.valueOf( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0) ;
-            float current = (float)( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0);
-            if (current>previous)
-            {
-                addWeight((float)( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0));
-            }
-            else if (current<previous){
-                removeWeight((float)(Math.round(total * weightSlider.getPosition() *0.5* 2) / 2.0));
 
-            }
-            previous = current;
-            weightSlider.setBubbleText(value);
+            float value = (float) (Math.round(total * weightSlider.getPosition() * 0.5 * 2) / 2.0);
+
+            Weight(value);
+
+            weightSlider.setBubbleText(String.valueOf(value));
             return Unit.INSTANCE;
         });
-
 
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -357,14 +298,13 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             public void onClick(View v) {
 
 
-
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
                 String mCategoryItemsText = gson.toJson(mCategoryItems);
                 String weightsText = gson.toJson(weights);
-                editor.putString(Title,mCategoryItemsText);
-                editor.putString(Title+"weights",weightsText);
+                editor.putString(Title, mCategoryItemsText);
+                editor.putString(Title + "weights", weightsText);
                 editor.apply();
                 Intent intent = new Intent(categoryAdd.this, addClass.class);
                 startActivity(intent);
@@ -403,19 +343,13 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
     }
 
-    private void changeLeft()
-    {
+    private void changeLeft() {
 
-        weights.set(pos, (float)((int)(min + total * weightSlider.getPosition())));
-
-        pos-=1;
-        if (pos==0)
-        {
+        pos -= 1;
+        if (pos == 0) {
             leftButton.setVisibility(View.INVISIBLE);
             rightButton.setVisibility(View.VISIBLE);
-        }
-        else if (pos==weights.size()-2)
-        {
+        } else if (pos == weights.size() - 2) {
             rightButton.setVisibility(View.VISIBLE);
             leftButton.setVisibility(View.VISIBLE);
             weightText.setVisibility(View.VISIBLE);
@@ -423,24 +357,18 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             weightSlider.setVisibility(View.VISIBLE);
             addCustomButton.setVisibility(View.GONE);
         }
-        previous = (int) (weights.get(pos)/10.0f);
         foodImage.setImageResource(itemImg.get(pos));
         foodText.setText(itemName.get(pos));
 
-        weightSlider.setPosition(weights.get(pos)/10.0f);
+        weightSlider.setPosition((weights.get(pos) / total) / 0.5f);
         weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
 
     }
 
-    private void changeRight()
-    {
-
-        weights.set(pos, (float)((int)(min + total * weightSlider.getPosition())));
-
-        pos+=1;
+    private void changeRight() {
+        pos += 1;
         foodImage.setImageResource(itemImg.get(pos));
-        if (pos==(itemName.size()-1))
-        {
+        if (pos == (itemName.size() - 1)) {
             rightButton.setVisibility(View.INVISIBLE);
             foodText.setText(itemName.get(pos));
             leftButton.setVisibility(View.VISIBLE);
@@ -450,9 +378,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             addCustomButton.setVisibility(View.VISIBLE);
 
 
-        }
-        else
-        {
+        } else {
             weightSlider.setVisibility(View.VISIBLE);
             foodText.setText(itemName.get(pos));
 
@@ -463,94 +389,44 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             weightDivider.setVisibility(View.VISIBLE);
 
 
-
-
         }
-        previous = (int) (weights.get(pos)/10.0f);
-        weightSlider.setPosition(weights.get(pos)/10.0f);
+        weightSlider.setPosition((weights.get(pos) / total) / 0.5f);
         weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
 
     }
 
-    private void addWeight(float value)
-    {
-        Log.d("TAG", "addWeight: "+value);
+    private void Weight(float value) {
 
+        if (value == 0.0f) {
 
-        if (weights.get(pos)==0.0f)
-        {
+            if (weights.get(pos) != 0.0f) {
+                int newPos = findItem(foodText.getText().toString());
+                int currentPos = findInNames(foodText.getText().toString());
+                mCategoryItems.remove(newPos);
+                mCategoryItemAdapter.notifyItemRemoved(newPos);
+                weights.set(pos, 0.0f);
+            }
+        } else {
 
-
-
-                Log.d("TAG", "addWeight: new default Item");
+            if (weights.get(pos) == 0.0f) {
                 mCategoryItems.add(new categoryItem(itemName.get(pos), value, false));
-
-
-                mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size()-1);
-
-
+                mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size() - 1);
+                weights.set(pos, (float) value);
+            } else {
+                int newPos = findItem(itemName.get(pos));
+                mCategoryItems.get(newPos).setFoodWeight(value);
+                mCategoryItemAdapter.notifyItemChanged(newPos);
+                weights.set(pos, (float) value);
+            }
         }
-        else {
-
-
-
-            int newPos = findItem(itemName.get(pos));
-            mCategoryItems.get(newPos).setFoodWeight(value);
-            mCategoryItemAdapter.notifyItemChanged(newPos);
-        }
-
-
-        //foodWeight.setText(Float.toString(weights.get(pos)+0.5f));
-        weights.set(pos,(float)value);
-
-
-    }
-
-    private void removeWeight(float value)
-    {
-
-
-        Log.d("TAG", "removeWeight: finalValue: "+value);
-
-        if (value==0.0f)
-        {
-
-            Log.d("TAG", "removeWeight: ");
-            int newPos = findItem(foodText.getText().toString());
-            int currentPos = findInNames(foodText.getText().toString());
-            Log.d("TAG", "removeWeight: current pos : "+currentPos);
-            Log.d("TAG", "removeWeight: itemName.size(): "+itemName.size());
-            Log.d("TAG", "removeWeight: origSize"+origSize);
-
-            Log.d("TAG", "removeWeight: default");
-            mCategoryItems.remove(newPos);
-            mCategoryItemAdapter.notifyItemRemoved(newPos);
-            //foodWeight.setText(Float.toString(weights.get(pos) - value));
-            weights.set(pos, 0.0f);
-
-        }
-
-        else if(value>0.0f) {
-            //foodWeight.setText(Float.toString(weights.get(pos) - 0.5f));
-            Log.d("TAG", "removeWeight: weightChanged: "+value);
-            weights.set(pos, (float)value);
-
-            int newPos = findItem(itemName.get(pos));
-            mCategoryItems.get(newPos).setFoodWeight(weights.get(pos));
-            mCategoryItemAdapter.notifyItemChanged(newPos);
-        }
-
 
     }
 
 
-    private int findItem(String name)
-    {
+    private int findItem(String name) {
 
-        for (int i=0;i<mCategoryItems.size();i++)
-        {
-            if (mCategoryItems.get(i).getFoodItem().equalsIgnoreCase(name))
-            {
+        for (int i = 0; i < mCategoryItems.size(); i++) {
+            if (mCategoryItems.get(i).getFoodItem().equalsIgnoreCase(name)) {
                 return i;
             }
 
@@ -559,13 +435,10 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         return -1;
     }
 
-    private int findInNames(String name)
-    {
+    private int findInNames(String name) {
 
-        for (int i=0;i<itemName.size();i++)
-        {
-            if (itemName.get(i).equalsIgnoreCase(name))
-            {
+        for (int i = 0; i < itemName.size(); i++) {
+            if (itemName.get(i).equalsIgnoreCase(name)) {
                 return i;
             }
 
@@ -580,19 +453,15 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     }
 
 
-
     @Override
-    public void recyclerViewListClicked(View v, String name){
+    public void recyclerViewListClicked(View v, String name) {
         int position = findInNames(name);
-        weights.set(pos, (float)((int)(min + total * weightSlider.getPosition())));
-
-        pos=position;
+        pos = position;
         foodImage.setImageResource(itemImg.get(pos));
 
         rightButton.setVisibility(View.VISIBLE);
         leftButton.setVisibility(View.VISIBLE);
-        if(position==0)
-        {
+        if (position == 0) {
             leftButton.setVisibility(View.INVISIBLE);
         }
 
@@ -601,8 +470,9 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         weightSlider.setVisibility(View.VISIBLE);
         foodText.setText(itemName.get(pos));
         addCustomButton.setVisibility(View.GONE);
-        weightSlider.setPosition(weights.get(pos)/10.0f);
+        weightSlider.setPosition((weights.get(pos) / total) / 0.5f);
         weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
+
     }
 
 
@@ -617,10 +487,10 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     @Override
     public void addItem(String name, double weight) {
 
-        mCategoryItems.add(new categoryItem(name, (float)weight, true));
+        mCategoryItems.add(new categoryItem(name, (float) weight, true));
 
 
-        mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size()-1);
+        mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size() - 1);
 
 
     }
@@ -628,7 +498,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     @Override
     public void updateItem(String name, double weight, int itemPos) {
 
-        mCategoryItems.get(itemPos).setFoodWeight((float)weight);
+        mCategoryItems.get(itemPos).setFoodWeight((float) weight);
         mCategoryItems.get(itemPos).setFoodItem(name);
         mCategoryItemAdapter.notifyItemChanged(itemPos);
 

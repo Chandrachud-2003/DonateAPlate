@@ -135,6 +135,13 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
             main_collection = "NGO";
             getDeviceLocation();
         }
+        if(getIntent().getStringExtra("From").equals("ongoingNGOItem"))
+        {
+            fab.setVisibility(View.GONE);
+            uid = getIntent().getStringExtra("uid");
+            main_collection = "Restaurant";
+            getDeviceLocation();
+        }
         if(getIntent().getStringExtra("From").equals("Navigation")) {
             uid = user.getUid();
             main_collection = user.getDisplayName();
@@ -386,6 +393,10 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                             }
                             else {
                                 typeView.setVisibility(View.INVISIBLE);
+                            }
+                            if(getIntent().getBooleanExtra("Contact",false)) {
+                                mBottom_contact = new Bottom_Contact(profileClass.this, emailView.getText().toString(), phnoView.getText().toString());
+                                mBottom_contact.show(getSupportFragmentManager(), "BottomSheetContactFragment");
                             }
                         } else {
 

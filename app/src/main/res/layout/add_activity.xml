@@ -248,20 +248,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dairy:"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
+
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     />
 
                 <TextView
                     android:id="@+id/dairyPercentText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20%"
-                    android:textSize="20sp"
+                    android:text="10%"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:textStyle="bold"
                     android:layout_gravity="center_vertical"
                     />
@@ -290,10 +292,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fruits:"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textColor="@color/white"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 />
 
             <TextView
@@ -302,9 +304,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10%"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="@color/white"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:textStyle="bold"
                 android:layout_gravity="center_vertical"
                 />
@@ -333,21 +336,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Veggies:"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     />
 
                 <TextView
                     android:id="@+id/veggiesPercentText"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="30%"
-                    android:textSize="14sp"
+                    android:text="10%"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:textStyle="bold"
                     android:layout_gravity="center_vertical"
                     />
@@ -386,21 +389,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Grains:"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     />
 
                 <TextView
                     android:id="@+id/grainsPercentText"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20%"
-                    android:textSize="14sp"
+                    android:text="10%"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:textStyle="bold"
                     android:layout_gravity="center_vertical"
                     />
@@ -429,21 +432,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Meat:"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     />
 
                 <TextView
                     android:id="@+id/meatPercentText"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5%"
-                    android:textSize="14sp"
+                    android:text="10%"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:textStyle="bold"
                     android:layout_gravity="center_vertical"
                     />
@@ -465,28 +468,28 @@
                 android:paddingBottom="5dp"
                 android:layout_centerHorizontal="true"
                 android:layout_toRightOf="@+id/grainsPercent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dishes:"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     />
 
                 <TextView
                     android:id="@+id/dishesPercentText"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5%"
-                    android:textSize="14sp"
+                    android:text="10%"
+                    android:textSize="13sp"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:textStyle="bold"
                     android:layout_gravity="center_vertical"
                     />
@@ -509,8 +512,6 @@
         app:layout_anchorGravity="bottom"
         android:layout_gravity="bottom"
         />
-
-
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottomSheetScroll"

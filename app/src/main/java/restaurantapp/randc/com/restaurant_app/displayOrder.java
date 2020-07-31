@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.baoyz.widget.PullRefreshLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +66,7 @@ public class displayOrder extends AppCompatActivity {
     private TextView categoryName;
     private TextView categoryWeight;
     private Button completeButton;
+    private Button contactButton;
     private String From;
     private RecyclerView displayOrderRecycler;
     private displayOrderAdapter mDisplayOrderAdapter;
@@ -93,11 +96,16 @@ public class displayOrder extends AppCompatActivity {
     private boolean isGrains;
     private boolean isDishes;
     private boolean isDairy;
+    private PullRefreshLayout mRefreshLayout;
     private ImageView requestArrow;
 
     private DatabaseReference mDatabaseReference;
     private FirebaseFirestore db;
 
+    DocumentReference ngoDoc;
+    DocumentReference RestDoc;
+    GeoPoint NGOGeoPoint;
+    GeoPoint RestGeoPoint;
 
     private ArrayList<categoryItem> fruitsList;
     private ArrayList<categoryItem> veggiesList;
@@ -138,6 +146,17 @@ public class displayOrder extends AppCompatActivity {
 
         From = intent.getStringExtra("From");
 
+        mRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mRefreshLayout.setRefreshStyle(PullRefreshLayout.STYLE_MATERIAL);
+
+        mRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                    finish();
+                    startActivity(getIntent());
+            }
+        });
+        mRefreshLayout.setRefreshing(false);
 
         Log.d("tag","From:"+From);
         if(From.equals("requestItem"))
@@ -320,6 +339,7 @@ public class displayOrder extends AppCompatActivity {
         addressText.setText(address);
         requestsbardonatetxt = findViewById(R.id.donatetext);
         completeButton = findViewById(R.id.completeButton);
+        contactButton = findViewById(R.id.contactButton);
         requestsbarreqtxt = findViewById(R.id.requeststext);
         categoriesBar = findViewById(R.id.bubbleBottomSheetBar);
         categoryName = findViewById(R.id.categoryHeading);
@@ -419,6 +439,7 @@ public class displayOrder extends AppCompatActivity {
             requestButton.setVisibility(View.GONE);
             completeButton.setVisibility(View.VISIBLE);
             completeButton.setClickable(false);
+            contactButton.setVisibility(View.VISIBLE);
             requestLayout.setBackgroundColor(getResources().getColor(R.color.displayOrderGray));
             mainConstraintLayout.setBackgroundColor(getResources().getColor(R.color.displayOrderGray));
             totaltxt.setVisibility(View.GONE);
@@ -435,6 +456,7 @@ public class displayOrder extends AppCompatActivity {
                 Intent intent = new Intent(displayOrder.this, profileClass.class);
                 intent.putExtra("uid",uid);
                 intent.putExtra("From",From);
+                intent.putExtra("Contact",false);
                 startActivity(intent);
             }
         });
@@ -450,7 +472,18 @@ public class displayOrder extends AppCompatActivity {
 
 
     });
-
+        PushDownAnim.setPushDownAnimTo(contactButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(displayOrder.this, profileClass.class);
+                        intent.putExtra("uid",uid);
+                        intent.putExtra("From",From);
+                        intent.putExtra("Contact",true);
+                        startActivity(intent);
+                    }
+                });
 
         PushDownAnim.setPushDownAnimTo(completeButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
@@ -476,20 +509,19 @@ public class displayOrder extends AppCompatActivity {
                                 dialog1.dismiss();
 
                                 dialog.setMessage("Completing Donation...");
+                                dialog.setCanceledOnTouchOutside(false);
                                 dialog.show();
                                 mDatabaseReference.child("Orders").child(orderID).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
                                         if (snapshotInfo.child("State").getValue().toString().equals("CompletedRest")||snapshotInfo.child("State").getValue().toString().equals("CompletedNGO")) {
-                                            DocumentReference orderRef=null;
 
                                             if(From.equals("ongoingItem"))
-                                              orderRef = db.collection(Constants.ngo_fire).document(uid);
+                                              ngoDoc = db.collection(Constants.ngo_fire).document(uid);
                                             else if(From.equals("ongoingNGOItem"))
-                                                orderRef = db.collection(Constants.ngo_fire).document(user.getUid());
-                                                orderRef.update("Number of donations", FieldValue.increment(1));
-                                                orderRef.update("Points", FieldValue.increment(50));
-                                               orderRef.update(Constants.ngo_ongoing_list_fire, FieldValue.arrayRemove(orderID))
+                                                ngoDoc = db.collection(Constants.ngo_fire).document(user.getUid());
+
+                                               ngoDoc.update(Constants.ngo_ongoing_list_fire, FieldValue.arrayRemove(orderID))
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
@@ -498,13 +530,15 @@ public class displayOrder extends AppCompatActivity {
                                                                 restid = user.getUid();
                                                             else if(From.equals("ongoingNGOItem"))
                                                                 restid = uid;
-
-                                                            db.collection(Constants.rest_fire).document(restid).get()
+                                                            RestDoc = db.collection(Constants.rest_fire).document(restid);
+                                                            RestDoc.get()
                                                                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                                         @Override
                                                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                                             if (documentSnapshot.exists()) {
                                                                                 ArrayList<Boolean> orderNum;
+                                                                                RestGeoPoint = documentSnapshot.getGeoPoint("Location");
+
                                                                                 orderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
                                                                                 char no = orderID.charAt(orderID.length()-1);
                                                                                 int number = Integer.parseInt(""+no);
@@ -512,11 +546,7 @@ public class displayOrder extends AppCompatActivity {
 
                                                                                 HashMap<String, Object> updateMap = new HashMap<>();
                                                                                 updateMap.put(Constants.order_id_num, orderNum);
-                                                                                db.collection(Constants.rest_fire).document(restid).update("Number of donations", FieldValue.increment(1));
-                                                                                db.collection(Constants.rest_fire).document(restid).update("Points", FieldValue.increment(50));
-                                                                                db.collection(Constants.rest_fire).document(restid)
-                                                                                        .update(updateMap)
-                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                RestDoc.update(updateMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                             @Override
                                                                                             public void onSuccess(Void aVoid) {
 
@@ -531,17 +561,33 @@ public class displayOrder extends AppCompatActivity {
                                                                                                                 if(From.equals("ongoingItem")) {
                                                                                                                     mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
                                                                                                                     mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("Your donation with " + documentSnapshot.get("Name")+ " has been completed");
+
+
                                                                                                                 }
                                                                                                                 else {
-                                                                                                                    db.collection(Constants.ngo_fire).document(user.getUid()).get()
-                                                                                                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                                                                                @Override
-                                                                                                                                public void onSuccess(DocumentSnapshot documentSnapshot123) {
-                                                                                                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
-                                                                                                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("Your donation with " + documentSnapshot123.get("Name")+ " has been completed");
-                                                                                                                                }
+                                                                                                                    ngoDoc.get()
+                                                                                                                            .addOnSuccessListener(documentSnapshot123 -> {
+                                                                                                                                    mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                                                                                                    mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue("Your donation with " + documentSnapshot123.get("Name")+ " has been completed");
                                                                                                                             });
                                                                                                                 }
+                                                                                                                ngoDoc.get().addOnSuccessListener(documentSnapshot1 -> {
+                                                                                                                    NGOGeoPoint = documentSnapshot1.getGeoPoint("Location");
+                                                                                                                    int points = 30;
+                                                                                                                    try {
+                                                                                                                        float[] results = new float[1];
+                                                                                                                        Location.distanceBetween(RestGeoPoint.getLatitude(), RestGeoPoint.getLongitude(),
+                                                                                                                                NGOGeoPoint.getLatitude(),NGOGeoPoint.getLongitude(), results);
+                                                                                                                        points = (int)(Math. round(results[0] / 100));
+
+                                                                                                                    }catch (Exception e) { }
+
+                                                                                                                    RestDoc.update("Number of donations", FieldValue.increment(1));
+                                                                                                                    RestDoc.update("Points", FieldValue.increment(points));
+                                                                                                                    ngoDoc.update("Number of donations", FieldValue.increment(1));
+                                                                                                                    ngoDoc.update("Points", FieldValue.increment(points));
+                                                                                                                });
+
                                                                                                                     Intent intent = new Intent(displayOrder.this, Main_Activity.class);
                                                                                                                     startActivity(intent);
 
@@ -667,45 +713,34 @@ public class displayOrder extends AppCompatActivity {
 
                         if(From.equals("mainItem")) {
                             dialog.setMessage("Requesting...");
+                            dialog.setCanceledOnTouchOutside(false);
                             dialog.show();
                             String id = user.getUid();
                             db.collection("NGO").document(id).get()
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            if (documentSnapshot.exists()) {
-                                                mDatabaseReference.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;"+ documentSnapshot.get("Name").toString())
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                Log.d(Constants.tag, "Request has been sent");
-                                                                requestArrow.setImageResource(R.drawable.tick_white);
-                                                                requestText.setText("Requested");
-                                                                requestButton.setClickable(false);
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        if (documentSnapshot.exists()) {
+                                            mDatabaseReference.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;"+ documentSnapshot.get("Name").toString())
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        Log.d(Constants.tag, "Request has been sent");
+                                                        requestArrow.setImageResource(R.drawable.tick_white);
+                                                        requestText.setText("Requested");
+                                                        requestButton.setClickable(false);
 
-                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
-                                                                mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" has requested for your donation!");
-                                                                dialog.dismiss();
-                                                            }
-                                                        })
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                Log.d(Constants.tag, "error: " + e + " add");
-                                                                Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                                                dialog.dismiss();
-                                                            }
-                                                        });
-                                            }
+                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" has requested for your donation!");
+                                                        dialog.dismiss();
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        Log.d(Constants.tag, "error: " + e + " add");
+                                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                        dialog.dismiss();
+                                                    });
                                         }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(Constants.tag, "error: " + e + " add");
-                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                    dialog.dismiss();
-                                }
-                            });
+                                    }).addOnFailureListener(e -> {
+                                        Log.d(Constants.tag, "error: " + e + " add");
+                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    });
 
 
                         }
@@ -715,95 +750,69 @@ public class displayOrder extends AppCompatActivity {
                             builder.setCancelable(true);
                             builder.setTitle("Remove Donation");
                             builder.setMessage("Are you sure want to remove your donation? \n(All requests will be automatically declined)");
-                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog1, int which) {
-                                    dialog1.dismiss();
+                            builder.setPositiveButton("Yes", (dialog1, which) -> {
+                                dialog1.dismiss();
 
-                                    dialog.setMessage("Removing Donation...");
-                                    dialog.show();
-                                    DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
-                                    orderRef.update(Constants.order_list_field, FieldValue.arrayRemove(orderID))
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
+                                dialog.setMessage("Removing Donation...");
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
+                                DocumentReference orderRef = db.collection(Constants.orderName_fire).document(Constants.order_list_fire);
+                                orderRef.update(Constants.order_list_field, FieldValue.arrayRemove(orderID))
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 
-                                                    db.collection(Constants.rest_fire).document(user.getUid()).get()
-                                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                @Override
-                                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                                    if (documentSnapshot.exists()) {
-                                                                        ArrayList<Boolean> orderNum;
-                                                                        orderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
-                                                                        char no = orderID.charAt(orderID.length()-1);
-                                                                        int number = Integer.parseInt(""+no);
-                                                                        orderNum.set(number,false);
+                                                db.collection(Constants.rest_fire).document(user.getUid()).get()
+                                                        .addOnSuccessListener(documentSnapshot -> {
+                                                            if (documentSnapshot.exists()) {
+                                                                ArrayList<Boolean> orderNum;
+                                                                orderNum = (ArrayList) documentSnapshot.get(Constants.order_id_num);
+                                                                char no = orderID.charAt(orderID.length()-1);
+                                                                int number = Integer.parseInt(""+no);
+                                                                orderNum.set(number,false);
 
-                                                                        HashMap<String, Object> updateMap = new HashMap<>();
-                                                                        updateMap.put(Constants.order_id_num, orderNum);
-                                                                        db.collection(Constants.rest_fire).document(user.getUid())
-                                                                                .update(updateMap)
+                                                                HashMap<String, Object> updateMap = new HashMap<>();
+                                                                updateMap.put(Constants.order_id_num, orderNum);
+                                                                db.collection(Constants.rest_fire).document(user.getUid())
+                                                                        .update(updateMap)
+                                                                        .addOnSuccessListener(aVoid1 -> mDatabaseReference.child("Orders").child(orderID).removeValue()
                                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                     @Override
-                                                                                    public void onSuccess(Void aVoid) {
-
-                                                                                        mDatabaseReference.child("Orders").child(orderID).removeValue()
-                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                    @Override
-                                                                                                    public void onSuccess(Void aVoid) {
-                                                                                                        dialog.dismiss();
-                                                                                                        Toast.makeText(displayOrder.this,"Donation Removed",Toast.LENGTH_LONG).show();
-                                                                                                        Log.d("tag","Donation Remove Success");
+                                                                                    public void onSuccess(Void aVoid1) {
+                                                                                        dialog.dismiss();
+                                                                                        Toast.makeText(displayOrder.this,"Donation Removed",Toast.LENGTH_LONG).show();
+                                                                                        Log.d("tag","Donation Remove Success");
 
 
-                                                                                                        Intent intent = new Intent(displayOrder.this,Main_Activity.class);
-                                                                                                        startActivity(intent);
-                                                                                                    }
-                                                                                                })
-                                                                                                .addOnFailureListener(new OnFailureListener() {
-                                                                                                    @Override
-                                                                                                    public void onFailure(@NonNull Exception e) {
-                                                                                                        Log.d(Constants.tag, "error: " + e + " add");
-                                                                                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                                                                                        dialog.dismiss();
-                                                                                                    }
-                                                                                                });
+                                                                                        Intent intent = new Intent(displayOrder.this,Main_Activity.class);
+                                                                                        startActivity(intent);
                                                                                     }
                                                                                 })
-                                                                                .addOnFailureListener(new OnFailureListener() {
-                                                                                    @Override
-                                                                                    public void onFailure(@NonNull Exception e) {
-                                                                                        Log.d(Constants.tag, "error: " + e + " add");
-                                                                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                                                                        dialog.dismiss();
-                                                                                    }
-                                                                                });
-                                                                    }
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
+                                                                                .addOnFailureListener(e -> {
+                                                                                    Log.d(Constants.tag, "error: " + e + " add");
+                                                                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                                    dialog.dismiss();
+                                                                                }))
+                                                                        .addOnFailureListener(e -> {
+                                                                            Log.d(Constants.tag, "error: " + e + " add");
+                                                                            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                                            dialog.dismiss();
+                                                                        });
+                                                            }
+                                                        }).addOnFailureListener(e -> {
                                                             Log.d(Constants.tag, "error: " + e + " add");
                                                             Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
                                                             dialog.dismiss();
-                                                        }
-                                                    });
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d(Constants.tag, "error: " + e + " add");
-                                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                }
+                                                        });
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.d(Constants.tag, "error: " + e + " add");
+                                            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                            dialog.dismiss();
+                                        });
                             });
-                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog1, int which) {
-                                }
+                            builder.setNegativeButton("No", (dialog1, which) -> {
                             });
 
                             AlertDialog alertDialog = builder.create();
@@ -823,110 +832,107 @@ public class displayOrder extends AppCompatActivity {
 
                 });
 
-        categoriesBar.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public boolean onItemSelect(int i) {
+        categoriesBar.setOnItemSelectedListener(i -> {
 
-                if (i==0)
-                {
-                    categoryName.setText("Fruits Summary");
-                    if ( isFruits && fruitsList.size()>0 && fruitsWeight>0.0f) {
-                        displayOrderRecycler.setVisibility(View.VISIBLE);
-                        mDisplayOrderAdapter = new displayOrderAdapter(fruitsList);
-                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-                        categoryWeight.setText(Float.toString(fruitsWeight)+"kg");
-                    }
-                    else {
-                        categoryWeight.setText("0.0kg");
-                        displayOrderRecycler.setVisibility(View.INVISIBLE);
-                    }
+            if (i==0)
+            {
+                categoryName.setText("Fruits Summary");
+                if ( isFruits && fruitsList.size()>0 && fruitsWeight>0.0f) {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
+                    mDisplayOrderAdapter = new displayOrderAdapter(fruitsList);
+                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                    categoryWeight.setText(Float.toString(fruitsWeight)+"kg");
                 }
-
-                else if (i==1)
-                {
-
-                    categoryName.setText("Vegetables Summary");
-                    if ( isVeggies && veggiesList.size()>0 && veggiesWeight>0.0f) {
-                        displayOrderRecycler.setVisibility(View.VISIBLE);
-                        mDisplayOrderAdapter = new displayOrderAdapter(veggiesList);
-                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-                        categoryWeight.setText(Float.toString(veggiesWeight)+"kg");
-                    }
-                    else {
-                        categoryWeight.setText("0.0kg");
-
-                        displayOrderRecycler.setVisibility(View.INVISIBLE);
-                    }
+                else {
+                    categoryWeight.setText("0.0kg");
+                    displayOrderRecycler.setVisibility(View.INVISIBLE);
                 }
-
-                else if (i==2 )
-                {
-
-                    categoryName.setText("Dairy Summary");
-                    if (isDairy && dairyList.size()>0 && dairyWeight>0.0f) {
-                        displayOrderRecycler.setVisibility(View.VISIBLE);
-                        mDisplayOrderAdapter = new displayOrderAdapter(dairyList);
-                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-                        categoryWeight.setText(Float.toString(dairyWeight)+"kg");
-                    }
-                    else {
-                        categoryWeight.setText("0.0kg");
-
-                        displayOrderRecycler.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                else if (i==3 )
-                {
-
-                    categoryName.setText("Grains Summary");
-                    if (isGrains && grainsList.size()>0 && grainsWeight>0.0f) {
-                        displayOrderRecycler.setVisibility(View.VISIBLE);
-                        mDisplayOrderAdapter = new displayOrderAdapter(grainsList);
-                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-                        categoryWeight.setText(Float.toString(grainsWeight)+"kg");
-                    }
-                    else {
-                        categoryWeight.setText("0.0kg");
-
-                        displayOrderRecycler.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                else if (i==4)
-                {
-                    categoryName.setText("Meat Summary");
-                    if (isMeat && meatList.size()>0 && meatWeight>0.0f) {
-                        displayOrderRecycler.setVisibility(View.VISIBLE);
-                        mDisplayOrderAdapter = new displayOrderAdapter(meatList);
-                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-                        categoryWeight.setText(Float.toString(meatWeight)+"kg");
-                    }
-                    else {
-                        categoryWeight.setText("0.0kg");
-
-                        displayOrderRecycler.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                else if (i==5)
-                {
-                    categoryName.setText("Dishes Summary");
-                    if (isDishes && dishesList.size()>0 && dishesWeight>0.0f) {
-                        displayOrderRecycler.setVisibility(View.VISIBLE);
-                        mDisplayOrderAdapter = new displayOrderAdapter(dishesList);
-                        displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
-                        categoryWeight.setText(Float.toString(dishesWeight)+"kg");
-                    }
-                    else {
-                        categoryWeight.setText("0.0kg");
-
-                        displayOrderRecycler.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                return false;
             }
+
+            else if (i==1)
+            {
+
+                categoryName.setText("Vegetables Summary");
+                if ( isVeggies && veggiesList.size()>0 && veggiesWeight>0.0f) {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
+                    mDisplayOrderAdapter = new displayOrderAdapter(veggiesList);
+                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                    categoryWeight.setText(Float.toString(veggiesWeight)+"kg");
+                }
+                else {
+                    categoryWeight.setText("0.0kg");
+
+                    displayOrderRecycler.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            else if (i==2 )
+            {
+
+                categoryName.setText("Dairy Summary");
+                if (isDairy && dairyList.size()>0 && dairyWeight>0.0f) {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
+                    mDisplayOrderAdapter = new displayOrderAdapter(dairyList);
+                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                    categoryWeight.setText(Float.toString(dairyWeight)+"kg");
+                }
+                else {
+                    categoryWeight.setText("0.0kg");
+
+                    displayOrderRecycler.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            else if (i==3 )
+            {
+
+                categoryName.setText("Grains Summary");
+                if (isGrains && grainsList.size()>0 && grainsWeight>0.0f) {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
+                    mDisplayOrderAdapter = new displayOrderAdapter(grainsList);
+                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                    categoryWeight.setText(Float.toString(grainsWeight)+"kg");
+                }
+                else {
+                    categoryWeight.setText("0.0kg");
+
+                    displayOrderRecycler.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            else if (i==4)
+            {
+                categoryName.setText("Meat Summary");
+                if (isMeat && meatList.size()>0 && meatWeight>0.0f) {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
+                    mDisplayOrderAdapter = new displayOrderAdapter(meatList);
+                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                    categoryWeight.setText(Float.toString(meatWeight)+"kg");
+                }
+                else {
+                    categoryWeight.setText("0.0kg");
+
+                    displayOrderRecycler.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            else if (i==5)
+            {
+                categoryName.setText("Dishes Summary");
+                if (isDishes && dishesList.size()>0 && dishesWeight>0.0f) {
+                    displayOrderRecycler.setVisibility(View.VISIBLE);
+                    mDisplayOrderAdapter = new displayOrderAdapter(dishesList);
+                    displayOrderRecycler.setAdapter(mDisplayOrderAdapter);
+                    categoryWeight.setText(Float.toString(dishesWeight)+"kg");
+                }
+                else {
+                    categoryWeight.setText("0.0kg");
+
+                    displayOrderRecycler.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            return false;
         });
         requestsBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -1067,7 +1073,7 @@ public class displayOrder extends AppCompatActivity {
                         }
                     }
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.d(Constants.tag, "error: " + databaseError + " add");
                         Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
                     }

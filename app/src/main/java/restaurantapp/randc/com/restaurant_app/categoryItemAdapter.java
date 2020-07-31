@@ -7,6 +7,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import java.util.List;
@@ -41,9 +43,16 @@ public class categoryItemAdapter
                     {
                         holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
                     }
-                    else
-                        holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-                    holder.foodWeight.setText(Float.toString(list.get(position).getFoodWeight()));
+                    else {
+                        holder.foodName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        final float scale = mContext.getResources().getDisplayMetrics().density;
+                        int dpWidthInPx  = (int) ( 130* scale);
+                        int dpHeightInPx = (int) ( 30 * scale);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpWidthInPx, dpHeightInPx);
+                        holder.space.setLayoutParams(layoutParams);
+                    }
+                        holder.foodWeight.setText(list.get(position).getFoodWeight()+"kg");
+
                 }
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -73,7 +82,7 @@ public class categoryItemAdapter
         // Text View
         TextView foodName;
         TextView foodWeight;
-
+        Space space;
         // parameterised constructor for View Holder class
         // which takes the view as a parameter
         public MyView(View view)
@@ -82,7 +91,7 @@ public class categoryItemAdapter
 
             foodName = view.findViewById(R.id.foodName2);
             foodWeight = view.findViewById(R.id.foodWeight2);
-
+            space = view.findViewById(R.id.space);
 
         }
     }

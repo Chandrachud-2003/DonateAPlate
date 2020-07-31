@@ -42,6 +42,7 @@ public class BackgroundWork extends Worker {
     public Result doWork() {
 
         notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        Log.d("TAG", "doInBackground check");
         if (uid != null && uid.length() > 0) {
             mDatabaseReference.child(Constants.notifications).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

@@ -112,7 +112,7 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
         finishButton = v.findViewById(R.id.saveButton);
         finishText = v.findViewById(R.id.saveText);
 
-        weightSlider.setEndText("10kg");
+        weightSlider.setEndText("5kg");
         weightSlider.setStartText("0kg");
         categoryName.setText(category);
 
@@ -185,12 +185,12 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
                             }
                             else if (name.isEmpty())
                             {
-                                Toast.makeText(mContext, "The Item Name cannot be Empty", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Please enter name of the item", Toast.LENGTH_SHORT).show();
                             }
 
                             else if (current==0.0f)
                             {
-                                Toast.makeText(mContext, "The Item Weight cannot be 0", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "The item weight cannot be 0", Toast.LENGTH_SHORT).show();
                             }
 
 
@@ -209,7 +209,7 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
                             }
                             else if (name.isEmpty())
                             {
-                                Toast.makeText(mContext, "The Item Name cannot be Empty", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Please enter name of the item", Toast.LENGTH_LONG).show();
 
                             }
                             else if (current==0.0f)
