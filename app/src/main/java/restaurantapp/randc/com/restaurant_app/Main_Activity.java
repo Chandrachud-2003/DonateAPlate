@@ -143,12 +143,16 @@ public class Main_Activity extends AppCompatActivity {
 
     private PullRefreshLayout mRefreshLayout;
 
+    private boolean onTop;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        onTop = true;
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -191,8 +195,11 @@ public class Main_Activity extends AppCompatActivity {
             @Override
             public void onRefresh() {
 
-                finish();
-                startActivity(getIntent());
+                if (onTop) {
+
+                    finish();
+                    startActivity(getIntent());
+                }
 
             }
         });
@@ -285,10 +292,29 @@ public class Main_Activity extends AppCompatActivity {
             };
             mainRecyclerLoader.setVisibility(View.VISIBLE);
             mainRecyclerLoader.show();
+
+
+
             nestedScrollView.getViewTreeObserver()
                     .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                         @Override
                         public void onScrollChanged() {
+
+                            //int scrollX = nestedScrollView.getScrollX();
+                            int scrollY = nestedScrollView.getScrollY();
+
+                            Log.d("TAG", "onScrollChanged: "+scrollY);
+
+                            if (scrollY==0)
+                            {
+                                onTop = true;
+                            }
+                            else {
+                                onTop = false;
+                            }
+
+
+
                             if (nestedScrollView.getChildAt(0).getBottom()
                                     <= (nestedScrollView.getHeight() + nestedScrollView.getScrollY() + 500)) {
                                 //scroll view is at bottom
