@@ -64,6 +64,7 @@ public class Constants {
 
     public static final String workManager_tag = "WorkManager-Restaurant-App";
 
+
     public static final ArrayList<Integer> fruit_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.circle_apple);

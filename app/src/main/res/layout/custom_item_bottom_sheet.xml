@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorTransparent"
+
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tempConstraintLayout_BottomCustom"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:background="@drawable/bottom_contact_bg"
+        android:paddingBottom="20dp"
+        >
+
+        <TextView
+            android:id="@+id/customHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="23sp"
+            android:fontFamily="@font/montserrat"
+            android:textStyle="bold"
+            android:text="Custom Item"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="30dp"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/customNameCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="7dp"
+            app:layout_constraintTop_toBottomOf="@id/customHeading"
+            app:layout_constraintStart_toStartOf="@id/customHeading"
+            app:layout_constraintEnd_toEndOf="@id/customHeading"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/blue"
+
+            >
+
+            <TextView
+                android:id="@+id/customName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gilroy_extrabold"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:paddingVertical="7dp"
+                android:paddingHorizontal="10dp"
+                android:text="Vegetables"
+                />
+
+
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/nameHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/montserrat"
+            android:text="Item Name"
+            android:textAllCaps="true"
+            android:textSize="16sp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customNameCard"
+            android:textStyle="bold"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/customItemNameLayout"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintTop_toBottomOf="@id/nameHeading"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/registration_layout_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+
+            <EditText
+                android:id="@+id/customItemName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="10dp"
+                android:paddingVertical="12dp"
+                android:background="@color/colorTransparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="18sp"
+                android:textColorHint="@color/gray"
+                android:hint="Type Here"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10dp"
+                android:textColor="@color/black"
+
+                />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/weightHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:fontFamily="@font/montserrat"
+            android:text="Weight"
+            android:textAllCaps="true"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customItemNameLayout"
+            android:textStyle="bold"
+            />
+
+        <com.ramotion.fluidslider.FluidSlider
+            android:id="@+id/weightSlider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:elevation="2dp"
+            app:bar_color="@color/blue"
+            app:text_size="15sp"
+
+            android:layout_marginStart="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customItemNameLayout"
+            app:size="small"
+            app:duration="@android:integer/config_mediumAnimTime"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/customDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            app:cardBackgroundColor="@color/red"
+            app:cardCornerRadius="10dp"
+            app:contentPadding="10dp"
+            android:visibility="gone"
+
+            app:layout_goneMarginTop="30dp"
+
+            >
+
+            <ImageView
+
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="fitCenter"
+                android:background="@color/transparent"
+                android:src="@drawable/delete_custom"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/saveButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/customDivider"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toEndOf="@id/deleteButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"
+            app:cardCornerRadius="7dp"
+            app:cardElevation="15dp"
+
+            app:cardBackgroundColor="@color/blue"
+            >
+
+            <TextView
+                android:id="@+id/saveText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/gilroy_extrabold"
+                android:text="Add Item"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="10dp"
+
+                />
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/customDivider"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/weightSlider"
+            app:layout_constraintStart_toStartOf="@id/weightSlider"
+            app:layout_constraintEnd_toEndOf="@id/weightSlider"
+            android:layout_marginTop="30dp"
+            />
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/back_black"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            />
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

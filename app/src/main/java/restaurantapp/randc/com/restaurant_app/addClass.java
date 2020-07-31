@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -116,6 +117,8 @@ public class addClass extends AppCompatActivity {
     private String restName;
     private String restAddress;
 
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,6 +145,8 @@ public class addClass extends AppCompatActivity {
         dishPercent = findViewById(R.id.dishesPercentText);
 
         donateButton = findViewById(R.id.donateTextView);
+
+
 
 
         selectList = new ArrayList<>();

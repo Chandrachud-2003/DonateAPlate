@@ -34,6 +34,7 @@ import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
 
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -140,6 +141,8 @@ public class Main_Activity extends AppCompatActivity {
     private ArrayList<String> ongoingItems_NGO;
     private  FirebaseUser user;
 
+    private PullRefreshLayout mRefreshLayout;
+
 
 
     @Override
@@ -181,6 +184,19 @@ public class Main_Activity extends AppCompatActivity {
         rootRef = FirebaseDatabase.getInstance().getReference();
         switchBar = findViewById(R.id.SwitchBar);
         currentSwitchBarPos = 0;
+        mRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mRefreshLayout.setRefreshStyle(PullRefreshLayout.STYLE_MATERIAL);
+
+        mRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                finish();
+                startActivity(getIntent());
+
+            }
+        });
+        mRefreshLayout.setRefreshing(false);
 
 
 

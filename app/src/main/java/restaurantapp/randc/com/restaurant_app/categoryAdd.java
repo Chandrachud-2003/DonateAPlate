@@ -19,12 +19,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.hanks.htextview.HTextView;
 import com.ramotion.fluidslider.FluidSlider;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ import java.util.stream.IntStream;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class categoryAdd extends AppCompatActivity implements RecyclerViewClickListener {
+public class categoryAdd extends AppCompatActivity implements RecyclerViewClickListener, Bottom_Custom_Item.ButtonClickListener {
 
     private ImageView foodImage;
     private EditText foodText;
@@ -78,9 +80,15 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
     private int extraImg;
 
-    private boolean textPresent = false;
 
     private int origSize;
+
+    private CardView addCustomButton;
+
+    private TextView weightText;
+    private View weightDivider;
+
+    private Bottom_Custom_Item mBottomCustomItem;
 
 
 
@@ -109,6 +117,12 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         filterView = findViewById(R.id.filterView);
         TitleView = findViewById(R.id.CategoryView);
         leftButton.setVisibility(View.INVISIBLE);
+        weightText = findViewById(R.id.weightText);
+        weightDivider = findViewById(R.id.weightDivider);
+
+
+        addCustomButton = findViewById(R.id.addCustomButton);
+        addCustomButton.setVisibility(View.GONE);
 
         itemImg = new ArrayList<>();
         itemName = new ArrayList<>();
@@ -121,7 +135,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             Collections.addAll(itemName, getResources().getStringArray(R.array.common_fruits));
             itemImg = Constants.fruit_imgs;
             itemImg.add(R.drawable.fruits_custom);
-            extraImg = R.drawable.fruits_custom;
+            //extraImg = R.drawable.fruits_custom;
             itemName.add("Enter Custom Item");
             customButtonText.setText("Or add a fruit of your own here! ");
 
@@ -136,7 +150,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             TitleView.setText("Vegetables");
             customButtonText.setText("Or add a vegetable of your own here! ");
             itemName.add("Enter Custom Item");
-            extraImg = R.drawable.veggies_custom;
+            //extraImg = R.drawable.veggies_custom;
             itemImg.add(R.drawable.veggies_custom);
 
         }
@@ -155,7 +169,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             itemImg = Constants.meat_imgs;
             itemName.add("Enter Custom Item");
             itemImg.add(R.drawable.meat_custom);
-            extraImg = R.drawable.meat_custom;
+            //extraImg = R.drawable.meat_custom;
             customButtonText.setText("Or add your own meat here!");
             TitleView.setText("Meat");
         }
@@ -167,7 +181,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             itemImg = Constants.grains_imgs;
             itemName.add("Enter Custom Item");
             itemImg.add(R.drawable.grains_custom);
-            extraImg = R.drawable.grains_custom;
+            //extraImg = R.drawable.grains_custom;
             customButtonText.setText("Or add a grain of your own here!");
             TitleView.setText("Grains");
         }
@@ -179,7 +193,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             itemImg = Constants.dairy_imgs;
             itemName.add("Enter Custom Item");
             itemImg.add(R.drawable.dishes_custom_1);
-            extraImg = R.drawable.dishes_custom_1;
+            //extraImg = R.drawable.dishes_custom_1;
             customButtonText.setText("Or add your own dairy product here!");
             TitleView.setText("Dairy");
         }
@@ -187,12 +201,13 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         {
             origSize = 0;
             Title = Constants.dishesPref;
-            itemName.add("Enter Custom Item");
+            itemName.add("Custom Dish");
             itemImg = Constants.dishes_imgs;
-            extraImg = R.drawable.dishes_custom_2;
+           // extraImg = R.drawable.dishes_custom_2;
             customButtonText.setVisibility(View.GONE);
             TitleView.setText("Dishes");
             customButton.setVisibility(View.GONE);
+            addCustomButton.setVisibility(View.VISIBLE);
 
         }
 
@@ -211,16 +226,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             mCategoryItems = new ArrayList(mmCategoryItems);
             mmweights = Arrays.asList(gson.fromJson(retrievedweights, Float[].class));
             weights = new ArrayList(mmweights);
-            int extraItems = weights.size()-(itemImg.size()-1);
-            if (extraItems>0)
-            {
-                for(int i=1;i<=extraItems;i++)
-                {
-                    itemImg.add(itemImg.size()-2, extraImg);
 
-                }
-
-            }
         }
         else {
             mCategoryItems = new ArrayList<>();
@@ -242,88 +248,60 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
                 = new LinearLayoutManager(
                 getApplicationContext());
 
-        mCategoryItemAdapter = new categoryItemAdapter(mCategoryItems, this::recyclerViewListClicked);
+        mCategoryItemAdapter = new categoryItemAdapter(mCategoryItems, this::recyclerViewListClicked, categoryAdd.this, Title);
         filterView.setLayoutManager(HorizontalLayout);
         filterView.setAdapter(mCategoryItemAdapter);
 
         foodImage.setImageResource(itemImg.get(0));
         foodText.setText(itemName.get(0));
-        if (itemName.size()==1)
+        if (type==2)
         {
             leftButton.setVisibility(View.INVISIBLE);
             rightButton.setVisibility(View.INVISIBLE);
-            foodText.setText("");
-            foodText.setHint("Your Custom Item");
-            foodText.setEnabled(true);
-            weightSlider.setVisibility(View.INVISIBLE);
+            weightSlider.setVisibility(View.GONE);
+            weightDivider.setVisibility(View.GONE);
+            weightText.setVisibility(View.GONE);
+
+            addCustomButton.setVisibility(View.VISIBLE);
+
         }
         //foodWeight.setText(weights.get(0).toString());
         weightSlider.setPosition((float) weights.get(0)/total);
         weightSlider.setBubbleText(""+weights.get(0));
 
 
-        foodText.addTextChangedListener(new TextWatcher() {
+        PushDownAnim.setPushDownAnimTo(leftButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                if (pos==itemName.size()-1) {
-                    String text = charSequence.toString();
-                    if (text == null || text.equals("") || text.length() == 0) {
-                        textPresent = false;
-                    } else {
-
-                        textPresent = true;
+                        changeLeft();
                     }
-                }
+                });
 
-            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        PushDownAnim.setPushDownAnimTo(rightButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                if (pos==itemName.size()-1) {
-                    String text = charSequence.toString();
-                    if (text.length()>0 && !textPresent)
-                    {
-                        weightSlider.setVisibility(View.VISIBLE);
+                        changeRight();
                     }
-                    else if (text.length()==0 && textPresent){
+                });
 
-                        weightSlider.setVisibility(View.INVISIBLE);
+        PushDownAnim.setPushDownAnimTo(addCustomButton)
+                .setScale(PushDownAnim.MODE_SCALE, 0.8f)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        mBottomCustomItem = new Bottom_Custom_Item(categoryAdd.this, Title);
+                        mBottomCustomItem.show(getSupportFragmentManager(), "BottomSheetCustomFragment");
 
                     }
-                }
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-
-
-
-
-
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                changeLeft();
-
-            }
-        });
-
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeRight();
-            }
-        });
+                });
 
 /*
 
@@ -337,6 +315,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             }
         });
 
+        weightSlider.liste
         weightSlider.setEndTrackingListener(new Function0<Unit>() {
             @Override
             public Unit invoke() {
@@ -373,22 +352,6 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
 
 
-       /* plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                addWeight();
-
-            }
-        });
-
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                removeWeight();
-            }
-        });*/
-
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,10 +375,11 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             public void onClick(View v) {
                 Intent intent = new Intent(categoryAdd.this, addClass.class);
                 startActivity(intent);
+                finish();
             }
         });
 
-        customButtonText.setOnClickListener(new View.OnClickListener() {
+       /* customButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -435,7 +399,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
                 weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
             }
-        });
+        });*/
 
     }
 
@@ -454,9 +418,10 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         {
             rightButton.setVisibility(View.VISIBLE);
             leftButton.setVisibility(View.VISIBLE);
-            foodText.setHint("");
-            foodText.setEnabled(false);
+            weightText.setVisibility(View.VISIBLE);
+            weightDivider.setVisibility(View.VISIBLE);
             weightSlider.setVisibility(View.VISIBLE);
+            addCustomButton.setVisibility(View.GONE);
         }
         previous = (int) (weights.get(pos)/10.0f);
         foodImage.setImageResource(itemImg.get(pos));
@@ -477,24 +442,25 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         if (pos==(itemName.size()-1))
         {
             rightButton.setVisibility(View.INVISIBLE);
-            foodText.setText("");
+            foodText.setText(itemName.get(pos));
             leftButton.setVisibility(View.VISIBLE);
-            foodText.setEnabled(true);
-            foodText.setHint("Your Custom Item");
-            weightSlider.setVisibility(View.INVISIBLE);
-            foodText.setFocusable(true);
+            weightSlider.setVisibility(View.GONE);
+            weightText.setVisibility(View.GONE);
+            weightDivider.setVisibility(View.GONE);
+            addCustomButton.setVisibility(View.VISIBLE);
 
 
         }
         else
         {
-            foodText.setEnabled(false);
-
             weightSlider.setVisibility(View.VISIBLE);
             foodText.setText(itemName.get(pos));
 
 
             leftButton.setVisibility(View.VISIBLE);
+
+            weightText.setVisibility(View.VISIBLE);
+            weightDivider.setVisibility(View.VISIBLE);
 
 
 
@@ -515,30 +481,14 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
         {
 
 
-            if (pos == itemName.size()-1)
-            {
-                Log.d("TAG", "addWeight: new custom item weight");
-                mCategoryItems.add(new categoryItem(foodText.getText().toString(), value));
 
-
-                mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size()-1);
-
-                rightButton.setVisibility(View.VISIBLE);
-                itemName.set(pos, foodText.getText().toString());
-
-                itemName.add("Your Custom Item");
-                itemImg.add(extraImg);
-                weights.add(0.0f);
-
-            }
-            else {
                 Log.d("TAG", "addWeight: new default Item");
-                mCategoryItems.add(new categoryItem(itemName.get(pos), value));
+                mCategoryItems.add(new categoryItem(itemName.get(pos), value, false));
 
 
                 mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size()-1);
 
-            }
+
         }
         else {
 
@@ -571,28 +521,13 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             Log.d("TAG", "removeWeight: current pos : "+currentPos);
             Log.d("TAG", "removeWeight: itemName.size(): "+itemName.size());
             Log.d("TAG", "removeWeight: origSize"+origSize);
-            if (currentPos>origSize && currentPos<itemName.size()-1) {
 
+            Log.d("TAG", "removeWeight: default");
+            mCategoryItems.remove(newPos);
+            mCategoryItemAdapter.notifyItemRemoved(newPos);
+            //foodWeight.setText(Float.toString(weights.get(pos) - value));
+            weights.set(pos, 0.0f);
 
-                Log.d("TAG", "removeWeight: Entered custom");
-                mCategoryItems.remove(newPos);
-                mCategoryItemAdapter.notifyItemRemoved(newPos);
-                Log.d("TAG", "removeWeight: Entered custom :" + itemName.get(currentPos));
-                Log.d("TAG", "removeWeight: Entered custom :" + weights.get(currentPos));
-//                         itemName.remove(currentPos);
-//              itemImg.remove(currentPos);
-//              weights.remove(currentPos);
-//               pos-=1;
-//                changeRight();
-
-            }
-            else {
-                Log.d("TAG", "removeWeight: default");
-                mCategoryItems.remove(newPos);
-                mCategoryItemAdapter.notifyItemRemoved(newPos);
-                //foodWeight.setText(Float.toString(weights.get(pos) - value));
-                weights.set(pos, 0.0f);
-            }
         }
 
         else if(value>0.0f) {
@@ -665,9 +600,37 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
         weightSlider.setVisibility(View.VISIBLE);
         foodText.setText(itemName.get(pos));
+        addCustomButton.setVisibility(View.GONE);
         weightSlider.setPosition(weights.get(pos)/10.0f);
         weightSlider.setBubbleText(String.valueOf(weights.get(pos)));
     }
 
 
+    @Override
+    public void deleteItem(int itemPos) {
+
+        mCategoryItems.remove(itemPos);
+        mCategoryItemAdapter.notifyItemRemoved(itemPos);
+
+    }
+
+    @Override
+    public void addItem(String name, double weight) {
+
+        mCategoryItems.add(new categoryItem(name, (float)weight, true));
+
+
+        mCategoryItemAdapter.notifyItemInserted(mCategoryItems.size()-1);
+
+
+    }
+
+    @Override
+    public void updateItem(String name, double weight, int itemPos) {
+
+        mCategoryItems.get(itemPos).setFoodWeight((float)weight);
+        mCategoryItems.get(itemPos).setFoodItem(name);
+        mCategoryItemAdapter.notifyItemChanged(itemPos);
+
+    }
 }

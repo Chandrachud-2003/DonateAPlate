@@ -1,5 +1,8 @@
 package restaurantapp.randc.com.restaurant_app;
 
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class categoryItemAdapter
@@ -20,6 +24,9 @@ public class categoryItemAdapter
     // and methods related to clicks on
     // particular items of the RecyclerView.
     private static RecyclerViewClickListener itemListener;
+    private Context mContext;
+    private String category;
+
     @Override
     public void onBindViewHolder(final MyView holder,
                                  final int position)
@@ -41,7 +48,15 @@ public class categoryItemAdapter
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        itemListener.recyclerViewListClicked(view, list.get(position).getFoodItem());
+                        Log.d("TAG", "onClick: item is custom "+list.get(position).isCustom());
+
+                        if (!(list.get(position).isCustom())) {
+                            itemListener.recyclerViewListClicked(view, list.get(position).getFoodItem());
+                        }
+                        else {
+                            Bottom_Custom_Item bottomCustomItem = new Bottom_Custom_Item(mContext, position, list.get(position).getFoodWeight(), list.get(position).getFoodItem(), category);
+                            bottomCustomItem.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "BottomSheetCustomFragment");
+                        }
                     }
                 });
 
@@ -74,10 +89,12 @@ public class categoryItemAdapter
 
     // Constructor for adapter class
     // which takes a list of String type
-    public categoryItemAdapter(List<categoryItem> horizontalList, RecyclerViewClickListener itemListener)
+    public categoryItemAdapter(List<categoryItem> horizontalList, RecyclerViewClickListener itemListener, Context context, String category)
     {
         this.list = horizontalList;
         this.itemListener = itemListener;
+        mContext = context;
+        this.category = category;
     }
 
     // Override onCreateViewHolder which deals
