@@ -311,6 +311,7 @@ public class addClass extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d("TAG", "Email sent.");
+                                                Toast.makeText(addClass.this,"Verification email sent",Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });
@@ -323,8 +324,8 @@ public class addClass extends AppCompatActivity {
                         }
                     });
 
-                    builder.setMessage("Please verify your email using the link sent to "+ user.getEmail()+" during registration\n If you have not received the mail, please click on Resend Email.");
 
+                    builder.setMessage("Please verify your email using the link sent to "+ user.getEmail()+" during registration\n\nIf you have not received the mail, please click on Resend Email.");
                     android.app.AlertDialog alertDialog = builder.create();
 
                     alertDialog.show();

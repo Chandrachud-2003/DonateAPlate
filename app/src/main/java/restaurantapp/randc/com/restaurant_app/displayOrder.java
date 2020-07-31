@@ -29,8 +29,10 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.baoyz.widget.PullRefreshLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -712,36 +714,69 @@ public class displayOrder extends AppCompatActivity {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                         if(From.equals("mainItem")) {
-                            dialog.setMessage("Requesting...");
-                            dialog.setCanceledOnTouchOutside(false);
-                            dialog.show();
-                            String id = user.getUid();
-                            db.collection("NGO").document(id).get()
-                                    .addOnSuccessListener(documentSnapshot -> {
-                                        if (documentSnapshot.exists()) {
-                                            mDatabaseReference.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;"+ documentSnapshot.get("Name").toString())
-                                                    .addOnSuccessListener(aVoid -> {
-                                                        Log.d(Constants.tag, "Request has been sent");
-                                                        requestArrow.setImageResource(R.drawable.tick_white);
-                                                        requestText.setText("Requested");
-                                                        requestButton.setClickable(false);
+                            if(user.isEmailVerified()) {
+                                dialog.setMessage("Requesting...");
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
+                                String id = user.getUid();
+                                db.collection("NGO").document(id).get()
+                                        .addOnSuccessListener(documentSnapshot -> {
+                                            if (documentSnapshot.exists()) {
+                                                mDatabaseReference.child("Orders").child(orderID).child("Requests").push().setValue(id + ";;" + documentSnapshot.get("Name").toString())
+                                                        .addOnSuccessListener(aVoid -> {
+                                                            Log.d(Constants.tag, "Request has been sent");
+                                                            requestArrow.setImageResource(R.drawable.tick_white);
+                                                            requestText.setText("Requested");
+                                                            requestButton.setClickable(false);
 
-                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
-                                                        mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" has requested for your donation!");
-                                                        dialog.dismiss();
-                                                    })
-                                                    .addOnFailureListener(e -> {
-                                                        Log.d(Constants.tag, "error: " + e + " add");
-                                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                                        dialog.dismiss();
-                                                    });
-                                        }
-                                    }).addOnFailureListener(e -> {
-                                        Log.d(Constants.tag, "error: " + e + " add");
-                                        Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
-                                    });
+                                                            mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
+                                                            mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString() + " has requested for your donation!");
+                                                            dialog.dismiss();
+                                                        })
+                                                        .addOnFailureListener(e -> {
+                                                            Log.d(Constants.tag, "error: " + e + " add");
+                                                            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                                            dialog.dismiss();
+                                                        });
+                                            }
+                                        }).addOnFailureListener(e -> {
+                                    Log.d(Constants.tag, "error: " + e + " add");
+                                    Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+                                    dialog.dismiss();
+                                });
+                            }
+                            else
+                            {
+                                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(displayOrder.this);
+                                builder.setTitle("Oh! Looks like you have not verified your email.");
+                                builder.setNegativeButton("Resend Email", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        user.sendEmailVerification()
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Log.d("TAG", "Email sent.");
+                                                            Toast.makeText(displayOrder.this,"Verification email sent",Toast.LENGTH_LONG).show();
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                });
+                                builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
 
+                                    }
+                                });
+
+                                builder.setMessage("Please verify your email using the link sent to "+ user.getEmail()+" during registration\n\nIf you have not received the mail, please click on Resend Email.");
+
+                                android.app.AlertDialog alertDialog = builder.create();
+
+                                alertDialog.show();
+                            }
 
                         }
                         if(From.equals("requestItem"))
@@ -750,7 +785,7 @@ public class displayOrder extends AppCompatActivity {
                             builder.setCancelable(true);
                             builder.setTitle("Remove Donation");
                             builder.setMessage("Are you sure want to remove your donation? \n(All requests will be automatically declined)");
-                            builder.setPositiveButton("Yes", (dialog1, which) -> {
+                            builder.setNegativeButton("Yes", (dialog1, which) -> {
                                 dialog1.dismiss();
 
                                 dialog.setMessage("Removing Donation...");
@@ -812,7 +847,7 @@ public class displayOrder extends AppCompatActivity {
                                             dialog.dismiss();
                                         });
                             });
-                            builder.setNegativeButton("No", (dialog1, which) -> {
+                            builder.setPositiveButton("No", (dialog1, which) -> {
                             });
 
                             AlertDialog alertDialog = builder.create();
@@ -824,9 +859,6 @@ public class displayOrder extends AppCompatActivity {
 
 
                         }
-
-
-
                     }
 
 

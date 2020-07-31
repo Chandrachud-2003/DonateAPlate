@@ -92,7 +92,12 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_class);
         storageReference= FirebaseStorage.getInstance().getReference();
+
+
+
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+
         fab = findViewById(R.id.fabfab);
         edit = findViewById(R.id.menu_item);
         save = findViewById(R.id.saveButton);
@@ -154,6 +159,8 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         }
 
         updateDetails();
+
+
 
         PushDownAnim.setPushDownAnimTo(contactButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
@@ -441,7 +448,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                                             Toast.makeText(profileClass.this, "Email Updated", Toast.LENGTH_LONG).show();
 
                                                             updateDetails();
-
+                                                            user.sendEmailVerification();
                                                             //SEND VERIFICATION MAIL
                                                         }
                                                     })

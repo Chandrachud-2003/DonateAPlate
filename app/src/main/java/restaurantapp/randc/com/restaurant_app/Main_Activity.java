@@ -168,6 +168,17 @@ public class Main_Activity extends AppCompatActivity {
         mainRecycler = findViewById(R.id.mainRecycler);
         nodonations = findViewById(R.id.no_donations);
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user.reload();
+            }
+        };
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
+        FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
+
         MyUID = user.getUid();
         currentInputCode = 0;
         nodonations.setVisibility(View.GONE);
@@ -204,8 +215,8 @@ public class Main_Activity extends AppCompatActivity {
             }
         });
         mRefreshLayout.setRefreshing(false);
-
-        if(getIntent().getBooleanExtra("Registered",false));
+        boolean check = getIntent().getBooleanExtra("Registered",false);
+        if(check)
         {
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Main_Activity.this);
             builder.setTitle("Almost done!");
@@ -215,7 +226,7 @@ public class Main_Activity extends AppCompatActivity {
                 }
             });
 
-            builder.setMessage("A verification Email has been sent to "+ user.getEmail() +"\nPlease click on the link in the email to unlock all the features of this app!");
+            builder.setMessage("A verification Email has been sent to "+ user.getEmail() +"\n\nPlease click on the link in the email to unlock all the features of this app!");
 
             android.app.AlertDialog alertDialog = builder.create();
 

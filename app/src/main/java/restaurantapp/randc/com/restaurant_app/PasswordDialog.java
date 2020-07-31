@@ -20,7 +20,7 @@ public class PasswordDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.password_prompt, null);
         builder.setView(view)
-                .setTitle("Login")
+                .setTitle("Please enter your password")
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
