@@ -99,8 +99,6 @@ public class addClass extends AppCompatActivity {
 
     private ProgressDialog progressdialog;
 
-
-
     private TextView dairyPercent;
     private TextView meatPercent;
     private TextView fruitPercent;
@@ -194,7 +192,31 @@ public class addClass extends AppCompatActivity {
                         editor.remove(Constants.dishesPref+"weights");
                         editor.apply();
                         mEntries.clear();
-                        retrieveValuesFromMem();
+                        if (fruitList!=null) {
+                            fruitList.clear();
+                        }
+                        totalFruitWeight=0.0f;
+                        if (veggiesList!=null) {
+                            veggiesList.clear();
+                        }
+                        totalVeggesWeight=0.0f;
+                        if(meatList!=null) {
+                            meatList.clear();
+                        }
+                        totalMeatWeight=0.0f;
+                        if (grainsList!=null) {
+                            grainsList.clear();
+                        }
+                        totalGrainsWeight=0.0f;
+                        if (dishesList!=null) {
+                            dishesList.clear();
+                        }
+                        totalDishesWeight=0.0f;
+                        if (dairyList!=null) {
+                            dairyList.clear();
+                        }
+                        totalDairyWeight=0.0f;
+
                         createPie();
                         setUpBottomDonation();
                     }
@@ -282,8 +304,16 @@ public class addClass extends AppCompatActivity {
                     editor.putString(Constants.vegetablePref, sharedPreferences.getString(Constants.recentvegetablePref, ""));
                     editor.putString(Constants.vegetablePref + "weights", sharedPreferences.getString(Constants.recentvegetablePref + "weights", ""));
                     editor.apply();
-                    setUpBottomDonation();
+
+                    totalDairyWeight=0.0f;
+                    totalDishesWeight = 0.0f;
+                    totalFruitWeight = 0.0f;
+                    totalGrainsWeight = 0.0f;
+                    totalMeatWeight = 0.0f;
+                    totalVeggesWeight = 0.0f;
+
                     retrieveValuesFromMem();
+                    setUpBottomDonation();
                     createPie();
                 }
                 else
@@ -411,6 +441,7 @@ public class addClass extends AppCompatActivity {
         String retrievedCategoryItems = sharedPreferences.getString(Constants.fruitPref, "");
         if(!retrievedCategoryItems.equals("")) {
 
+            fruitList = new ArrayList<>();
             fruitList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<fruitList.size();i++)
@@ -430,6 +461,8 @@ public class addClass extends AppCompatActivity {
         //Veggies
         retrievedCategoryItems = sharedPreferences.getString(Constants.vegetablePref, "");
         if(!retrievedCategoryItems.equals("")) {
+
+            veggiesList = new ArrayList<>();
             Log.d("TAG", "retrieveValuesFromMem: "+retrievedCategoryItems);
             veggiesList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
             Log.d("TAG", "retrieveValuesFromMem: entered "+veggiesList.toString());
@@ -450,6 +483,7 @@ public class addClass extends AppCompatActivity {
         //Meat
         retrievedCategoryItems = sharedPreferences.getString(Constants.meatPref, "");
         if(!retrievedCategoryItems.equals("")) {
+            meatList = new ArrayList<>();
             meatList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<meatList.size();i++)
@@ -466,6 +500,7 @@ public class addClass extends AppCompatActivity {
         //Grains
         retrievedCategoryItems = sharedPreferences.getString(Constants.grainsPref, "");
         if(!retrievedCategoryItems.equals("")) {
+            grainsList = new ArrayList<>();
             grainsList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<grainsList.size();i++)
@@ -482,6 +517,7 @@ public class addClass extends AppCompatActivity {
         //Grains
         retrievedCategoryItems = sharedPreferences.getString(Constants.DairyPref, "");
         if(!retrievedCategoryItems.equals("")) {
+            dairyList = new ArrayList<>();
             dairyList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<dairyList.size();i++)
@@ -498,6 +534,7 @@ public class addClass extends AppCompatActivity {
         //Dishes
         retrievedCategoryItems = sharedPreferences.getString(Constants.dishesPref, "");
         if(!retrievedCategoryItems.equals("")) {
+            dishesList = new ArrayList<>();
             dishesList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
 
             for (int i=0;i<dishesList.size();i++)
@@ -527,6 +564,11 @@ public class addClass extends AppCompatActivity {
 
     private void createPie()
     {
+        if (mEntries!=null) {
+            mEntries.clear();
+        }
+
+
         mEntries.add(new PieEntry(totalFruitWeight, 0));
         mEntries.add(new PieEntry(totalVeggesWeight, 1));
         mEntries.add(new PieEntry(totalDishesWeight, 2));
@@ -658,6 +700,19 @@ public class addClass extends AppCompatActivity {
 
             donateButton.setVisibility(View.VISIBLE);
             donateButton.setText("Make Donation · "+total+"kg");
+        }
+        else {
+
+            mDonationBottomAdapter = new donationBottomAdapter(foodList);
+            verticalLayout = new LinearLayoutManager(
+                    addClass.this,
+                    LinearLayoutManager.VERTICAL,
+                    false);
+
+            bottomRecycler.setLayoutManager(verticalLayout);
+            bottomRecycler.setAdapter(mDonationBottomAdapter);
+
+
         }
 
 

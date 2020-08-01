@@ -3,6 +3,8 @@ package restaurantapp.randc.com.restaurant_app;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +32,10 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -183,6 +188,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
+
+
+
+
+
+
+
             }
         });
         select.setOnClickListener(new View.OnClickListener() {
@@ -201,10 +213,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
 
+                String cityName="";
+                String stateName="";
+
+                Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
+
+                try {
+                    List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
+                    cityName = addresses.get(0).getLocality();
+                    stateName = addresses.get(0).getAdminArea();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("TAG", "onClick: City name: "+cityName);
+                Log.d("TAG", "onClick: State name: "+stateName);
+
                 Intent intent = new Intent(MapActivity.this, profilePictureClass.class);
                 intent.putExtra("Lat",latitude);
                 intent.putExtra("Lon",longitude);
                 intent.putExtra("Add",address);
+                intent.putExtra("City", cityName);
+                intent.putExtra("State", stateName);
                 Log.d("TAG", "LAT:" + latitude + "/nLONG:" + longitude + "/nAddress" + address);
                 startActivity(intent);
             }

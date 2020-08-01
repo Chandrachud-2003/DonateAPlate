@@ -76,7 +76,7 @@ public class categoryItemAdapter
 
     // View Holder class which
     // extends RecyclerView.ViewHolder
-    public class MyView
+    public static class MyView
             extends RecyclerView.ViewHolder {
 
         // Text View

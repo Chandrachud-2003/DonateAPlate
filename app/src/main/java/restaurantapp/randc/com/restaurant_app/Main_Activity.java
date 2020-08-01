@@ -212,6 +212,11 @@ public class Main_Activity extends AppCompatActivity {
                     startActivity(getIntent());
                 }
 
+                else {
+
+                    mRefreshLayout.setRefreshing(false);
+                }
+
             }
         });
         mRefreshLayout.setRefreshing(false);

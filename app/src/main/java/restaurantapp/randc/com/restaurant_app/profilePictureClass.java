@@ -60,15 +60,24 @@ public class profilePictureClass extends AppCompatActivity {
     private FirebaseUser user;
     private Transformation transformation;
     private boolean pictureChanged = false;
+    private String city;
+    private String state;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_picture_class);
+
+        Intent intent = getIntent();
+        city = intent.getStringExtra("City");
+        state = intent.getStringExtra("State");
+
         lbar = new ProgressDialog(this);
         userProfileImage = findViewById(R.id.dp);
         mAuth = FirebaseAuth.getInstance();
         storageReference= FirebaseStorage.getInstance().getReference();
         nextButton = findViewById(R.id.nextButton);
+
+
         transformation = new RoundedTransformationBuilder()
                 .borderColor(Color.BLACK)
                 .borderWidthDp(5)
@@ -162,6 +171,8 @@ public class profilePictureClass extends AppCompatActivity {
                                             note.put("Points",0);
                                             note.put("Number of donations",0);
                                             note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
+                                            note.put("City", city);
+                                            note.put("State", state);
                                             ArrayList<String> ngoOngoingList=new ArrayList<>();
                                             ArrayList<Boolean> orderArray=new ArrayList<>();
                                             for (int i=0;i<=4;i++)
