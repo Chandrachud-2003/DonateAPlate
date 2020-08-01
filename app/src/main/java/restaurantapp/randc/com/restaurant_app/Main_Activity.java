@@ -71,6 +71,8 @@ public class Main_Activity extends AppCompatActivity {
     private TextView newdonationstxt;
     private TextView accepteddonationstxt;
     private TextView nopendingdonations;
+    private TextView mainNameText;
+    private TextView mainLocationText;
     private TextView noongoingdonations;
 
     private String[] screenTitles;
@@ -114,6 +116,7 @@ public class Main_Activity extends AppCompatActivity {
     private boolean tempFruit;
     private boolean tempVeg;
     private String tempTotalWeight;
+    private String tempLoaction;
     private boolean tempMeat;
     private String tempUrl;
     private boolean tempGrain;
@@ -177,11 +180,12 @@ public class Main_Activity extends AppCompatActivity {
             }
         };
         FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
-        FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
 
         MyUID = user.getUid();
         currentInputCode = 0;
         nodonations.setVisibility(View.GONE);
+        mainNameText = findViewById(R.id.nameMainText);
+        mainLocationText = findViewById(R.id.locationMain);
         mainRecyclerLoader = findViewById(R.id.mainRecycler_loader);
         pendingtxt = findViewById(R.id.pendingDonationsHeading);
         ongiongtxt = findViewById(R.id.ongoingDonationsHeading);
@@ -201,6 +205,25 @@ public class Main_Activity extends AppCompatActivity {
         currentSwitchBarPos = 0;
         mRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         mRefreshLayout.setRefreshStyle(PullRefreshLayout.STYLE_MATERIAL);
+
+        String collection = "";
+        if(user.getDisplayName().equals("NGO"))
+        {
+            collection = "NGO";
+        }
+        else
+        {
+            collection = "Restaurant";
+        }
+        db.collection(collection).document(user.getUid()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    mainNameText.setText(documentSnapshot.get("Name").toString().trim());
+                    String text = documentSnapshot.get("Area")+", "+documentSnapshot.get("City");
+                    mainLocationText.setText(text);
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("TAG", "onCreate: name and location retrieval failed");
+                });
 
         mRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
@@ -600,7 +623,7 @@ public class Main_Activity extends AppCompatActivity {
 
     private DrawerItem createItemFor(int position) {
         return new SimpleItem(screenIcons[position], screenTitles[position])
-                .withTextTint(color(R.color.greenText))
+                .withTextTint(color(R.color.drawerTextblue))
                 .withSelectedIconTint(color(R.color.white))
                 .withSelectedTextTint(color(R.color.white));
     }
@@ -858,6 +881,7 @@ public class Main_Activity extends AppCompatActivity {
                                 tempUrl = (String) documentSnapshot.get(Constants.url_user);
 
                                 tempType = (String) documentSnapshot.get(Constants.type_user);
+                                tempLoaction = documentSnapshot.get("Area") + ", " + documentSnapshot.get("City");
                                 dis = "-";
                                 try {
                                     GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
@@ -911,7 +935,7 @@ public class Main_Activity extends AppCompatActivity {
                                                     Log.d("CHECK", "TEMP WEIGHT:" + tempTotalWeight);
                                                     if(code== currentInputCode)
                                                     {
-                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
+                                                        mainItems.add(new MainItem(tempLoaction, tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
                                                         myDonationsRetriever_NGO(i + 1, num,code);
                                                     }
                                                 }
@@ -987,6 +1011,7 @@ public class Main_Activity extends AppCompatActivity {
                                 tempAddress = (String) documentSnapshot.getString("Address");
                                 tempUrl = (String) documentSnapshot.get(Constants.url_user);
                                 tempType = (String) documentSnapshot.get(Constants.type_user);
+                                tempLoaction = documentSnapshot.get("Area") + ", " + documentSnapshot.get("City");
                                 dis = "-";
                                 try {
                                     GeoPoint geoPoint = documentSnapshot.getGeoPoint("Location");
@@ -1038,7 +1063,7 @@ public class Main_Activity extends AppCompatActivity {
                                                     tempTotalWeight = snapshot.getValue().toString();
 
                                                     if(code== currentInputCode) {
-                                                        mainItems.add(new MainItem("Bangalore, Karnataka", tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
+                                                        mainItems.add(new MainItem(tempLoaction, tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
                                                         retriever(i + 1, max, check, intitialPos,code);
                                                     }
 

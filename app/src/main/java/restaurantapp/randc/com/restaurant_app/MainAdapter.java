@@ -123,6 +123,7 @@ import androidx.recyclerview.widget.RecyclerView;
                     holder.weightText.setText(list.get(position).getWeight()+"Kg");
                     holder.timeText.setText(list.get(position).getTime());
                     holder.locationtText.setText(list.get(position).getLocation());
+
                     //holder.mainImage.setImageResource(list.get(position).getImage());
 
                     int width = Resources.getSystem().getDisplayMetrics().widthPixels;

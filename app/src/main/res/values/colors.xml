@@ -22,7 +22,8 @@
     <color name="followingBg">#49BEFF</color>
     <color name="grey">#E5E5E5</color>
     <color name="mainColor">#305F5F</color>
-
+    <color name="drawerblue">#1f4bff</color>
+    <color name="drawerTextblue">#F0FFFF</color>
     <color name="white">#FFFFFF</color>
 
 

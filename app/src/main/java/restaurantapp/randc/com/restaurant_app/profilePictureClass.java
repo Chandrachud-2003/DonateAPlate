@@ -62,6 +62,7 @@ public class profilePictureClass extends AppCompatActivity {
     private boolean pictureChanged = false;
     private String city;
     private String state;
+    private String area;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class profilePictureClass extends AppCompatActivity {
         Intent intent = getIntent();
         city = intent.getStringExtra("City");
         state = intent.getStringExtra("State");
-
+        area = intent.getStringExtra("Area");
         lbar = new ProgressDialog(this);
         userProfileImage = findViewById(R.id.dp);
         mAuth = FirebaseAuth.getInstance();
@@ -173,6 +174,7 @@ public class profilePictureClass extends AppCompatActivity {
                                             note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
                                             note.put("City", city);
                                             note.put("State", state);
+                                            note.put("Area",area);
                                             ArrayList<String> ngoOngoingList=new ArrayList<>();
                                             ArrayList<Boolean> orderArray=new ArrayList<>();
                                             for (int i=0;i<=4;i++)
@@ -339,7 +341,7 @@ public class profilePictureClass extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         String downloadurl = uri.toString();
-                                        db.collection(user.getDisplayName()).document(user.getUid())
+                                        db.collection(CollectionType).document(user.getUid())
                                                 .update("Url",downloadurl)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override

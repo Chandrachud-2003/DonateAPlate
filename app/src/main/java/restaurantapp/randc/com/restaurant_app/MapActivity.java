@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
+import com.google.maps.PendingResult;
 import com.google.maps.model.GeocodingResult;
 
 import java.io.IOException;
@@ -58,6 +60,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Marker currentMarker;
     private CardView select;
+    private String cityName;
+    private String stateName;
+    private String areaName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +71,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Places.initialize(getApplicationContext(), "AIzaSyDinB_qTH7KMRrlK5-_NmBnpoCMxZhBB9A");
         select = findViewById(R.id.location_select);
         address = "";
+        cityName = "";
+        stateName="";
+        areaName = "";
         latitude = 0;
         longitude = 0;
         initMap();
@@ -188,55 +196,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-
-
-
-
-
-
-
             }
         });
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
 
-                    GeocodingResult[] addresses;
-                    GeoApiContext context = new GeoApiContext.Builder()
-                            .apiKey("AIzaSyDinB_qTH7KMRrlK5-_NmBnpoCMxZhBB9A")
-                            .build();
-                    addresses =  GeocodingApi.reverseGeocode(context,latLng).await();
-                    address = addresses[0].formattedAddress;
+                GetBackgroundInfo backgroundInfo = new GetBackgroundInfo();
+                backgroundInfo.execute();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                String cityName="";
-                String stateName="";
-
-                Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
-
-                try {
-                    List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
-                    cityName = addresses.get(0).getLocality();
-                    stateName = addresses.get(0).getAdminArea();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("TAG", "onClick: City name: "+cityName);
-                Log.d("TAG", "onClick: State name: "+stateName);
-
-                Intent intent = new Intent(MapActivity.this, profilePictureClass.class);
-                intent.putExtra("Lat",latitude);
-                intent.putExtra("Lon",longitude);
-                intent.putExtra("Add",address);
-                intent.putExtra("City", cityName);
-                intent.putExtra("State", stateName);
-                Log.d("TAG", "LAT:" + latitude + "/nLONG:" + longitude + "/nAddress" + address);
-                startActivity(intent);
             }
         });
         hideSoftKeyboard();
@@ -249,5 +217,54 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity
+    }
+    private class GetBackgroundInfo extends AsyncTask<Void, Integer, Boolean> {
+
+        //private final WeakReference<Activity> weakActivity;
+
+        GetBackgroundInfo() {
+            //this.weakActivity = new WeakReference<>(myActivity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d("TAG", "onPreExecute: task started");
+
+
+        }
+
+        protected Boolean doInBackground(Void... voids) {
+
+            try {
+
+
+                Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
+                List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
+                cityName = addresses.get(0).getLocality();
+                stateName = addresses.get(0).getAdminArea();
+                areaName = addresses.get(0).getSubLocality();
+                onPostExecute(true);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean done) {
+            super.onPostExecute(done);
+
+            Intent intent = new Intent(MapActivity.this, profilePictureClass.class);
+            intent.putExtra("Lat",latitude);
+            intent.putExtra("Lon",longitude);
+            intent.putExtra("Add",address);
+            intent.putExtra("City", cityName);
+            intent.putExtra("Area", areaName);
+            intent.putExtra("State", stateName);
+            Log.d("TAG", "LAT:" + latitude + "/nLONG:" + longitude + "/nAddress" + address);
+            startActivity(intent);
+        }
     }
 }
