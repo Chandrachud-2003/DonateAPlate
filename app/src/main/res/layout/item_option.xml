@@ -23,6 +23,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/average_sans"
         android:textColor="#F0FFFF" />
 
 </LinearLayout>

@@ -203,6 +203,18 @@
         android:layout_gravity="bottom|center_horizontal"
 
         />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/emptyChartAnim"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        app:lottie_rawRes="@raw/empty_chart"
+        app:lottie_loop="true"
+        app:lottie_repeatMode="restart"
+        app:layout_anchor="@id/space4"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        android:layout_gravity="bottom|center_horizontal"
+        />
 
     <Space
         android:id="@+id/space5"
@@ -531,6 +543,7 @@
             android:id="@+id/bottomSheetDonation"
             >
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -572,6 +585,17 @@
 
 
 
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/emptyDonationAnim"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    app:lottie_rawRes="@raw/empty_bottom"
+                    app:lottie_loop="true"
+                    app:lottie_repeatMode="restart"
+                    app:layout_anchor="@id/space4"
+                    app:layout_anchorGravity="bottom|center_horizontal"
+                    android:layout_gravity="bottom|center_horizontal"
+                    />
 
 
                 <androidx.recyclerview.widget.RecyclerView

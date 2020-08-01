@@ -623,7 +623,7 @@ public class Main_Activity extends AppCompatActivity {
 
     private DrawerItem createItemFor(int position) {
         return new SimpleItem(screenIcons[position], screenTitles[position])
-                .withTextTint(color(R.color.drawerTextblue))
+                .withTextTint(color(R.color.white))
                 .withSelectedIconTint(color(R.color.white))
                 .withSelectedTextTint(color(R.color.white));
     }

@@ -241,6 +241,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
                 List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
+                address = addresses.get(0).getAddressLine(0);
                 cityName = addresses.get(0).getLocality();
                 stateName = addresses.get(0).getAdminArea();
                 areaName = addresses.get(0).getSubLocality();

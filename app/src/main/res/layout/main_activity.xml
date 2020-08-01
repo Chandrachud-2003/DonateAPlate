@@ -181,8 +181,8 @@
             android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
-  android:layout_marginTop="65dp"
+            app:layout_constraintTop_toBottomOf="@id/mainEmptyAnim"
+            android:layout_marginTop="15dp"
             android:visibility="gone"
 
 
@@ -200,6 +200,36 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/pendingEmptyAnim"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            app:lottie_rawRes="@raw/empty_box"
+            app:lottie_loop="false"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/pendingDonationsHeading"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp"
+            />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/ongoingEmptyAnim"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            app:lottie_rawRes="@raw/empty_box"
+            app:lottie_loop="false"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/ongoingDonationsHeading"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp"
+            />
+
 
 
         <com.wang.avi.AVLoadingIndicatorView
@@ -213,8 +243,36 @@
             app:layout_constraintTop_toBottomOf="@+id/mainRecycler"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/mainLoading"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitCenter"
+            app:lottie_rawRes="@raw/loading_main"
+            app:lottie_loop="true"
+            app:lottie_repeatMode="restart"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
+            />
 
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/mainEmptyAnim"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitCenter"
+            app:lottie_rawRes="@raw/empty_box"
+            app:lottie_loop="false"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
             />
 
 
@@ -299,8 +357,8 @@
             android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pendingDonationsHeading"
-            android:layout_marginTop="65dp"
+            app:layout_constraintTop_toBottomOf="@id/pendingEmptyAnim"
+            android:layout_marginTop="15dp"
             android:visibility="gone"
 
 
@@ -363,8 +421,8 @@
             android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ongoingDonationsHeading"
-            android:layout_marginTop="65dp"
+            app:layout_constraintTop_toBottomOf="@id/ongoingEmptyAnim"
+            android:layout_marginTop="15dp"
             android:visibility="gone"
 
 
