@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.hbb20.CountryCodePicker;
 
 import java.util.List;
 
@@ -65,6 +66,7 @@ public class SignupActivity extends AppCompatActivity {
     private ConstraintLayout signupLayout;
     private CardView restCard;
     private TextView restText;
+    private CountryCodePicker ccp;
     private ImageView restImage;
     private CardView ngoCard;
     private TextView ngoText;
@@ -113,6 +115,7 @@ public class SignupActivity extends AppCompatActivity {
         ngoCard = findViewById(R.id.chooseNGOCard);
         ngoImage = findViewById(R.id.NGOImage);
         ngoText = findViewById(R.id.NGOName);
+        ccp = (CountryCodePicker) findViewById(R.id.ccp);
         typeView = findViewById(R.id.categoryView);
         indCard = findViewById(R.id.chooseIndCard);
         indImage = findViewById(R.id.IndImage);
@@ -122,8 +125,7 @@ public class SignupActivity extends AppCompatActivity {
         subheading = findViewById(R.id.subheadingText);
         backButton = findViewById(R.id.backButton);
         Type="";
-
-
+        ccp.registerCarrierNumberEditText(phno);
 
 /*        ngoImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -306,7 +308,13 @@ public class SignupActivity extends AppCompatActivity {
                         Toast.makeText(SignupActivity.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                         passwordConfirm.setError("Confirm Password again");
 
-                    } else if (password.length() < 6) {
+                    }
+                    else if(phno.getText().toString().replace(" ", "").length()!=10)
+                    {
+                        phno.setError("Invalid Phone number");
+                        Toast.makeText(SignupActivity.this, "Invalid Phone number", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (password.length() < 6) {
                         Toast.makeText(SignupActivity.this, "Password must be atleast 6 charecters long", Toast.LENGTH_SHORT).show();
                         passwordView.setError("Password too short!");
                     } else if (!(isEmailValid(email))) {
@@ -334,7 +342,8 @@ public class SignupActivity extends AppCompatActivity {
                                         }
                                         editor.putString("rEmail", email);
                                         editor.putString("rPass", password);
-                                        editor.putString("rPhone", phno.getText().toString().trim());
+                                        editor.putString("rPhone", ccp.getFormattedFullNumber());
+
                                         editor.putString("rName", nameView.getText().toString().trim());
                                         editor.apply();
                                         if(checkMapServices()){

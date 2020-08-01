@@ -16,7 +16,13 @@ public class Constants {
     public static final String fruitPref = "Fruits";
     public static final String vegetablePref = "Vegetables";
     public static final String dishesPref = "Dishes";
-    public static final String userIdPref = "UID";
+
+    public static final String recentgrainsPref = "recentGrains";
+    public static final String recentmeatPref = "recentMeat";
+    public static final String recentDairyPref = "recentDairy";
+    public static final String recentfruitPref = "recentFruits";
+    public static final String recentvegetablePref = "recentVegetables";
+    public static final String recentdishesPref = "recentDishes";
 
     public static final String item_fire = "Items";
     public static final String orderName_fire = "Orders";

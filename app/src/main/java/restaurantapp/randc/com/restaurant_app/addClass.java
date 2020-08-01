@@ -128,7 +128,6 @@ public class addClass extends AppCompatActivity {
         setContentView(R.layout.add_activity);
 
         progressdialog = new ProgressDialog(addClass.this);
-// ...
         mDatabase = FirebaseDatabase.getInstance().getReference();
         selectCategory = findViewById(R.id.categorySelectView);
         mPieChart = findViewById(R.id.categoryChart);
@@ -194,11 +193,10 @@ public class addClass extends AppCompatActivity {
                         editor.remove(Constants.dishesPref);
                         editor.remove(Constants.dishesPref+"weights");
                         editor.apply();
-                        editor.apply();
-                        setUpBottomDonation();
                         mEntries.clear();
                         retrieveValuesFromMem();
                         createPie();
+                        setUpBottomDonation();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -261,6 +259,54 @@ public class addClass extends AppCompatActivity {
     }
     private void setOnClickListeners()
     {
+
+        recentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+
+                if(sharedPreferences.getBoolean("RecentPresent",false)) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Constants.fruitPref, sharedPreferences.getString(Constants.recentfruitPref, ""));
+                    editor.putString(Constants.fruitPref + "weights", sharedPreferences.getString(Constants.recentfruitPref + "weights", ""));
+                    editor.putString(Constants.dishesPref, sharedPreferences.getString(Constants.recentdishesPref, ""));
+                    editor.putString(Constants.dishesPref + "weights", sharedPreferences.getString(Constants.recentdishesPref + "weights", ""));
+                    editor.putString(Constants.DairyPref, sharedPreferences.getString(Constants.recentDairyPref, ""));
+                    editor.putString(Constants.DairyPref + "weights", sharedPreferences.getString(Constants.recentDairyPref + "weights", ""));
+                    editor.putString(Constants.grainsPref, sharedPreferences.getString(Constants.recentgrainsPref, ""));
+                    editor.putString(Constants.grainsPref + "weights", sharedPreferences.getString(Constants.recentgrainsPref + "weights", ""));
+                    editor.putString(Constants.meatPref, sharedPreferences.getString(Constants.recentmeatPref, ""));
+                    editor.putString(Constants.meatPref + "weights", sharedPreferences.getString(Constants.recentmeatPref + "weights", ""));
+                    editor.putString(Constants.vegetablePref, sharedPreferences.getString(Constants.recentvegetablePref, ""));
+                    editor.putString(Constants.vegetablePref + "weights", sharedPreferences.getString(Constants.recentvegetablePref + "weights", ""));
+                    editor.apply();
+                    setUpBottomDonation();
+                    retrieveValuesFromMem();
+                    createPie();
+                }
+                else
+                {
+
+                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(addClass.this);
+                    builder.setTitle("No recent donations");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+                    builder.setMessage("This feature will be available after you make your first donation!");
+
+                    android.app.AlertDialog alertDialog = builder.create();
+
+                    alertDialog.show();
+                }
+            }
+        });
+
         PushDownAnim.setPushDownAnimTo(donateButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
                 .setOnClickListener(new View.OnClickListener() {
@@ -274,6 +320,19 @@ public class addClass extends AppCompatActivity {
 
                 if (user.isEmailVerified()) {
 
+                    editor.putString(Constants.recentfruitPref,sharedPreferences.getString(Constants.fruitPref, ""));
+                    editor.putString(Constants.recentfruitPref+"weights",sharedPreferences.getString(Constants.fruitPref+"weights", ""));
+                    editor.putString(Constants.recentdishesPref,sharedPreferences.getString(Constants.dishesPref, ""));
+                    editor.putString(Constants.recentdishesPref+"weights",sharedPreferences.getString(Constants.dishesPref+"weights", ""));
+                    editor.putString(Constants.recentDairyPref,sharedPreferences.getString(Constants.DairyPref, ""));
+                    editor.putString(Constants.recentDairyPref+"weights",sharedPreferences.getString(Constants.DairyPref+"weights", ""));
+                    editor.putString(Constants.recentgrainsPref,sharedPreferences.getString(Constants.grainsPref, ""));
+                    editor.putString(Constants.recentgrainsPref+"weights",sharedPreferences.getString(Constants.grainsPref+"weights", ""));
+                    editor.putString(Constants.recentmeatPref,sharedPreferences.getString(Constants.meatPref, ""));
+                    editor.putString(Constants.recentmeatPref+"weights",sharedPreferences.getString(Constants.meatPref+"weights", ""));
+                    editor.putString(Constants.recentvegetablePref,sharedPreferences.getString(Constants.vegetablePref, ""));
+                    editor.putString(Constants.recentvegetablePref+"weights",sharedPreferences.getString(Constants.vegetablePref+"weights", ""));
+                    editor.putBoolean("RecentPresent",true);
                     editor.remove(Constants.fruitPref);
                     editor.remove(Constants.fruitPref+"weights");
                     editor.remove(Constants.dishesPref);
@@ -286,8 +345,7 @@ public class addClass extends AppCompatActivity {
                     editor.remove(Constants.DairyPref+"weights");
                     editor.remove(Constants.grainsPref);
                     editor.remove(Constants.grainsPref+"weights");
-                    editor.remove(Constants.dishesPref);
-                    editor.remove(Constants.dishesPref+"weights");
+
                     editor.apply();
                     progressdialog.setMessage("Adding Donation...");
                     progressdialog.setCanceledOnTouchOutside(false);
@@ -372,6 +430,7 @@ public class addClass extends AppCompatActivity {
         //Veggies
         retrievedCategoryItems = sharedPreferences.getString(Constants.vegetablePref, "");
         if(!retrievedCategoryItems.equals("")) {
+            Log.d("TAG", "retrieveValuesFromMem: "+retrievedCategoryItems);
             veggiesList.addAll(Arrays.asList(gson.fromJson(retrievedCategoryItems, categoryItem[].class)));
             Log.d("TAG", "retrieveValuesFromMem: entered "+veggiesList.toString());
 
