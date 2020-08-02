@@ -5,25 +5,18 @@
         <item>Dashboard</item>
         <item>Add Donation</item>
         <item>Profile</item>
-        <item>Settings</item>
+        <item>About</item>
         <item>Log Out</item>
     </string-array>
 
     <array name="ld_activityScreenIcons">
         <item>@drawable/icon8_home</item>
         <item>@drawable/icons8_plus</item>
-        <item>@drawable/icons8_contacts</item>
-        <item>@drawable/icons8_settings</item>
+        <item>@drawable/icons8_profile</item>
+        <item>@drawable/icons8_info</item>
         <item>@drawable/icons8_logout</item>
     </array>
 
-    <array name="circle_icons">
-        <item>@drawable/icons8_phone2</item>
-        <item>@drawable/icons8_mail</item>
-        <item>@drawable/icons8_whatsapp</item>
-        <item>@drawable/icons8_facebook</item>
-        <item>@drawable/icons8_sms</item>
-    </array>
     <array name="circle_colors">
         <item>@color/phoneColor</item>
         <item>@color/emailColor</item>

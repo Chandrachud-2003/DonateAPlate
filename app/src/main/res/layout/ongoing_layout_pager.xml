@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        android:src="@drawable/restaurant2"
+        android:src="@drawable/default_restaurant"
         android:background="@color/colorTransparent"
         />
 

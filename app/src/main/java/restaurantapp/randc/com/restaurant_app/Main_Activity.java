@@ -355,7 +355,7 @@ public class Main_Activity extends AppCompatActivity {
             accepteddonationstxt.setVisibility(View.VISIBLE);
             currentSwitchBarPos = 0;
             mainRecycler.setVisibility(View.VISIBLE);
-            mainRecyclerLoader.setVisibility(View.VISIBLE);
+         //   mainRecyclerLoader.setVisibility(View.VISIBLE);
             ongiongtxt.setVisibility(View.GONE);
             pendingtxt.setVisibility(View.GONE);
             requestedRecycler.setVisibility(View.GONE);
@@ -422,6 +422,7 @@ public class Main_Activity extends AppCompatActivity {
                                     atBottom = true;
                                     Log.d("tag", "onScrollChanged: reached bottom");
                                     if (orderIds.size() > 10) {
+                                        Log.d("tag", "onScrollChanged: Loading");
                                         mainRecyclerLoader.setVisibility(View.VISIBLE);
                                         mainRecyclerLoader.show();
                                         loadNextPage(currentInputCode);
@@ -482,6 +483,8 @@ public class Main_Activity extends AppCompatActivity {
                             pendingAnim.setVisibility(View.GONE);
                             pendingAnim.cancelAnimation();
 
+                            noongoingdonations.setVisibility(View.GONE);
+
                             mainAnim.setAnimation(R.raw.loading_main);
                             mainAnim.setRepeatMode(LottieDrawable.RESTART);
                             mainAnim.setRepeatCount(LottieDrawable.INFINITE);
@@ -491,10 +494,6 @@ public class Main_Activity extends AppCompatActivity {
                             getOrderIDS();
                             ongoingRecycler.setVisibility(View.GONE);
                             mainRecycler.setVisibility(View.VISIBLE);
-                            mainRecyclerLoader.setVisibility(View.VISIBLE);
-                            mainRecyclerLoader.show();
-
-
                     }
                     else if (i==1 && currentSwitchBarPos!=i)
                     {
@@ -507,6 +506,9 @@ public class Main_Activity extends AppCompatActivity {
                         accepteddonationstxt.setTextColor(getResources().getColor(R.color.white));
                         currentSwitchBarPos = i;
                         nodonations.setVisibility(View.GONE);
+
+                        mainRecyclerLoader.hide();
+                        mainRecyclerLoader.setVisibility(View.GONE);
 
                         mainAnim.setVisibility(View.GONE);
                         mainAnim.cancelAnimation();
@@ -643,6 +645,8 @@ public class Main_Activity extends AppCompatActivity {
                 }
 
                 case 3: {
+                    Intent intent = new Intent(Main_Activity.this, info.class);
+                    startActivity(intent);
                     break;
                 }
                 case 4: {
@@ -667,6 +671,8 @@ public class Main_Activity extends AppCompatActivity {
                         break;
                     }
                     case 2: {
+                        Intent intent = new Intent(Main_Activity.this, info.class);
+                        startActivity(intent);
                         break;
                     }
 
@@ -1201,12 +1207,14 @@ public class Main_Activity extends AppCompatActivity {
                     mainRecycler.setLayoutManager(verticalLayout);
                     mainRecycler.setAdapter(mainAdapter);
                     mainRecycler.setItemAnimator(new DefaultItemAnimator());
-                    mainRecyclerLoader.setVisibility(View.GONE);
-                    mainRecyclerLoader.hide();
+                    mainAnim.setVisibility(View.GONE);
+                    mainAnim.cancelAnimation();
+
                 } else {
                     mainAdapter.notifyItemRangeChanged(intitialPos, mainItems.size() - 1);
                     mainRecyclerLoader.setVisibility(View.GONE);
                     mainRecyclerLoader.hide();
+
                 }
             }
         }
@@ -1254,9 +1262,6 @@ public class Main_Activity extends AppCompatActivity {
                     if (orderIds!=null && orderIds.size()>0) {
                         TOTAL_PAGES = (int) Math.ceil(orderIds.size() / (10.0f));
                         loadFirstPage(currentInputCode);
-
-                        mainAnim.setVisibility(View.GONE);
-                        mainAnim.cancelAnimation();
                         nodonations.setVisibility(View.GONE);
                     }
                     else {

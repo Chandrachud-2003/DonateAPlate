@@ -8,34 +8,6 @@
     android:orientation="vertical">
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_launcher_background"
-        app:civ_border_color="@color/white"
-        app:civ_border_width="2dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            app:layout_constraintStart_toEndOf="@id/profile_image"
-            app:layout_constraintTop_toTopOf="@+id/profile_image"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Donation App"
-            android:layout_marginLeft="15dp"
-            android:textSize="22sp"
-            android:fontFamily="@font/montserrat"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            />
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="240dp"

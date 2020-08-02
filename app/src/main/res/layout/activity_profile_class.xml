@@ -62,7 +62,7 @@
         <ImageView
             android:id="@+id/profilePic"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="275dp"
             android:scaleType="centerCrop"
 
             app:layout_constraintEnd_toEndOf="parent"
@@ -486,7 +486,7 @@
         android:id="@+id/divider2"
         android:layout_width="409dp"
         android:layout_height="1dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="30dp"
         android:background="?android:attr/listDivider"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
