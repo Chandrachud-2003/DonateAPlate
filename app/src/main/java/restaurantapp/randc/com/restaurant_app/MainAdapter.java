@@ -23,6 +23,7 @@ import com.squareup.picasso.Transformation;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -70,7 +71,6 @@ import androidx.recyclerview.widget.RecyclerView;
                 grainsview = view.findViewById(R.id.grainsPop);
                 meatview = view.findViewById(R.id.meatPop);
                 loadingAnim = view.findViewById(R.id.imageLoadingAnim);
-
                 mainImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
@@ -88,12 +88,9 @@ import androidx.recyclerview.widget.RecyclerView;
                         mainImage.getLayoutParams().height = height;
                         mainImage.requestLayout();
 
-
-
-
-
                     }
                 });
+
 
 
 
@@ -112,6 +109,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
             width = Resources.getSystem().getDisplayMetrics().widthPixels;
             height = (int) ((width * 2) / 3);
+            Log.d("TAG", "MainAdapter: " + width);
         }
 
         public List<MainItem> getList() {
@@ -206,14 +204,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
                     Transformation transformation = new RoundedTransformationBuilder()
                             .borderColor(Color.BLACK)
-                            .borderWidthDp(0)
+                            .borderWidthDp(5)
                             .cornerRadiusDp(30)
                             .oval(false)
                             .build();
 
                     Picasso.get()
                             .load(list.get(position).getImage())
-                            .resize((int)(width*0.9),(int) (height*0.9))
+                            .resize(width,height)
                             .transform(transformation)
                             .centerCrop()
                             .into(holder.mainImage, new Callback() {
@@ -222,6 +220,11 @@ import androidx.recyclerview.widget.RecyclerView;
                                     holder.mainImage.setBackgroundColor(Color.TRANSPARENT);
                                     holder.loadingAnim.setVisibility(View.GONE);
                                     holder.loadingAnim.cancelAnimation();
+                                    ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams)
+                                            holder.mainImage.getLayoutParams(); // View for which we need to set constrainedWidth.
+                                    lp.constrainedWidth = true;lp.constrainedHeight = true;
+                                    holder.mainImage.setLayoutParams(lp);
+                                    holder.mainImage.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                                 }
 
                                 @Override
