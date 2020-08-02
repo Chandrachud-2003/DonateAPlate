@@ -17,7 +17,8 @@
             android:id="@+id/mainImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorTransparent"
+
+            android:background="@color/mainItemBack"
             android:src="@drawable/restaurant2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -36,6 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:scaleType="fitCenter"
             app:lottie_loop="true"
+            app:lottie_autoPlay="true"
             app:lottie_repeatMode="restart"
             app:lottie_rawRes="@raw/image_loading"
             />
@@ -68,6 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="10dp"
         >
 
         <ImageView

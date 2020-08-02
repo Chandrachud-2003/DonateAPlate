@@ -23,6 +23,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -69,6 +70,11 @@ public class addClass extends AppCompatActivity {
     private LinearLayoutManager HorizontalLayout;
     private RecyclerView.LayoutManager RecyclerViewLayoutManager;
     private CategorySelectAdapter mCategoryItemAdapter;
+
+    private LottieAnimationView emptyPiAnim;
+    private TextView emptyPiText;
+    private LottieAnimationView emptyBottomAnim;
+    private TextView emptyBottomText;
 
 
     private float totalFruitWeight=0.0f;
@@ -124,6 +130,16 @@ public class addClass extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_activity);
+
+        emptyBottomAnim = findViewById(R.id.emptyDonationAnim);
+        emptyBottomText = findViewById(R.id.emptyDonationText);
+        emptyPiAnim = findViewById(R.id.emptyChartAnim);
+        emptyPiText = findViewById(R.id.chartAnimText);
+
+        emptyBottomAnim.setVisibility(View.GONE);
+        emptyBottomText.setVisibility(View.GONE);
+        emptyPiAnim.setVisibility(View.GONE);
+        emptyPiText.setVisibility(View.GONE);
 
         progressdialog = new ProgressDialog(addClass.this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -191,6 +207,8 @@ public class addClass extends AppCompatActivity {
                         editor.remove(Constants.dishesPref);
                         editor.remove(Constants.dishesPref+"weights");
                         editor.apply();
+
+
                         mEntries.clear();
                         if (fruitList!=null) {
                             fruitList.clear();
@@ -271,6 +289,7 @@ public class addClass extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(addClass.this,Main_Activity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -568,66 +587,94 @@ public class addClass extends AppCompatActivity {
             mEntries.clear();
         }
 
+        if ((totalVeggesWeight!=0.0f) || (totalMeatWeight!=0.0f) || (totalGrainsWeight!=0.0f) || (totalDishesWeight!=0.0f) || (totalFruitWeight!=0.0f) || (totalDairyWeight!=0.0f)) {
 
-        mEntries.add(new PieEntry(totalFruitWeight, 0));
-        mEntries.add(new PieEntry(totalVeggesWeight, 1));
-        mEntries.add(new PieEntry(totalDishesWeight, 2));
-        mEntries.add(new PieEntry(totalMeatWeight, 3));
-        mEntries.add(new PieEntry(totalGrainsWeight, 4));
-        mEntries.add(new PieEntry(totalDairyWeight, 5));
+            mPieChart.setVisibility(View.VISIBLE);
 
+            if (emptyPiAnim.getVisibility()==View.VISIBLE)
+            {
+                emptyPiAnim.setVisibility(View.GONE);
+                emptyPiAnim.cancelAnimation();
+                emptyPiText.setVisibility(View.GONE);
+            }
 
-        mPieDataSet = new PieDataSet(mEntries, "");
+            if (emptyBottomAnim.getVisibility()==View.VISIBLE)
+            {
+                emptyBottomAnim.setVisibility(View.GONE);
+                emptyBottomAnim.cancelAnimation();
+                emptyBottomText.setVisibility(View.GONE);
+            }
 
-
-
-        mPieChart.setDrawHoleEnabled(true);
-        mPieChart.setHoleColor(Color.TRANSPARENT);
-        mPieChart.getLegend().setEnabled(false);
-        mPieChart.getDescription().setEnabled(false);
-
-
-        mPieChart.setHoleRadius(85f);
-
-        mPieChart.setDrawEntryLabels(false);
-        mPieChart.setDrawCenterText(false);
-
-        mPieChart.setHighlightPerTapEnabled(false);
-
-        mPieChart.setRotationAngle(0);
-        // enable rotation of the chart by touch
-        mPieChart.setRotationEnabled(true);
-
-        ArrayList<Integer> colors = new ArrayList<>();
-
-        colors.add(Color.parseColor("#FFE101"));
-        colors.add(Color.parseColor("#3DC073"));
-        colors.add(Color.parseColor("#C0C0C0"));
-        colors.add(Color.parseColor("#FF2B5B"));
-        colors.add(Color.parseColor("#796DFF"));
-        colors.add(Color.parseColor("#02BDE0"));
+            mEntries.add(new PieEntry(totalFruitWeight, 0));
+            mEntries.add(new PieEntry(totalVeggesWeight, 1));
+            mEntries.add(new PieEntry(totalDishesWeight, 2));
+            mEntries.add(new PieEntry(totalMeatWeight, 3));
+            mEntries.add(new PieEntry(totalGrainsWeight, 4));
+            mEntries.add(new PieEntry(totalDairyWeight, 5));
 
 
-        mPieDataSet.setDrawValues(false);
-        mPieDataSet.setDrawValues(false);
-        mPieDataSet.setSliceSpace(3f);
+            mPieDataSet = new PieDataSet(mEntries, "");
 
 
+            mPieChart.setDrawHoleEnabled(true);
+            mPieChart.setHoleColor(Color.TRANSPARENT);
+            mPieChart.getLegend().setEnabled(false);
+            mPieChart.getDescription().setEnabled(false);
 
 
+            mPieChart.setHoleRadius(85f);
 
-        mPieDataSet.setColors(colors);
+            mPieChart.setDrawEntryLabels(false);
+            mPieChart.setDrawCenterText(false);
 
-        mPieData = new PieData(mPieDataSet);
-        mPieData.setValueFormatter(new PercentFormatter(mPieChart));
+            mPieChart.setHighlightPerTapEnabled(false);
+
+            mPieChart.setRotationAngle(0);
+            // enable rotation of the chart by touch
+            mPieChart.setRotationEnabled(true);
+
+            ArrayList<Integer> colors = new ArrayList<>();
+
+            colors.add(Color.parseColor("#FFE101"));
+            colors.add(Color.parseColor("#3DC073"));
+            colors.add(Color.parseColor("#C0C0C0"));
+            colors.add(Color.parseColor("#FF2B5B"));
+            colors.add(Color.parseColor("#796DFF"));
+            colors.add(Color.parseColor("#02BDE0"));
 
 
+            mPieDataSet.setDrawValues(false);
+            mPieDataSet.setDrawValues(false);
+            mPieDataSet.setSliceSpace(3f);
 
-        mPieChart.animateY(1400, Easing.EaseInOutQuad);
 
-        mPieChart.setData(mPieData);
-        mPieChart.highlightValues(null);
-        mPieChart.invalidate();
+            mPieDataSet.setColors(colors);
+
+            mPieData = new PieData(mPieDataSet);
+            mPieData.setValueFormatter(new PercentFormatter(mPieChart));
+
+
+            mPieChart.animateY(1400, Easing.EaseInOutQuad);
+
+            mPieChart.setData(mPieData);
+            mPieChart.highlightValues(null);
+            mPieChart.invalidate();
+
+        }
+
+        else {
+
+            mPieChart.setVisibility(View.GONE);
+
+            emptyPiAnim.setVisibility(View.VISIBLE);
+            emptyPiAnim.playAnimation();
+            emptyPiText.setVisibility(View.VISIBLE);
+            emptyBottomAnim.setVisibility(View.VISIBLE);
+            emptyBottomAnim.playAnimation();
+            emptyBottomText.setVisibility(View.VISIBLE);
+
+
+        }
 
         setUpPieText();
     }

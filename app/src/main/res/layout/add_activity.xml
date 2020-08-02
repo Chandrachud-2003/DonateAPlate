@@ -10,14 +10,11 @@
         android:fitsSystemWindows="true"
         tools:context=".addClass">
 
-    <RelativeLayout
-        android:id="@+id/topDonation"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_dodgeInsetEdges="top|bottom"
-        android:layout_gravity="top"
-        android:layout_marginTop="20dp"
-        >
+        android:layout_height="wrap_content">
+
+
 
         <ImageButton
             android:id="@+id/backButton"
@@ -25,7 +22,7 @@
             android:layout_height="50dp"
             android:background="@color/colorTransparent"
             android:padding="7dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:src="@drawable/back_50"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,16 +46,8 @@
         android:textStyle="bold"
         />
 
-    </RelativeLayout>
 
-    <Space
-        android:id="@+id/space1"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        app:layout_anchor="@id/topDonation"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        />
+
 
     <RelativeLayout
         android:id="@+id/recentLayout"
@@ -71,10 +60,10 @@
 
         android:background="@drawable/recent_donations_add_bg"
         android:padding="10dp"
-        android:layout_gravity="bottom|center_horizontal"
-        app:layout_anchor="@id/space1"
-
-        app:layout_anchorGravity="bottom|center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/donationHeading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"
         >
 
         <ImageView
@@ -112,26 +101,21 @@
 
     </RelativeLayout>
 
-    <Space
-        android:id="@+id/space2"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        app:layout_anchor="@id/recentLayout"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        />
 
     <RelativeLayout
         android:id="@+id/categoryHeading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:padding="10dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="5dp"
-        android:layout_gravity="bottom"
-        app:layout_anchor="@id/space2"
-        app:layout_anchorGravity="bottom"
+        app:layout_constraintTop_toBottomOf="@id/recentLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+
         >
 
         <TextView
@@ -160,15 +144,6 @@
 
     </RelativeLayout>
 
-    <Space
-        android:id="@+id/space3"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        app:layout_anchor="@id/categoryHeading"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categorySelectView"
@@ -179,60 +154,75 @@
         android:layout_marginRight="10dp"
         android:background="@color/colorTransparent"
         android:scrollbars="horizontal"
-        app:layout_anchor="@id/space3"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
+        app:layout_constraintTop_toBottomOf="@id/categoryHeading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <Space
-        android:id="@+id/space4"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chartLayout"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        app:layout_anchor="@id/categorySelectView"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/categorySelectView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        >
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/categoryChart"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        app:layout_anchor="@id/space4"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        android:layout_gravity="bottom|center_horizontal"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/categoryChart"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
 
-        />
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/emptyChartAnim"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        app:lottie_rawRes="@raw/empty_chart"
-        app:lottie_loop="true"
-        app:lottie_repeatMode="restart"
-        app:layout_anchor="@id/space4"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        android:layout_gravity="bottom|center_horizontal"
-        />
 
-    <Space
-        android:id="@+id/space5"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        app:layout_anchor="@id/categoryChart"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        />
+
+            />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/emptyChartAnim"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            app:lottie_rawRes="@raw/empty_chart"
+            app:lottie_loop="true"
+            app:lottie_repeatMode="restart"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+   <TextView
+       android:id="@+id/chartAnimText"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="No Items added"
+       android:textColor="@color/white"
+       android:fontFamily="@font/average_sans"
+       android:textStyle="bold"
+       android:textSize="18sp"
+       app:layout_constraintTop_toBottomOf="@id/chartLayout"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:layout_marginTop="5dp"
+       android:visibility="gone"
+       />
 
     <LinearLayout
         android:id="@+id/percentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_anchor="@id/space5"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        android:layout_gravity="bottom|center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/chartAnimText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp"
         >
 
@@ -516,14 +506,9 @@
 
 
     </LinearLayout>
-    <Space
-        android:id="@+id/space6"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        app:layout_anchor="@id/percentLayout"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottomSheetScroll"
@@ -592,9 +577,23 @@
                     app:lottie_rawRes="@raw/empty_bottom"
                     app:lottie_loop="true"
                     app:lottie_repeatMode="restart"
-                    app:layout_anchor="@id/space4"
-                    app:layout_anchorGravity="bottom|center_horizontal"
-                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone"
+                    />
+                <TextView
+                    android:id="@+id/emptyDonationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="7dp"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/average_sans"
+                    android:text="It looks like your Donation is Empty"
                     />
 
 

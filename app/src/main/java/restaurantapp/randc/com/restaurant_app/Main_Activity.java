@@ -34,6 +34,8 @@ import me.ibrahimsn.lib.OnItemSelectedListener;
 import me.ibrahimsn.lib.SmoothBottomBar;
 
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import com.baoyz.widget.PullRefreshLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -56,6 +58,7 @@ import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -148,6 +151,12 @@ public class Main_Activity extends AppCompatActivity {
 
     private boolean onTop;
 
+    private LottieAnimationView mainAnim;
+    private LottieAnimationView pendingAnim;
+    private LottieAnimationView ongoingAnim;
+
+    private boolean openingForFirstTime;
+
 
 
     @Override
@@ -156,6 +165,7 @@ public class Main_Activity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
 
         onTop = true;
+        openingForFirstTime = true;
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -205,6 +215,10 @@ public class Main_Activity extends AppCompatActivity {
         currentSwitchBarPos = 0;
         mRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         mRefreshLayout.setRefreshStyle(PullRefreshLayout.STYLE_MATERIAL);
+
+        mainAnim = findViewById(R.id.mainAnim);
+        pendingAnim = findViewById(R.id.pendingAnim);
+        ongoingAnim = findViewById(R.id.ongoingAnim);
 
         String collection = "";
         if(user.getDisplayName().equals("NGO"))
@@ -280,6 +294,22 @@ public class Main_Activity extends AppCompatActivity {
             pendingtxt.setVisibility(View.VISIBLE);
             newdonationstxt.setVisibility(View.INVISIBLE);
             accepteddonationstxt.setVisibility(View.INVISIBLE);
+            mainAnim.setVisibility(View.GONE);
+            mainAnim.cancelAnimation();
+
+            pendingAnim.setAnimation(R.raw.loading_main);
+            pendingAnim.setRepeatMode(LottieDrawable.RESTART);
+            pendingAnim.setRepeatCount(LottieDrawable.INFINITE);
+            pendingAnim.setVisibility(View.VISIBLE);
+            pendingAnim.playAnimation();
+
+            ongoingAnim.setAnimation(R.raw.loading_main);
+            ongoingAnim.setRepeatMode(LottieDrawable.RESTART);
+            ongoingAnim.setRepeatCount(LottieDrawable.INFINITE);
+            ongoingAnim.setVisibility(View.VISIBLE);
+            ongoingAnim.playAnimation();
+
+
 
             db.collection(Constants.rest_fire).document(MyUID).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -332,6 +362,17 @@ public class Main_Activity extends AppCompatActivity {
             ongoingRecycler.setVisibility(View.GONE);
             //      searchList = new ArrayList<>();
 
+            ongoingAnim.setVisibility(View.GONE);
+            ongoingAnim.cancelAnimation();
+            pendingAnim.setVisibility(View.GONE);
+            pendingAnim.cancelAnimation();
+
+            mainAnim.setAnimation(R.raw.loading_main);
+            mainAnim.setRepeatCount(LottieDrawable.INFINITE);
+            mainAnim.setRepeatMode(LottieDrawable.RESTART);
+            mainAnim.setVisibility(View.VISIBLE);
+            mainAnim.playAnimation();
+
             getOrderIDS();
 
             getDeviceLocation();
@@ -353,8 +394,6 @@ public class Main_Activity extends AppCompatActivity {
                     return false;
                 }
             };
-            mainRecyclerLoader.setVisibility(View.VISIBLE);
-            mainRecyclerLoader.show();
 
 
 
@@ -437,6 +476,18 @@ public class Main_Activity extends AppCompatActivity {
                             newdonationstxt.setTextColor(getResources().getColor(R.color.white));
                             accepteddonationstxt.setTextColor(getResources().getColor(R.color.black));
                             currentSwitchBarPos = i;
+
+                            ongoingAnim.setVisibility(View.GONE);
+                            ongoingAnim.cancelAnimation();
+                            pendingAnim.setVisibility(View.GONE);
+                            pendingAnim.cancelAnimation();
+
+                            mainAnim.setAnimation(R.raw.loading_main);
+                            mainAnim.setRepeatMode(LottieDrawable.RESTART);
+                            mainAnim.setRepeatCount(LottieDrawable.INFINITE);
+                            mainAnim.setVisibility(View.VISIBLE);
+                            mainAnim.playAnimation();
+
                             getOrderIDS();
                             ongoingRecycler.setVisibility(View.GONE);
                             mainRecycler.setVisibility(View.VISIBLE);
@@ -456,8 +507,19 @@ public class Main_Activity extends AppCompatActivity {
                         accepteddonationstxt.setTextColor(getResources().getColor(R.color.white));
                         currentSwitchBarPos = i;
                         nodonations.setVisibility(View.GONE);
-                        mainRecyclerLoader.setVisibility(View.VISIBLE);
-                        mainRecyclerLoader.show();
+
+                        mainAnim.setVisibility(View.GONE);
+                        mainAnim.cancelAnimation();
+                        pendingAnim.setVisibility(View.GONE);
+                        pendingAnim.cancelAnimation();
+
+                        ongoingAnim.setAnimation(R.raw.loading_main);
+                        ongoingAnim.setAnimation(R.raw.loading_main);
+                        ongoingAnim.setRepeatCount(LottieDrawable.INFINITE);
+                        ongoingAnim.setRepeatMode(LottieDrawable.RESTART);
+                        ongoingAnim.setVisibility(View.VISIBLE);
+                        ongoingAnim.playAnimation();
+
                         db.collection(Constants.ngo_fire).document(MyUID).get()
                                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
@@ -838,10 +900,17 @@ public class Main_Activity extends AppCompatActivity {
             if(ongoingItems.size()>0) {
                 ongoingRecycler.setVisibility(View.VISIBLE);
                 ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
+                ongoingAnim.cancelAnimation();
+                ongoingAnim.setVisibility(View.GONE);
                 noongoingdonations.setVisibility(View.GONE);
             }
             else
             {
+                ongoingAnim.cancelAnimation();
+                ongoingAnim.setAnimation(R.raw.empty_box);
+                ongoingAnim.setRepeatCount(0);
+                ongoingAnim.setVisibility(View.VISIBLE);
+                ongoingAnim.playAnimation();
                 ongoingRecycler.setVisibility(View.GONE);
                 noongoingdonations.setVisibility(View.VISIBLE);
             }
@@ -849,9 +918,16 @@ public class Main_Activity extends AppCompatActivity {
                 requestedRecycler.setVisibility(View.VISIBLE);
                 requestedRecycler.setAdapter(new RequestAdapter(requestedItems,Main_Activity.this));
                 nopendingdonations.setVisibility(View.GONE);
+                pendingAnim.cancelAnimation();
+                pendingAnim.setVisibility(View.GONE);
             }
             else
             {
+                pendingAnim.cancelAnimation();
+                pendingAnim.setAnimation(R.raw.empty_box);
+                pendingAnim.setRepeatCount(0);
+                pendingAnim.setVisibility(View.VISIBLE);
+                pendingAnim.playAnimation();
                 requestedRecycler.setVisibility(View.GONE);
                 nopendingdonations.setVisibility(View.VISIBLE);
             }
@@ -979,8 +1055,21 @@ public class Main_Activity extends AppCompatActivity {
                 mainRecycler.setLayoutManager(verticalLayout);
                 mainRecycler.setAdapter(mainAdapter);
                 mainRecycler.setItemAnimator(new DefaultItemAnimator());
-                mainRecyclerLoader.setVisibility(View.GONE);
-                mainRecyclerLoader.hide();
+
+                if (ongoingItems_NGO.size()>0)
+                {
+                    ongoingAnim.setVisibility(View.GONE);
+                    ongoingAnim.cancelAnimation();
+                    noongoingdonations.setVisibility(View.GONE);
+                }
+                else {
+                    ongoingAnim.cancelAnimation();
+                    ongoingAnim.setAnimation(R.raw.empty_box);
+                    ongoingAnim.setRepeatCount(0);
+                    ongoingAnim.setVisibility(View.VISIBLE);
+                    ongoingAnim.playAnimation();
+                    noongoingdonations.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -1165,11 +1254,19 @@ public class Main_Activity extends AppCompatActivity {
                     if (orderIds!=null && orderIds.size()>0) {
                         TOTAL_PAGES = (int) Math.ceil(orderIds.size() / (10.0f));
                         loadFirstPage(currentInputCode);
+
+                        mainAnim.setVisibility(View.GONE);
+                        mainAnim.cancelAnimation();
                         nodonations.setVisibility(View.GONE);
                     }
                     else {
                         mainRecyclerLoader.hide();
                         mainRecyclerLoader.setVisibility(View.GONE);
+                        mainAnim.cancelAnimation();
+                        mainAnim.setAnimation(R.raw.empty_box);
+                        mainAnim.setRepeatCount(0);
+                        mainAnim.setVisibility(View.VISIBLE);
+                        mainAnim.playAnimation();
                         nodonations.setVisibility(View.VISIBLE);
                     }
                 }

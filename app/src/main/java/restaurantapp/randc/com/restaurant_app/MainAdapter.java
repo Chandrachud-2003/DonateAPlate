@@ -5,13 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -25,6 +30,9 @@ import androidx.recyclerview.widget.RecyclerView;
         private List<MainItem> list;
         private Context mContext;
         private String newOrAccepted;
+
+        private int width;
+        private int height;
 
         public class donationView
                 extends RecyclerView.ViewHolder {
@@ -43,6 +51,8 @@ import androidx.recyclerview.widget.RecyclerView;
             TextView dishesview;
             TextView grainsview;
 
+            LottieAnimationView loadingAnim;
+
             public donationView(View view)
             {
                 super(view);
@@ -59,12 +69,31 @@ import androidx.recyclerview.widget.RecyclerView;
                 dishesview = view.findViewById(R.id.dishesPop);
                 grainsview = view.findViewById(R.id.grainsPop);
                 meatview = view.findViewById(R.id.meatPop);
+                loadingAnim = view.findViewById(R.id.imageLoadingAnim);
+
+                mainImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            mainImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        } else {
+                            mainImage.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        }
+
+
+
+
+                        mainImage.getLayoutParams().width = width;
+                        mainImage.getLayoutParams().height = height;
+                        mainImage.requestLayout();
 
 
 
 
 
-
+                    }
+                });
 
 
 
@@ -80,6 +109,9 @@ import androidx.recyclerview.widget.RecyclerView;
             list = mainItems;
             mContext = context;
             this.newOrAccepted = newOrAccepted;
+
+            width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            height = (int) ((width * 2) / 3);
         }
 
         public List<MainItem> getList() {
@@ -105,9 +137,6 @@ import androidx.recyclerview.widget.RecyclerView;
                         parent,
                         false));
 
-
-
-
             // return itemView
             return ViewHolder;
         }
@@ -117,16 +146,19 @@ import androidx.recyclerview.widget.RecyclerView;
                                       int position) {
 
 
+
                     donationView holder = (donationView) CommonHolder;
+                    holder.loadingAnim.playAnimation();
                     holder.nameText.setText(list.get(position).getName());
                     holder.resaurantTypeText.setText(list.get(position).getTypeRestaurant());
                     holder.weightText.setText(list.get(position).getWeight()+"Kg");
                     holder.timeText.setText(list.get(position).getTime());
                     holder.locationtText.setText(list.get(position).getLocation());
 
+
                     //holder.mainImage.setImageResource(list.get(position).getImage());
 
-                    int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+
 
                     String uid = list.get(position).getUid();
                     String orderID = list.get(position).getOrderId();
@@ -170,7 +202,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 
-                    int height = (int) ((width * 2) / 3);
+
 
                     Transformation transformation = new RoundedTransformationBuilder()
                             .borderColor(Color.BLACK)
@@ -184,7 +216,19 @@ import androidx.recyclerview.widget.RecyclerView;
                             .resize(width, height)
                             .transform(transformation)
                             .centerCrop()
-                            .into(holder.mainImage);
+                            .into(holder.mainImage, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    holder.mainImage.setBackgroundColor(Color.TRANSPARENT);
+                                    holder.loadingAnim.setVisibility(View.GONE);
+                                    holder.loadingAnim.cancelAnimation();
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+
+                                }
+                            });
 
 
 

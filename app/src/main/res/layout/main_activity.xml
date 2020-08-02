@@ -181,7 +181,7 @@
             android:textSize="15sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mainEmptyAnim"
+            app:layout_constraintTop_toBottomOf="@id/mainAnim"
             android:layout_marginTop="15dp"
             android:visibility="gone"
 
@@ -200,35 +200,67 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/pendingEmptyAnim"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            app:lottie_rawRes="@raw/empty_box"
-            app:lottie_loop="false"
-            android:background="@color/transparent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pendingLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/pendingDonationsHeading"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="30dp"
-            />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/ongoingEmptyAnim"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            app:lottie_rawRes="@raw/empty_box"
-            app:lottie_loop="false"
-            android:background="@color/transparent"
-            app:layout_constraintTop_toBottomOf="@id/ongoingDonationsHeading"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="30dp"
-            />
+            >
+
+            <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
+                android:id="@+id/requestSmoolider"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:layout_alignParentBottom="true"
+                android:visibility="visible"
+                android:clipToPadding = "false"
+                android:layout_marginBottom="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/pendingAnim"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="30dp"
+                />
+
+            <TextView
+                android:id="@+id/no_pending_donations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No pending donations"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pendingAnim"
+                android:layout_marginTop="15dp"
+                android:visibility="gone"
+
+
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
 
@@ -246,13 +278,10 @@
             />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/mainLoading"
+            android:id="@+id/mainAnim"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:scaleType="fitCenter"
-            app:lottie_rawRes="@raw/loading_main"
-            app:lottie_loop="true"
-            app:lottie_repeatMode="restart"
+            android:scaleType="centerCrop"
             android:background="@color/transparent"
             app:layout_constraintTop_toBottomOf="@id/SwitchBar"
             app:layout_constraintStart_toStartOf="parent"
@@ -261,19 +290,7 @@
             />
 
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/mainEmptyAnim"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="fitCenter"
-            app:lottie_rawRes="@raw/empty_box"
-            app:lottie_loop="false"
-            android:background="@color/transparent"
-            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="50dp"
-            />
+
 
 
 
@@ -342,41 +359,12 @@
             android:text="Pending Donations"
             android:layout_marginLeft="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchBarLayout"
+            app:layout_constraintTop_toBottomOf="@id/SwitchBar"
             android:layout_marginTop="20dp"
 
             />
-        <TextView
-            android:id="@+id/no_pending_donations"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No pending donations"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pendingEmptyAnim"
-            android:layout_marginTop="15dp"
-            android:visibility="gone"
 
 
-            />
-        <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
-            android:id="@+id/requestSmoolider"
-            app:layout_constraintTop_toBottomOf="@+id/pendingDonationsHeading"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp"
-            android:layout_alignParentBottom="true"
-            android:visibility="visible"
-            android:clipToPadding = "false"
-            android:layout_marginBottom="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <TextView
             android:visibility="gone"
@@ -389,44 +377,75 @@
             android:text="Ongoing Donations"
             android:layout_marginLeft="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/requestSmoolider"
+            app:layout_constraintTop_toBottomOf="@id/pendingLayout"
             android:layout_marginTop="20dp"
             app:layout_goneMarginTop="140dp"
 
             />
 
-        <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
-            android:id="@+id/ongoingSmoolider"
-            app:layout_constraintTop_toBottomOf="@+id/ongoingDonationsHeading"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ongoingLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/ongoingDonationsHeading"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:clipToPadding = "false"
-            app:layout_goneMarginTop="80dp"
-            android:layout_marginBottom="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/no_ongoing_donations"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No ongoing donations"
-            android:fontFamily="@font/montserrat"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ongoingEmptyAnim"
-            android:layout_marginTop="15dp"
-            android:visibility="gone"
+
+            >
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ongoingAnim"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:background="@color/transparent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="30dp"
+                />
 
 
-            />
+            <restaurantapp.randc.com.restaurant_app.CustomSmoothViewPager
+                android:id="@+id/ongoingSmoolider"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"
+                android:clipToPadding = "false"
+                app:layout_goneMarginTop="80dp"
+                android:layout_marginBottom="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/no_ongoing_donations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No ongoing donations"
+                android:fontFamily="@font/montserrat"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ongoingAnim"
+                android:layout_marginTop="15dp"
+                android:visibility="gone"
+
+
+                />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline1"
             android:layout_width="wrap_content"

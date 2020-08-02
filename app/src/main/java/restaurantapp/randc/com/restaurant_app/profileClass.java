@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -46,6 +47,7 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class profileClass extends AppCompatActivity implements PasswordDialog.DialogListener{
 
@@ -87,11 +89,25 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
     private Bottom_Contact mBottom_contact;
 
+    private ConstraintLayout profileLayout;
+
+    private LottieAnimationView profileLoading;
+    private TextView profileLoadingText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_class);
         storageReference= FirebaseStorage.getInstance().getReference();
+
+        profileLayout = findViewById(R.id.profileConstraintLayout);
+        profileLayout.setVisibility(View.INVISIBLE);
+
+        profileLoading = findViewById(R.id.profileLoadingAnim);
+        profileLoadingText = findViewById(R.id.profileLoadingText);
+        profileLoading.setVisibility(View.VISIBLE);
+        profileLoading.playAnimation();
+        profileLoadingText.setVisibility(View.VISIBLE);
 
 
 
@@ -410,6 +426,13 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                 nameView.setText("User not found");
 
                             }
+
+
+                        profileLoading.setVisibility(View.GONE);
+                        profileLoading.cancelAnimation();
+                        profileLoadingText.setVisibility(View.GONE);
+
+                        profileLayout.setVisibility(View.VISIBLE);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

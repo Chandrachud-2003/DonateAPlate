@@ -9,6 +9,7 @@
     <color name="lightGray">#CCD3C9</color>
     <color name="red">#FF0000</color>
     <color name="blue">#0032FF</color>
+    <color name="mainItemBack">#e6ebff</color>
     <color name="gray">#757575</color>
     <color name="green">#2BD583</color>
     <color name="gradStart">#63C9FF</color>
