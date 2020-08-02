@@ -213,7 +213,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
                     Picasso.get()
                             .load(list.get(position).getImage())
-                            .resize(width, height)
+                            .resize((int)(width*0.9),(int) (height*0.9))
                             .transform(transformation)
                             .centerCrop()
                             .into(holder.mainImage, new Callback() {

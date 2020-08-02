@@ -126,6 +126,9 @@ public class displayOrder extends AppCompatActivity {
     private float meatWeight;
     private float dishesWeight;
 
+    private int points;
+    private int screen_width;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +211,7 @@ public class displayOrder extends AppCompatActivity {
         profileClick = findViewById(R.id.profileClick);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screen_width = displayMetrics.widthPixels;
+        screen_width = displayMetrics.widthPixels;
 
         displayAnimation.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
@@ -558,7 +561,9 @@ public class displayOrder extends AppCompatActivity {
                                                                                                             public void onSuccess(Void aVoid) {
                                                                                                                 dialog.dismiss();
 
-                                                                                                                Toast.makeText(displayOrder.this,"Donation Completed",Toast.LENGTH_LONG).show();
+
+
+                                                                                                                //Toast.makeText(displayOrder.this,"Donation Completed",Toast.LENGTH_LONG).show();
                                                                                                                 Log.d("tag","Donation Completion Success");
                                                                                                                 if(From.equals("ongoingItem")) {
                                                                                                                     mDatabaseReference.child(Constants.notifications).child(uid).child(Constants.notify_fire).setValue(true);
@@ -575,12 +580,15 @@ public class displayOrder extends AppCompatActivity {
                                                                                                                 }
                                                                                                                 ngoDoc.get().addOnSuccessListener(documentSnapshot1 -> {
                                                                                                                     NGOGeoPoint = documentSnapshot1.getGeoPoint("Location");
-                                                                                                                    int points = 30;
+                                                                                                                    points = 30;
                                                                                                                     try {
                                                                                                                         float[] results = new float[1];
                                                                                                                         Location.distanceBetween(RestGeoPoint.getLatitude(), RestGeoPoint.getLongitude(),
                                                                                                                                 NGOGeoPoint.getLatitude(),NGOGeoPoint.getLongitude(), results);
                                                                                                                         points = (int)(Math. round(results[0] / 100));
+
+                                                                                                                        SuccessDialog successDialog = new SuccessDialog(displayOrder.this, points, screen_width);
+                                                                                                                        successDialog.startDialog();
 
                                                                                                                     }catch (Exception e) { }
 
@@ -588,10 +596,12 @@ public class displayOrder extends AppCompatActivity {
                                                                                                                     RestDoc.update("Points", FieldValue.increment(points));
                                                                                                                     ngoDoc.update("Number of donations", FieldValue.increment(1));
                                                                                                                     ngoDoc.update("Points", FieldValue.increment(points));
+
+                                                                                                                    SuccessDialog successDialog = new SuccessDialog(displayOrder.this, points, screen_width);
+                                                                                                                    successDialog.startDialog();
                                                                                                                 });
 
-                                                                                                                    Intent intent = new Intent(displayOrder.this, Main_Activity.class);
-                                                                                                                    startActivity(intent);
+
 
                                                                                                                 }
                                                                                                         })
