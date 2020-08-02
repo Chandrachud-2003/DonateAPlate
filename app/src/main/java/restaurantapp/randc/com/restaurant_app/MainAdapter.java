@@ -204,7 +204,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
                     Transformation transformation = new RoundedTransformationBuilder()
                             .borderColor(Color.BLACK)
-                            .borderWidthDp(5)
+                            .borderWidthDp(0)
                             .cornerRadiusDp(30)
                             .oval(false)
                             .build();
