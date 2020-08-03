@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +50,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class addClass extends AppCompatActivity {
@@ -60,10 +65,8 @@ public class addClass extends AppCompatActivity {
     private ImageButton backbutton;
     private PieDataSet mPieDataSet;
     private PieData mPieData;
-
+    private LinearLayout percentLayout;
     private List<PieEntry> mEntries;
-    private ArrayList<String> xVals;
-    private ImageButton menuButton;
     private RelativeLayout recentLayout;
     private List<CategorySelectItem> selectList;
     private LinearLayoutManager HorizontalLayout;
@@ -133,19 +136,19 @@ public class addClass extends AppCompatActivity {
         emptyBottomText = findViewById(R.id.emptyDonationText);
         emptyPiAnim = findViewById(R.id.emptyChartAnim);
         emptyPiText = findViewById(R.id.chartAnimText);
-
         emptyBottomAnim.setVisibility(View.GONE);
         emptyBottomText.setVisibility(View.GONE);
         emptyPiAnim.setVisibility(View.GONE);
         emptyPiText.setVisibility(View.GONE);
-
+        percentLayout = findViewById(R.id.percentLayout);
+        percentLayout.setVisibility(View.VISIBLE);
         progressdialog = new ProgressDialog(addClass.this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         selectCategory = findViewById(R.id.categorySelectView);
         mPieChart = findViewById(R.id.categoryChart);
         clearButton = findViewById(R.id.clearButton1);
         backbutton = findViewById(R.id.backButton);
-        menuButton = findViewById(R.id.menuButton);
+
         recentLayout = findViewById(R.id.recentLayout);
         dairyPercent = findViewById(R.id.dairyPercentText);
         meatPercent = findViewById(R.id.meatPercentText);
@@ -270,7 +273,24 @@ public class addClass extends AppCompatActivity {
         selectCategory.setLayoutManager(HorizontalLayout);
         selectCategory.setAdapter(mCategoryItemAdapter);
 
-       // selectCategory.smoothScrollToPosition(mCategoryItemAdapter.getItemCount());
+        //selectCategory.smoothScrollToPosition(mCategoryItemAdapter.getItemCount());
+
+        if(getIntent().getStringExtra("From").equals("Navigation")) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    smoothScroll(selectCategory, mCategoryItemAdapter.getItemCount(), 6000);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            selectCategory.smoothScrollToPosition(0);
+                        }
+                    }, 5000);
+                }
+            }, 1000);
+        }
 
         mEntries = new ArrayList<>();
 
@@ -549,14 +569,6 @@ public class addClass extends AppCompatActivity {
 
     }
 
-    private void addXVals() {
-        xVals.add("Fruits");
-        xVals.add("Dairy");
-        xVals.add("Veggies");
-        xVals.add("Meat");
-        xVals.add("Grains");
-        xVals.add("Dishes");
-    }
 
     private void createPie() {
         if (mEntries != null) {
@@ -571,6 +583,7 @@ public class addClass extends AppCompatActivity {
                 emptyPiAnim.setVisibility(View.GONE);
                 emptyPiAnim.cancelAnimation();
                 emptyPiText.setVisibility(View.GONE);
+                percentLayout.setVisibility(View.VISIBLE);
             }
 
             if (emptyBottomAnim.getVisibility() == View.VISIBLE) {
@@ -645,6 +658,7 @@ public class addClass extends AppCompatActivity {
             emptyBottomAnim.playAnimation();
             emptyBottomText.setVisibility(View.VISIBLE);
 
+            percentLayout.setVisibility(View.GONE);
 
         }
 
@@ -898,5 +912,27 @@ public class addClass extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private static void smoothScroll(RecyclerView rv, int toPos, int duration) throws IllegalArgumentException {
+        int TARGET_SEEK_SCROLL_DISTANCE_PX = 10000;
+        int itemHeight = rv.getChildAt(0).getHeight();
+        itemHeight = itemHeight + 33;
+        int fvPos = ((LinearLayoutManager)rv.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        int i = Math.abs((fvPos - toPos) * itemHeight);
+        if (i == 0) { i = (int) Math.abs(rv.getChildAt(0).getY()); }
+        final int totalPix = i;
+        RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(rv.getContext()) {
+            @Override protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+            @Override protected int calculateTimeForScrolling(int dx) {
+                int ms = (int) ( duration * dx / (float)totalPix );
+                if (dx < TARGET_SEEK_SCROLL_DISTANCE_PX ) { ms = ms*2; }
+                return ms;
+            }
+        };
+        smoothScroller.setTargetPosition(toPos);
+        rv.getLayoutManager().startSmoothScroll(smoothScroller);
     }
 }

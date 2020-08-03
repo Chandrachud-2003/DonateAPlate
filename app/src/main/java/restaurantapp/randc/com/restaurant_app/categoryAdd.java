@@ -306,6 +306,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
                 editor.putString(Title + "weights", weightsText);
                 editor.apply();
                 Intent intent = new Intent(categoryAdd.this, addClass.class);
+                intent.putExtra("From","categoryAdd");
                 startActivity(intent);
             }
         });
@@ -313,6 +314,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(categoryAdd.this, addClass.class);
+                intent.putExtra("From","categoryAdd");
                 startActivity(intent);
                 finish();
             }

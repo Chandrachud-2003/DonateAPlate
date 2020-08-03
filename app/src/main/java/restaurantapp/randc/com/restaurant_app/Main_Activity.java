@@ -595,6 +595,7 @@ public class Main_Activity extends AppCompatActivity {
                 }
                 case 1: {
                     Intent intent = new Intent(Main_Activity.this, addClass.class);
+                    intent.putExtra("From","Navigation");
                     startActivity(intent);
                     break;
                 }
