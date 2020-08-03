@@ -10,19 +10,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".info"></activity>
-        <activity android:name=".SignupActivity"></activity>
-        <activity android:name=".profileClass" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".displayOrder" />
-        <activity android:name=".profilePictureClass" />
-        <activity android:name=".addClass" />
-        <activity android:name=".resetpassword" />
-        <activity android:name=".Main_Activity" />
+        <activity android:name=".info"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SignupActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".profileClass"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MapActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".displayOrder"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".profilePictureClass"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".addClass"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".resetpassword"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Main_Activity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".categoryAdd"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".LoginActivity">
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

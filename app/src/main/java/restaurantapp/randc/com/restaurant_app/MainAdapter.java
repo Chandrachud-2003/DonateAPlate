@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -146,6 +148,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
                     donationView holder = (donationView) CommonHolder;
+                     holder.loadingAnim.setVisibility(View.VISIBLE);
                     holder.loadingAnim.playAnimation();
                     holder.nameText.setText(list.get(position).getName());
                     holder.resaurantTypeText.setText(list.get(position).getTypeRestaurant());
@@ -214,17 +217,20 @@ import androidx.recyclerview.widget.RecyclerView;
                             .resize(width,height)
                             .transform(transformation)
                             .centerCrop()
+                  //         .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                             .into(holder.mainImage, new Callback() {
                                 @Override
                                 public void onSuccess() {
-                                    holder.mainImage.setBackgroundColor(Color.TRANSPARENT);
-                                    holder.loadingAnim.setVisibility(View.GONE);
-                                    holder.loadingAnim.cancelAnimation();
-                                    ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams)
-                                            holder.mainImage.getLayoutParams(); // View for which we need to set constrainedWidth.
-                                    lp.constrainedWidth = true;lp.constrainedHeight = true;
-                                    holder.mainImage.setLayoutParams(lp);
-                                    holder.mainImage.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                    final Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            holder.mainImage.setBackgroundColor(Color.TRANSPARENT);
+                                            holder.loadingAnim.setVisibility(View.GONE);
+                                            holder.loadingAnim.cancelAnimation();
+                                            holder.mainImage.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        }
+                                        }, 10);
                                 }
 
                                 @Override
