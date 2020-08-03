@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class displayOrderAdapter extends RecyclerView.Adapter<displayOrderAdapter.ViewHolder>{
+public class displayOrderAdapter extends RecyclerView.Adapter<displayOrderAdapter.ViewHolder> {
 
 
     private ArrayList<categoryItem> list;
@@ -23,7 +23,7 @@ public class displayOrderAdapter extends RecyclerView.Adapter<displayOrderAdapte
     @Override
     public displayOrderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem= layoutInflater.inflate(R.layout.display_order_recycler_item, parent, false);
+        View listItem = layoutInflater.inflate(R.layout.display_order_recycler_item, parent, false);
         displayOrderAdapter.ViewHolder viewHolder = new displayOrderAdapter.ViewHolder(listItem);
         return viewHolder;
     }
@@ -36,7 +36,7 @@ public class displayOrderAdapter extends RecyclerView.Adapter<displayOrderAdapte
         holder.viewProfie.setVisibility(View.GONE);
         holder.accept.setVisibility(View.GONE);
         holder.nameText.setText(item.getFoodItem());
-        holder.weightText.setText(item.getFoodWeight()+"kg");
+        holder.weightText.setText(item.getFoodWeight() + "kg");
 
     }
 

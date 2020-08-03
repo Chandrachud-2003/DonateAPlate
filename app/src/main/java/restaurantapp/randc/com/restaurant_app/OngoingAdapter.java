@@ -18,7 +18,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-public class OngoingAdapter extends PagerAdapter{
+public class OngoingAdapter extends PagerAdapter {
 
     private Context mContext;
     private List<OngoingItems> feedItemList;
@@ -33,130 +33,119 @@ public class OngoingAdapter extends PagerAdapter{
     private TextView dishesPop;
 
 
-
     public OngoingAdapter(List<OngoingItems> feedItemList, Context mContext) {
-            this.mContext = mContext;
-            this.feedItemList = feedItemList;
-        }
-
-        @Override
-        public int getCount() {
-            return feedItemList.size();
-        }
-
-        @NonNull
-        @Override
-        public View instantiateItem(@NonNull ViewGroup container, int position) {
-            final OngoingItems item = feedItemList.get(position);
-
-
-            LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(R.layout.ongoing_layout_pager, container, false);
-
-
-
-            Log.d("TAG", "instantiateItem: entered");
-
-            name = view.findViewById(R.id.ongoingName);
-            weights = view.findViewById(R.id.ongoingWeight);
-            fruitsPop = view.findViewById(R.id.fruitsPop);
-            veggiesPop = view.findViewById(R.id.vegetablesPop);
-            meatPop = view.findViewById(R.id.meatPop);
-            grainsPop = view.findViewById(R.id.grainsPop);
-            dairyPop = view.findViewById(R.id.dairyPop);
-            dishesPop = view.findViewById(R.id.dishesPop);
-            picture = view.findViewById(R.id.ongoingImage);
-            name.setText(item.getName());
-            weights.setText(item.getWeight()+" kg");
-
-            Log.d("TAG", "instantiateItem: Dishes: "+item.isDishes());
-
-
-
-
-
-            if (item.isFruits())
-            {
-                fruitsPop.setVisibility(View.VISIBLE);
-            }
-
-            if (item.isDairy())
-            {
-                dairyPop.setVisibility(View.VISIBLE);
-            }
-
-            if (item.isGrains())
-            {
-                grainsPop.setVisibility(View.VISIBLE);
-            }
-
-            if (item.isMeat())
-            {
-                meatPop.setVisibility(View.VISIBLE);
-            }
-
-            if (item.isVeggies())
-            {
-                veggiesPop.setVisibility(View.VISIBLE);
-            }
-            if (item.isDishes())
-            {
-                dishesPop.setVisibility(View.VISIBLE);
-            }
-
-            float density = mContext.getResources()
-                    .getDisplayMetrics()
-                    .density;
-
-            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
-                    int height = (int) ((width * 2) / 5);
-
-            Picasso.get()
-                    .load(item.getImage())
-                    .resize(width, height)
-                    .centerInside()
-                    .into(picture);
-
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent((Activity)mContext, displayOrder.class);
-
-                    intent.putExtra(Constants.uid_intent, item.getNGOID());
-                    intent.putExtra(Constants.orderId_intent, item.getOrderID());
-                    intent.putExtra(Constants.name_intent, item.getName());
-                    intent.putExtra(Constants.isDairy_intent,item.isDairy() );
-                    intent.putExtra(Constants.isGrains_intent, item.isGrains());
-                    intent.putExtra(Constants.isFruits_intent, item.isFruits());
-                    intent.putExtra(Constants.isVeggies_intent, item.isVeggies());
-                    intent.putExtra(Constants.isMeat_intent,item.isMeat());
-                    intent.putExtra(Constants.isDishes_intent, item.isDishes());
-                    intent.putExtra(Constants.address_intent, item.getAddress());
-                    intent.putExtra(Constants.total_weight_intent,item.getWeight());
-                    intent.putExtra("From","ongoingItem");
-
-                    mContext.startActivity(intent);
-
-                }
-            });
-
-            container.addView(view);
-
-
-            return view;
-        }
-
-
-        @Override
-        public void destroyItem (ViewGroup container,int position, Object object){
-            Log.d("TAG", "destroyItem: entered, position: "+position+" Object: "+object.toString());
-            //container.removeView((View) object);
-        }
-
-        @Override
-        public boolean isViewFromObject (View view, Object object){
-            return view.equals(object);
-        }
+        this.mContext = mContext;
+        this.feedItemList = feedItemList;
     }
+
+    @Override
+    public int getCount() {
+        return feedItemList.size();
+    }
+
+    @NonNull
+    @Override
+    public View instantiateItem(@NonNull ViewGroup container, int position) {
+        final OngoingItems item = feedItemList.get(position);
+
+
+        LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.ongoing_layout_pager, container, false);
+
+
+        Log.d("TAG", "instantiateItem: entered");
+
+        name = view.findViewById(R.id.ongoingName);
+        weights = view.findViewById(R.id.ongoingWeight);
+        fruitsPop = view.findViewById(R.id.fruitsPop);
+        veggiesPop = view.findViewById(R.id.vegetablesPop);
+        meatPop = view.findViewById(R.id.meatPop);
+        grainsPop = view.findViewById(R.id.grainsPop);
+        dairyPop = view.findViewById(R.id.dairyPop);
+        dishesPop = view.findViewById(R.id.dishesPop);
+        picture = view.findViewById(R.id.ongoingImage);
+        name.setText(item.getName());
+        weights.setText(item.getWeight() + " kg");
+
+        Log.d("TAG", "instantiateItem: Dishes: " + item.isDishes());
+
+
+        if (item.isFruits()) {
+            fruitsPop.setVisibility(View.VISIBLE);
+        }
+
+        if (item.isDairy()) {
+            dairyPop.setVisibility(View.VISIBLE);
+        }
+
+        if (item.isGrains()) {
+            grainsPop.setVisibility(View.VISIBLE);
+        }
+
+        if (item.isMeat()) {
+            meatPop.setVisibility(View.VISIBLE);
+        }
+
+        if (item.isVeggies()) {
+            veggiesPop.setVisibility(View.VISIBLE);
+        }
+        if (item.isDishes()) {
+            dishesPop.setVisibility(View.VISIBLE);
+        }
+
+        float density = mContext.getResources()
+                .getDisplayMetrics()
+                .density;
+
+        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int height = (int) ((width * 2) / 5);
+
+        Picasso.get()
+                .load(item.getImage())
+                .resize(width, height)
+                .centerInside()
+                .into(picture);
+
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent((Activity) mContext, displayOrder.class);
+
+                intent.putExtra(Constants.uid_intent, item.getNGOID());
+                intent.putExtra(Constants.orderId_intent, item.getOrderID());
+                intent.putExtra(Constants.name_intent, item.getName());
+                intent.putExtra(Constants.isDairy_intent, item.isDairy());
+                intent.putExtra(Constants.isGrains_intent, item.isGrains());
+                intent.putExtra(Constants.isFruits_intent, item.isFruits());
+                intent.putExtra(Constants.isVeggies_intent, item.isVeggies());
+                intent.putExtra(Constants.isMeat_intent, item.isMeat());
+                intent.putExtra(Constants.isDishes_intent, item.isDishes());
+                intent.putExtra(Constants.address_intent, item.getAddress());
+                intent.putExtra(Constants.total_weight_intent, item.getWeight());
+                intent.putExtra("From", "ongoingItem");
+
+                mContext.startActivity(intent);
+
+            }
+        });
+
+        container.addView(view);
+
+
+        return view;
+    }
+
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        Log.d("TAG", "destroyItem: entered, position: " + position + " Object: " + object.toString());
+        //container.removeView((View) object);
+    }
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return view.equals(object);
+    }
+}
 

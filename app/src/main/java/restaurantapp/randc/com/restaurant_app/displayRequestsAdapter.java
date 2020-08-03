@@ -31,7 +31,7 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAdapter.ViewHolder>{
+public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAdapter.ViewHolder> {
 
     private Context mContext;
     private ArrayList<displayRequestsItem> list;
@@ -47,7 +47,7 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
     @Override
     public displayOrderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem= layoutInflater.inflate(R.layout.display_order_recycler_item, parent, false);
+        View listItem = layoutInflater.inflate(R.layout.display_order_recycler_item, parent, false);
         displayOrderAdapter.ViewHolder viewHolder = new displayOrderAdapter.ViewHolder(listItem);
         return viewHolder;
     }
@@ -63,9 +63,9 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
         holder.viewProfie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent((Activity)mContext, profileClass.class);
-                intent.putExtra("uid",item.getUID());
-                intent.putExtra("From","ongoingItem");
+                Intent intent = new Intent((Activity) mContext, profileClass.class);
+                intent.putExtra("uid", item.getUID());
+                intent.putExtra("From", "ongoingItem");
                 mContext.startActivity(intent);
             }
         });
@@ -103,14 +103,13 @@ public class displayRequestsAdapter extends RecyclerView.Adapter<displayOrderAda
                                                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                                                 if (documentSnapshot.exists()) {
                                                                                     mDatabase.child(Constants.notifications).child(item.getUID()).child(Constants.notify_fire).setValue(true);
-                                                                                    mDatabase.child(Constants.notifications).child(item.getUID()).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString()+" accepted your donation request!");
+                                                                                    mDatabase.child(Constants.notifications).child(item.getUID()).child(Constants.notifyText_fire).push().setValue(documentSnapshot.get("Name").toString() + " accepted your donation request!");
                                                                                 }
                                                                             }
-                                                                            });
+                                                                        });
 
 
-
-                                                                Intent intent = new Intent((Activity)mContext, Main_Activity.class);
+                                                                Intent intent = new Intent((Activity) mContext, Main_Activity.class);
                                                                 mContext.startActivity(intent);
                                                             }
                                                         })

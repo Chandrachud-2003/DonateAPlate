@@ -49,10 +49,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-public class profileClass extends AppCompatActivity implements PasswordDialog.DialogListener{
+public class profileClass extends AppCompatActivity implements PasswordDialog.DialogListener {
 
     private FloatingActionMenu fab;
-    private Button save;
+    private CardView save;
     private FloatingActionButton edit;
     private Uri mImageUri;
     private ImageButton cancelButton;
@@ -98,7 +98,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_class);
-        storageReference= FirebaseStorage.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         profileLayout = findViewById(R.id.profileConstraintLayout);
         profileLayout.setVisibility(View.INVISIBLE);
@@ -108,7 +108,6 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         profileLoading.setVisibility(View.VISIBLE);
         profileLoading.playAnimation();
         profileLoadingText.setVisibility(View.VISIBLE);
-
 
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -139,35 +138,31 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         emailView.setKeyListener(null);
         gmaps.setVisibility(View.GONE);
         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
-        height = (int) ((width*2)/3.0);
+        height = (int) ((width * 2) / 3.0);
         contactButton = findViewById(R.id.contactButton);
 
-        if(getIntent().getStringExtra("From").equals("mainItem"))
-        {
+        if (getIntent().getStringExtra("From").equals("mainItem")) {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "Restaurant";
             getDeviceLocation();
         }
-        if(getIntent().getStringExtra("From").equals("ongoingItem"))
-        {
+        if (getIntent().getStringExtra("From").equals("ongoingItem")) {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "NGO";
             getDeviceLocation();
         }
-        if(getIntent().getStringExtra("From").equals("ongoingNGOItem"))
-        {
+        if (getIntent().getStringExtra("From").equals("ongoingNGOItem")) {
             fab.setVisibility(View.GONE);
             uid = getIntent().getStringExtra("uid");
             main_collection = "Restaurant";
             getDeviceLocation();
         }
-        if(getIntent().getStringExtra("From").equals("Navigation")) {
+        if (getIntent().getStringExtra("From").equals("Navigation")) {
             uid = user.getUid();
             main_collection = user.getDisplayName();
-            if(main_collection.equals("Individual"))
-            {
+            if (main_collection.equals("Individual")) {
                 main_collection = "Restaurant";
             }
             detailsText.setText("Your Details");
@@ -175,7 +170,6 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         }
 
         updateDetails();
-
 
 
         PushDownAnim.setPushDownAnimTo(contactButton)
@@ -209,19 +203,19 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 }, 300);
 
 
-                emailView.setPadding(25,25,25,25);
+                emailView.setPadding(25, 25, 25, 25);
                 emailView.setKeyListener(listener);
                 emailView.setBackgroundResource(R.drawable.edittext_bg);
 
-                phnoView.setPadding(25,25,25,25);
+                phnoView.setPadding(25, 25, 25, 25);
                 phnoView.setKeyListener(listener2);
                 phnoView.setBackgroundResource(R.drawable.edittext_bg);
 
-                AddressView.setPadding(25,25,25,25);
+                AddressView.setPadding(25, 25, 25, 25);
                 AddressView.setKeyListener(listener);
                 AddressView.setBackgroundResource(R.drawable.edittext_bg);
 
-                nameView.setPadding(25,25,25,25);
+                nameView.setPadding(25, 25, 25, 25);
                 nameView.setKeyListener(listener);
                 nameView.setBackgroundResource(R.drawable.edittext_bg);
 
@@ -238,21 +232,19 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-
                 String name = nameView.getText().toString().trim();
                 String phno = phnoView.getText().toString().trim();
                 String address = AddressView.getText().toString().trim();
                 String email = emailView.getText().toString().trim();
 
 
-
-                if(name.equals(""))
+                if (name.equals(""))
                     Toast.makeText(profileClass.this, "Name field is empty. Please fill all fields", Toast.LENGTH_LONG).show();
-                else if(phno.equals(""))
+                else if (phno.equals(""))
                     Toast.makeText(profileClass.this, "Phone Number field is empty. Please fill all fields", Toast.LENGTH_LONG).show();
-                else if(address.equals(""))
+                else if (address.equals(""))
                     Toast.makeText(profileClass.this, "Address field is empty. Please fill all fields", Toast.LENGTH_LONG).show();
-                else if(email.equals(""))
+                else if (email.equals(""))
                     Toast.makeText(profileClass.this, "Email field is empty. Please fill all fields", Toast.LENGTH_LONG).show();
 
                 else {
@@ -261,14 +253,13 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                     note.put("Address", address);
                     note.put("Phone Number", phno);
 
-                    if(!(email.equals(user.getEmail()))) {
+                    if (!(email.equals(user.getEmail()))) {
                         PasswordDialog exampleDialog = new PasswordDialog();
                         exampleDialog.show(getSupportFragmentManager(), "example dialog");
                         newEmail = email;
                     }
 
-                    if(pictureChanged)
-                    {
+                    if (pictureChanged) {
                         uploadImageToFirebase(mImageUri);
                         pictureChanged = false;
                     }
@@ -299,19 +290,19 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                     phnoView.setKeyListener(null);
                     emailView.setKeyListener(null);
 
-                    emailView.setPadding(0,10,0,0);
+                    emailView.setPadding(0, 10, 0, 0);
                     emailView.setBackgroundColor(Color.TRANSPARENT);
 
-                    phnoView.setPadding(0,10,0,0);
+                    phnoView.setPadding(0, 10, 0, 0);
                     phnoView.setBackgroundColor(Color.TRANSPARENT);
 
-                    AddressView.setPadding(0,10,0,0);
+                    AddressView.setPadding(0, 10, 0, 0);
                     AddressView.setBackgroundColor(Color.TRANSPARENT);
 
-                    nameView.setPadding(0,10,0,0);
+                    nameView.setPadding(0, 10, 0, 0);
                     nameView.setBackgroundColor(Color.TRANSPARENT);
 
-                  updateDetails();
+                    updateDetails();
 
                 }
 
@@ -350,16 +341,16 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 phnoView.setKeyListener(null);
                 emailView.setKeyListener(null);
 
-                emailView.setPadding(0,10,0,0);
+                emailView.setPadding(0, 10, 0, 0);
                 emailView.setBackgroundColor(Color.TRANSPARENT);
 
-                phnoView.setPadding(0,10,0,0);
+                phnoView.setPadding(0, 10, 0, 0);
                 phnoView.setBackgroundColor(Color.TRANSPARENT);
 
-                AddressView.setPadding(0,10,0,0);
+                AddressView.setPadding(0, 10, 0, 0);
                 AddressView.setBackgroundColor(Color.TRANSPARENT);
 
-                nameView.setPadding(0,10,0,0);
+                nameView.setPadding(0, 10, 0, 0);
                 nameView.setBackgroundColor(Color.TRANSPARENT);
 
                 updateDetails();
@@ -368,14 +359,14 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(profileClass.this,Main_Activity.class);
+                Intent intent = new Intent(profileClass.this, Main_Activity.class);
                 startActivity(intent);
             }
         });
 
     }
-    void updateDetails()
-    {
+
+    void updateDetails() {
 
         db.collection(main_collection).document(uid).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -384,15 +375,15 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                         if (documentSnapshot.exists()) {
                             String url = documentSnapshot.getString("Url");
 
-                            if(!(url.equals(""))) {
+                            if (!(url.equals(""))) {
                                 Picasso.get().load(url).into(userProfileImage);
                             }
 
                             emailView.setText(documentSnapshot.getString("Email"));
                             phnoView.setText(documentSnapshot.getString("Phone Number"));
-                            String points = documentSnapshot.get("Points").toString()+" Points";
+                            String points = documentSnapshot.get("Points").toString() + " Points";
                             pointsView.setText(points);
-                            String donations = documentSnapshot.get("Number of donations").toString()+" Donations";
+                            String donations = documentSnapshot.get("Number of donations").toString() + " Donations";
                             noofdonationsView.setText(donations);
                             name = documentSnapshot.getString("Name");
                             nameView.setText(name);
@@ -401,31 +392,31 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                             lon = geoPoint.getLongitude();
                             String dis = "-";
                             try {
-                                if(currectLat!=0&&currentLon!=0) {
+                                if (currectLat != 0 && currentLon != 0) {
                                     float[] results = new float[1];
                                     Location.distanceBetween(lat, lon,
                                             currectLat, currentLon, results);
-                                    dis = Math. round(results[0] / 100) / 10.0+" KMS";
+                                    dis = Math.round(results[0] / 100) / 10.0 + " KMS";
                                 }
-                            }catch (Exception e) { }
+                            } catch (Exception e) {
+                            }
                             distanceView.setText(dis);
                             AddressView.setText(documentSnapshot.getString("Address"));
                             gmaps.setVisibility(View.VISIBLE);
-                            if(main_collection.equals("Restaurant")) {
+                            if (main_collection.equals("Restaurant")) {
                                 typeView.setText(documentSnapshot.getString("Type"));
-                            }
-                            else {
+                            } else {
                                 typeView.setVisibility(View.INVISIBLE);
                             }
-                            if(getIntent().getBooleanExtra("Contact",false)) {
+                            if (getIntent().getBooleanExtra("Contact", false)) {
                                 mBottom_contact = new Bottom_Contact(profileClass.this, emailView.getText().toString(), phnoView.getText().toString());
                                 mBottom_contact.show(getSupportFragmentManager(), "BottomSheetContactFragment");
                             }
                         } else {
 
-                                nameView.setText("User not found");
+                            nameView.setText("User not found");
 
-                            }
+                        }
 
 
                         profileLoading.setVisibility(View.GONE);
@@ -514,7 +505,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
     private void openGallery() {
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(3,2)
+                .setAspectRatio(3, 2)
                 .start(this);
     }
 
@@ -525,9 +516,9 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if(resultCode== RESULT_OK) {
-                pictureChanged =true;
-                mImageUri  = result.getUri();
+            if (resultCode == RESULT_OK) {
+                pictureChanged = true;
+                mImageUri = result.getUri();
                 Picasso.get()
                         .load(mImageUri)
                         .resize(width, height)
@@ -546,7 +537,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         Log.d("tag", "ImageUploaded");
 
                         task.getResult().getMetadata().getReference().getDownloadUrl()
@@ -555,7 +546,7 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                     public void onSuccess(Uri uri) {
                                         String downloadurl = uri.toString();
                                         db.collection(main_collection).document(uid)
-                                                .update("Url",downloadurl)
+                                                .update("Url", downloadurl)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
@@ -567,18 +558,14 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
                                                         Toast.makeText(profileClass.this, "Error!", Toast.LENGTH_SHORT).show();
-                                                        Log.d("tag","URLuplaodFail ---- Error:"+ e.toString());
+                                                        Log.d("tag", "URLuplaodFail ---- Error:" + e.toString());
                                                     }
                                                 });
                                     }
                                 });
 
 
-
-
-
-                    }
-                    else{
+                    } else {
                         Toast.makeText(profileClass.this, "Error! Check internet connection!", Toast.LENGTH_SHORT).show();
                     }
 
@@ -591,36 +578,37 @@ public class profileClass extends AppCompatActivity implements PasswordDialog.Di
 
         }
     }
-    private void getDeviceLocation(){
+
+    private void getDeviceLocation() {
         Log.d("TAG", "getDeviceLocation: getting the devices current location");
 
         FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        try{
+        try {
 
 
             final Task location = mFusedLocationProviderClient.getLastLocation();
             location.addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Log.d("TAG", "onComplete: found location");
                         Location currentLocation = (Location) task.getResult();
 
-                        if(currentLocation!=null) {
+                        if (currentLocation != null) {
                             currectLat = currentLocation.getLatitude();
                             currentLon = currentLocation.getLongitude();
                         }
 
-                    }else{
+                    } else {
                         Log.d("TAG", "onComplete: current location is null");
                         Toast.makeText(profileClass.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
-        }catch (SecurityException e){
-            Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage() );
+        } catch (SecurityException e) {
+            Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
 

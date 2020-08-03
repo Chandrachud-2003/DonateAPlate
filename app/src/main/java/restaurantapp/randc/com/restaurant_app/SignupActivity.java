@@ -1,12 +1,5 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,16 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.media.Image;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,11 +24,17 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.hbb20.CountryCodePicker;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import static restaurantapp.randc.com.restaurant_app.Constants.ERROR_DIALOG_REQUEST;
 import static restaurantapp.randc.com.restaurant_app.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
@@ -124,7 +117,7 @@ public class SignupActivity extends AppCompatActivity {
         indText = findViewById(R.id.IndName);
         subheading = findViewById(R.id.subheadingText);
         backButton = findViewById(R.id.backButton);
-        Type="";
+        Type = "";
         ccp.registerCarrierNumberEditText(phno);
 
 /*        ngoImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -273,7 +266,6 @@ public class SignupActivity extends AppCompatActivity {
         });
 
 
-
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,13 +300,10 @@ public class SignupActivity extends AppCompatActivity {
                         Toast.makeText(SignupActivity.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                         passwordConfirm.setError("Confirm Password again");
 
-                    }
-                    else if(phno.getText().toString().replace(" ", "").length()!=10)
-                    {
+                    } else if (phno.getText().toString().replace(" ", "").length() != 10) {
                         phno.setError("Invalid Phone number");
                         Toast.makeText(SignupActivity.this, "Invalid Phone number", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (password.length() < 6) {
+                    } else if (password.length() < 6) {
                         Toast.makeText(SignupActivity.this, "Password must be atleast 6 charecters long", Toast.LENGTH_SHORT).show();
                         passwordView.setError("Password too short!");
                     } else if (!(isEmailValid(email))) {
@@ -337,7 +326,7 @@ public class SignupActivity extends AppCompatActivity {
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
 
                                         editor.putString("rType", Type);
-                                        if(Type.equals("Restaurant")) {
+                                        if (Type.equals("Restaurant")) {
                                             editor.putString("rRestType", typeView.getText().toString().trim());
                                         }
                                         editor.putString("rEmail", email);
@@ -346,13 +335,12 @@ public class SignupActivity extends AppCompatActivity {
 
                                         editor.putString("rName", nameView.getText().toString().trim());
                                         editor.apply();
-                                        if(checkMapServices()){
-                                            if(mLocationPermissionGranted){
+                                        if (checkMapServices()) {
+                                            if (mLocationPermissionGranted) {
                                                 Intent intent = new Intent(SignupActivity.this, MapActivity.class);
                                                 startActivity(intent);
                                                 lbar.dismiss();
-                                            }
-                                            else{
+                                            } else {
                                                 getLocationPermission();
                                                 lbar.dismiss();
                                             }
@@ -363,8 +351,7 @@ public class SignupActivity extends AppCompatActivity {
                                         lbar.dismiss();
                                         Toast.makeText(SignupActivity.this, "An account with this email already exists!", Toast.LENGTH_LONG).show();
                                     }
-                                }
-                                else
+                                } else
                                     lbar.dismiss();
                             }
 
@@ -372,40 +359,31 @@ public class SignupActivity extends AppCompatActivity {
 
 
                     }
-                }
+                } else {
 
-                else {
-
-                    if (!Type.isEmpty())
-                    {
+                    if (!Type.isEmpty()) {
                         choose = true;
                         selectorLayout.setVisibility(View.GONE);
                         signupLayout.setVisibility(View.VISIBLE);
                         subheading.setText(Type);
-                        nameView.setHint(Type+" name");
-                        if(Type.equals("Individual"))
-                        {
+                        nameView.setHint(Type + " name");
+                        if (Type.equals("Individual")) {
                             nameView.setHint("Your name");
 
                         }
-                        if(Type.equals("Restaurant"))
-                        {
+                        if (Type.equals("Restaurant")) {
                             categoryLayout.setVisibility(View.VISIBLE);
                             categoryText.setVisibility(View.VISIBLE);
 
                         }
 
-                    }
-                    else
-                    {
-                        Toast.makeText(SignupActivity.this,"Please select a type of account",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SignupActivity.this, "Please select a type of account", Toast.LENGTH_LONG).show();
                     }
 
 
                 }
             }
-
-
 
 
         });
@@ -429,10 +407,11 @@ public class SignupActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Disabling back button for current activity
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("rEmail");
         editor.remove("rName");
@@ -440,21 +419,17 @@ public class SignupActivity extends AppCompatActivity {
         editor.remove("rPass");
         editor.remove("rType");
         editor.apply();
-        Log.d("TAG","DONE2");
+        Log.d("TAG", "DONE2");
     }
 
-    private void changeCards(boolean select, TextView textView, ImageView imageView, CardView cardView, int image)
-    {
+    private void changeCards(boolean select, TextView textView, ImageView imageView, CardView cardView, int image) {
         imageView.setImageResource(image);
 
-        if (select)
-        {
+        if (select) {
             cardView.setCardBackgroundColor(getResources().getColor(R.color.blue));
             textView.setTextColor(getResources().getColor(R.color.white));
             cardView.setCardElevation(100.0f);
-        }
-
-        else {
+        } else {
             cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
             textView.setTextColor(getResources().getColor(R.color.blue));
             cardView.setCardElevation(15.0f);
@@ -462,11 +437,10 @@ public class SignupActivity extends AppCompatActivity {
 
 
     }
-    private boolean checkMapServices(){
-        if(isServicesOK()){
-            if(isMapsEnabled()){
-                return true;
-            }
+
+    private boolean checkMapServices() {
+        if (isServicesOK()) {
+            return isMapsEnabled();
         }
         return false;
     }
@@ -485,10 +459,10 @@ public class SignupActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public boolean isMapsEnabled(){
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+    public boolean isMapsEnabled() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
             return false;
         }
@@ -515,22 +489,21 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isServicesOK(){
+    public boolean isServicesOK() {
         Log.d("TAG", "isServicesOK: checking google services version");
 
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(SignupActivity.this);
 
-        if(available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             //everything is fine and the user can make map requests
             Log.d("TAG", "isServicesOK: Google Play Services is working");
             return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             //an error occured but we can resolve it
             Log.d("TAG", "isServicesOK: an error occured but we can fix it");
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(SignupActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
-        }else{
+        } else {
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -538,7 +511,7 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
         switch (requestCode) {
@@ -558,11 +531,10 @@ public class SignupActivity extends AppCompatActivity {
         Log.d("TAG", "onActivityResult: called.");
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if(mLocationPermissionGranted){
+                if (mLocationPermissionGranted) {
                     Intent intent = new Intent(SignupActivity.this, MapActivity.class);
                     startActivity(intent);
-                }
-                else{
+                } else {
                     getLocationPermission();
                 }
             }

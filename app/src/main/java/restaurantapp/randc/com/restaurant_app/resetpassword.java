@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -23,6 +22,7 @@ public class resetpassword extends AppCompatActivity {
     private CardView submit_button;
     private FirebaseAuth mAuth;
     private EditText emailView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +43,10 @@ public class resetpassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(emailView.getText().toString().trim().equals(""))
-                {
+                if (emailView.getText().toString().trim().equals("")) {
                     Toast.makeText(resetpassword.this, "Enter Your Email", Toast.LENGTH_SHORT).show();
-                        emailView.setError("Enter Email");
-                }
-                else {
+                    emailView.setError("Enter Email");
+                } else {
 
                     mAuth.sendPasswordResetEmail(emailView.getText().toString().trim())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {

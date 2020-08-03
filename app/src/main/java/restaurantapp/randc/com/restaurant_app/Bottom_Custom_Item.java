@@ -1,7 +1,6 @@
 package restaurantapp.randc.com.restaurant_app;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +10,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.ramotion.fluidslider.FluidSlider;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
-import java.util.Calendar;
-
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import kotlin.Unit;
 
 public class Bottom_Custom_Item extends BottomSheetDialogFragment {
@@ -48,19 +42,17 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
     private int total = 10;
 
 
-    public Bottom_Custom_Item(Context context, int pos, float tempWeight, String tempName, String category)
-    {
+    public Bottom_Custom_Item(Context context, int pos, float tempWeight, String tempName, String category) {
         mContext = context;
         this.pos = pos;
         newItem = false;
-        this.tempName=tempName;
+        this.tempName = tempName;
         this.tempWeight = tempWeight;
         this.category = category;
 
     }
 
-    public Bottom_Custom_Item(Context context, String category)
-    {
+    public Bottom_Custom_Item(Context context, String category) {
         mContext = context;
         newItem = true;
         this.category = category;
@@ -93,11 +85,8 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
         try {
             mButtonClickListener = (ButtonClickListener) context;
 
-        }
-
-        catch (ClassCastException e)
-        {
-            throw new ClassCastException(context.toString()+"Must Implement BottomSheetListener");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + "Must Implement BottomSheetListener");
         }
 
     }
@@ -117,20 +106,17 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
         categoryName.setText(category);
 
 
-        if (newItem)
-        {
+        if (newItem) {
             deleteButton.setVisibility(View.GONE);
             finishText.setText("Add Item");
             weightSlider.setPosition(0.0f);
 
-        }
-        else
-        {
+        } else {
             deleteButton.setVisibility(View.VISIBLE);
             finishText.setText("Update Item");
 
             nameText.setText(tempName);
-            weightSlider.setPosition(tempWeight/10.0f);
+            weightSlider.setPosition(tempWeight / 10.0f);
             weightSlider.setBubbleText(String.valueOf(tempWeight));
         }
 
@@ -139,8 +125,7 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
 
     }
 
-    private void setOnClickListeners()
-    {
+    private void setOnClickListeners() {
         PushDownAnim.setPushDownAnimTo(backButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
                 .setOnClickListener(new View.OnClickListener() {
@@ -173,32 +158,22 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
 
 
                         String name = nameText.getText().toString();
-                        float current = (float)( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0);
+                        float current = (float) (Math.round(total * weightSlider.getPosition() * 0.5 * 2) / 2.0);
 
 
-                        if(newItem)
-                        {
-                            if ((!name.isEmpty()) && current>0.0f)
-                            {
+                        if (newItem) {
+                            if ((!name.isEmpty()) && current > 0.0f) {
                                 mButtonClickListener.addItem(name, current);
                                 dismiss();
-                            }
-                            else if (name.isEmpty())
-                            {
+                            } else if (name.isEmpty()) {
                                 Toast.makeText(mContext, "Please enter name of the item", Toast.LENGTH_SHORT).show();
-                            }
-
-                            else if (current==0.0f)
-                            {
+                            } else if (current == 0.0f) {
                                 Toast.makeText(mContext, "The item weight cannot be 0", Toast.LENGTH_SHORT).show();
                             }
 
 
-                        }
-
-                        else
-                        {
-                            if (!(name.isEmpty()) && !(current==0.0f)) {
+                        } else {
+                            if (!(name.isEmpty()) && !(current == 0.0f)) {
                                 if (!(name.equals(tempName)) || !(current == tempWeight)) {
                                     mButtonClickListener.updateItem(name, current, pos);
                                     dismiss();
@@ -206,14 +181,10 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
 
                                     dismiss();
                                 }
-                            }
-                            else if (name.isEmpty())
-                            {
+                            } else if (name.isEmpty()) {
                                 Toast.makeText(mContext, "Please enter name of the item", Toast.LENGTH_LONG).show();
 
-                            }
-                            else if (current==0.0f)
-                            {
+                            } else if (current == 0.0f) {
                                 mButtonClickListener.deleteItem(pos);
                                 dismiss();
                             }
@@ -225,7 +196,7 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
 
 
         weightSlider.setPositionListener(pos -> {
-            final String value = String.valueOf( Math.round(total * weightSlider.getPosition() *0.5 * 2) / 2.0) ;
+            final String value = String.valueOf(Math.round(total * weightSlider.getPosition() * 0.5 * 2) / 2.0);
             weightSlider.setBubbleText(value);
             return Unit.INSTANCE;
         });
@@ -233,10 +204,11 @@ public class Bottom_Custom_Item extends BottomSheetDialogFragment {
 
     }
 
-    public interface ButtonClickListener
-    {
+    public interface ButtonClickListener {
         void deleteItem(int pos);
+
         void addItem(String name, double weight);
+
         void updateItem(String name, double weight, int pos);
     }
 }

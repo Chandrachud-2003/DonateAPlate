@@ -23,38 +23,9 @@ public class donationBottomAdapter
     // List with String type
     private List<donationBottomItem> list;
 
-    // View Holder class which
-    // extends RecyclerView.ViewHolder
-    public class MyView
-            extends RecyclerView.ViewHolder {
-
-        // Text View
-        TextView categoryName;
-        TextView categoryWeight;
-        ImageView categoryImage;
-        TextView categoryItems;
-        TextView categoryNum;
-
-        // parameterised constructor for View Holder class
-        // which takes the view as a parameter
-        public MyView(View view)
-        {
-            super(view);
-
-            categoryName = view.findViewById(R.id.bottomDonationCategory);
-            categoryWeight = view.findViewById(R.id.bottomDonationWeight);
-            categoryImage = view.findViewById(R.id.bottomDonationImage);
-            categoryItems = view.findViewById(R.id.bottomDonationItems);
-            categoryNum = view.findViewById(R.id.bottomDonationNum);
-
-
-        }
-    }
-
     // Constructor for adapter class
     // which takes a list of String type
-    public donationBottomAdapter(List<donationBottomItem> horizontalList)
-    {
+    public donationBottomAdapter(List<donationBottomItem> horizontalList) {
         this.list = horizontalList;
     }
 
@@ -63,8 +34,7 @@ public class donationBottomAdapter
     // as an item for the RecyclerView.
     @Override
     public MyView onCreateViewHolder(ViewGroup parent,
-                                     int viewType)
-    {
+                                     int viewType) {
 
         // Inflate item.xml using LayoutInflator
         View itemView
@@ -84,33 +54,28 @@ public class donationBottomAdapter
     // particular items of the RecyclerView.
     @Override
     public void onBindViewHolder(final MyView holder,
-                                 final int position)
-    {
+                                 final int position) {
 
         holder.categoryName.setText(list.get(position).getCategoryName());
-        holder.categoryWeight.setText(list.get(position).getCategoryWeight()+"kg");
+        holder.categoryWeight.setText(list.get(position).getCategoryWeight() + "kg");
         ArrayList<categoryItem> items = new ArrayList<>();
         items = list.get(position).getItemsList();
         String itemText = "";
-        for(int i=0;i<items.size();i++)
-        {
-            itemText+=items.get(i).getFoodItem();
-            if (i!=(items.size()-1))
-            {
-                itemText+=" · ";
+        for (int i = 0; i < items.size(); i++) {
+            itemText += items.get(i).getFoodItem();
+            if (i != (items.size() - 1)) {
+                itemText += " · ";
             }
 
         }
         itemText.trim();
 
 
-
-
         holder.categoryItems.setText(itemText);
-        holder.categoryNum.setText(String.valueOf(items.size())+ "Items");
+        holder.categoryNum.setText(items.size() + "Items");
 
-        float width =  Resources.getSystem().getDisplayMetrics().widthPixels/10;
-        float height = (float)(width/0.75);
+        float width = Resources.getSystem().getDisplayMetrics().widthPixels / 10;
+        float height = (float) (width / 0.75);
 
         Transformation transformation = new RoundedTransformationBuilder()
                 .borderColor(Color.BLACK)
@@ -121,13 +86,10 @@ public class donationBottomAdapter
 
         Picasso.get()
                 .load(list.get(position).getCategoryImage())
-                .resize((int)width, (int)height)
+                .resize((int) width, (int) height)
                 .transform(transformation)
                 .centerCrop()
                 .into(holder.categoryImage);
-
-
-
 
 
     }
@@ -135,8 +97,34 @@ public class donationBottomAdapter
     // Override getItemCount which Returns
     // the length of the RecyclerView.
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return list.size();
+    }
+
+    // View Holder class which
+    // extends RecyclerView.ViewHolder
+    public class MyView
+            extends RecyclerView.ViewHolder {
+
+        // Text View
+        TextView categoryName;
+        TextView categoryWeight;
+        ImageView categoryImage;
+        TextView categoryItems;
+        TextView categoryNum;
+
+        // parameterised constructor for View Holder class
+        // which takes the view as a parameter
+        public MyView(View view) {
+            super(view);
+
+            categoryName = view.findViewById(R.id.bottomDonationCategory);
+            categoryWeight = view.findViewById(R.id.bottomDonationWeight);
+            categoryImage = view.findViewById(R.id.bottomDonationImage);
+            categoryItems = view.findViewById(R.id.bottomDonationItems);
+            categoryNum = view.findViewById(R.id.bottomDonationNum);
+
+
+        }
     }
 }

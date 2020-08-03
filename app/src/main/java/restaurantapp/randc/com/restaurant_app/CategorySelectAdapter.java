@@ -21,34 +21,9 @@ public class CategorySelectAdapter
     private LinearLayout selectLayout;
     private Context mContext;
 
-    // View Holder class which
-    // extends RecyclerView.ViewHolder
-    public class MyView
-            extends RecyclerView.ViewHolder {
-
-        // Text View
-        TextView categoryName;
-        ImageView categoryIcon;
-        private LinearLayout selectLayout;
-
-        // parameterised constructor for View Holder class
-        // which takes the view as a parameter
-        public MyView(View view)
-        {
-            super(view);
-
-            categoryName = view.findViewById(R.id.categoryName);
-            categoryIcon = view.findViewById(R.id.categoryImage);
-            selectLayout = view.findViewById(R.id.categoryLayout);
-
-
-        }
-    }
-
     // Constructor for adapter class
     // which takes a list of String type
-    public CategorySelectAdapter(List<CategorySelectItem> horizontalList, Context context)
-    {
+    public CategorySelectAdapter(List<CategorySelectItem> horizontalList, Context context) {
         this.list = horizontalList;
         this.mContext = context;
     }
@@ -58,8 +33,7 @@ public class CategorySelectAdapter
     // as an item for the RecyclerView.
     @Override
     public MyView onCreateViewHolder(ViewGroup parent,
-                                     int viewType)
-    {
+                                     int viewType) {
 
         // Inflate item.xml using LayoutInflator
         View itemView
@@ -79,8 +53,7 @@ public class CategorySelectAdapter
     // particular items of the RecyclerView.
     @Override
     public void onBindViewHolder(final MyView holder,
-                                 final int position)
-    {
+                                 final int position) {
 
         holder.categoryIcon.setImageResource(list.get(position).getCategoryIcon());
         holder.categoryName.setText(list.get(position).getCategoryName());
@@ -102,8 +75,30 @@ public class CategorySelectAdapter
     // Override getItemCount which Returns
     // the length of the RecyclerView.
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return list.size();
+    }
+
+    // View Holder class which
+    // extends RecyclerView.ViewHolder
+    public class MyView
+            extends RecyclerView.ViewHolder {
+
+        // Text View
+        TextView categoryName;
+        ImageView categoryIcon;
+        private LinearLayout selectLayout;
+
+        // parameterised constructor for View Holder class
+        // which takes the view as a parameter
+        public MyView(View view) {
+            super(view);
+
+            categoryName = view.findViewById(R.id.categoryName);
+            categoryIcon = view.findViewById(R.id.categoryImage);
+            selectLayout = view.findViewById(R.id.categoryLayout);
+
+
+        }
     }
 }

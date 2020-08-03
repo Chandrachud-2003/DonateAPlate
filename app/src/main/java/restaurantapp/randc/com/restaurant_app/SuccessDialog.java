@@ -2,11 +2,9 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,16 +26,14 @@ public class SuccessDialog {
 
     private Dialog successDialog;
 
-    public SuccessDialog(Activity activity, int points, int screenWidth)
-    {
+    public SuccessDialog(Activity activity, int points, int screenWidth) {
         this.mActivity = activity;
         this.points = points;
         this.screenWidth = screenWidth;
 
     }
 
-    public void startDialog()
-    {
+    public void startDialog() {
         successDialog = new Dialog(mActivity);
         successDialog.setContentView(R.layout.success_donation_layout);
         Window window = successDialog.getWindow();
@@ -67,7 +63,7 @@ public class SuccessDialog {
                 successAnim.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
 
-                int newDimensions = (int) (screenWidth*0.5);
+                int newDimensions = (int) (screenWidth * 0.5);
 
                 successAnim.getLayoutParams().width = newDimensions;
                 successAnim.getLayoutParams().height = newDimensions;
@@ -75,16 +71,14 @@ public class SuccessDialog {
             }
         });
 
-        pointsText.setText(points+ " Points have been Credited to your Account");
+        pointsText.setText(points + " Points have been Credited to your Account");
 
         setOnClickListeners();
 
 
-
     }
 
-    private void setOnClickListeners()
-    {
+    private void setOnClickListeners() {
 
         PushDownAnim.setPushDownAnimTo(closeButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
@@ -92,11 +86,11 @@ public class SuccessDialog {
                     @Override
                     public void onClick(View view) {
 
-                       Intent intent = new Intent(mActivity, Main_Activity.class);
-                       successAnim.cancelAnimation();
-                       mActivity.startActivity(intent);
-                       successDialog.dismiss();
-                       mActivity.finish();
+                        Intent intent = new Intent(mActivity, Main_Activity.class);
+                        successAnim.cancelAnimation();
+                        mActivity.startActivity(intent);
+                        successDialog.dismiss();
+                        mActivity.finish();
 
 
                     }

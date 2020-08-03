@@ -5,8 +5,7 @@ public class categoryItem {
     private float foodWeight;
     private boolean custom;
 
-    public categoryItem()
-    {
+    public categoryItem() {
 
     }
 

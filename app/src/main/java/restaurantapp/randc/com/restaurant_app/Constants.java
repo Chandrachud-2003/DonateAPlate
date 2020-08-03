@@ -5,25 +5,19 @@ import java.util.ArrayList;
 public class Constants {
 
     public static final String tag = "tag";
-
-    public static String[] foodItemList = {"Fruits", "Vegetables", "Grains","Dairy Products","Non-Veg/Meat","Greens","Spices"};
-
     public static final String sharedPrefId = "RestaurantAppSharedPrefernces";
-
     public static final String grainsPref = "Grains";
     public static final String meatPref = "Meat";
     public static final String DairyPref = "Dairy";
     public static final String fruitPref = "Fruits";
     public static final String vegetablePref = "Vegetables";
     public static final String dishesPref = "Dishes";
-
     public static final String recentgrainsPref = "recentGrains";
     public static final String recentmeatPref = "recentMeat";
     public static final String recentDairyPref = "recentDairy";
     public static final String recentfruitPref = "recentFruits";
     public static final String recentvegetablePref = "recentVegetables";
     public static final String recentdishesPref = "recentDishes";
-
     public static final String item_fire = "Items";
     public static final String orderName_fire = "Orders";
     public static final String fruitName_fire = "Fruits";
@@ -33,17 +27,14 @@ public class Constants {
     public static final String dishesName_fire = "Dishes";
     public static final String meatName_fire = "Meat";
     public static final String foodName_fire = "Food";
-
     public static final String order_list_fire = "Order List";
     public static final String order_list_field = "Order Ids";
     public static final String order_id_num = "order_array";
     public static final String rest_fire = "Restaurant";
     public static final String ngo_fire = "NGO";
-
     public static final String username = "Name";
     public static final String url_user = "Url";
     public static final String type_user = "Type";
-
     public static final String uid_intent = "UID";
     public static final String orderId_intent = "Order ID";
     public static final String total_weight_intent = "TotalWeight";
@@ -55,22 +46,15 @@ public class Constants {
     public static final String isGrains_intent = "isGrains";
     public static final String isDishes_intent = "isDishes";
     public static final String address_intent = "Address";
-
     public static final String ngo_ongoing_list_fire = "Ongoing List";
-
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9003;
-
     public static final String requests_fire = "Requests";
-
     public static final String notifications = "Notifications";
     public static final String notify_fire = "ToNotify";
     public static final String notifyText_fire = "NotifyText";
-
     public static final String workManager_tag = "WorkManager-Restaurant-App";
-
-
     public static final ArrayList<Integer> fruit_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.circle_apple);
@@ -85,8 +69,6 @@ public class Constants {
             add(R.drawable.avacado_img);
         }
     };
-
-
     public static final ArrayList<Integer> veg_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.carrot);
@@ -105,7 +87,6 @@ public class Constants {
             add(R.drawable.cabbage);
         }
     };
-
     public static final ArrayList<Integer> dairy_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.milk);
@@ -117,7 +98,6 @@ public class Constants {
 
         }
     };
-
     public static final ArrayList<Integer> meat_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.chicken);
@@ -128,7 +108,6 @@ public class Constants {
 
         }
     };
-
     public static final ArrayList<Integer> grains_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.rice);
@@ -140,7 +119,6 @@ public class Constants {
 
         }
     };
-
     public static final ArrayList<Integer> dishes_imgs = new ArrayList<Integer>() {
         {
             add(R.drawable.dishes_custom_1);
@@ -150,6 +128,7 @@ public class Constants {
 
         }
     };
+    public static String[] foodItemList = {"Fruits", "Vegetables", "Grains", "Dairy Products", "Non-Veg/Meat", "Greens", "Spices"};
 
 
 }

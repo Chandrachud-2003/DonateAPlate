@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 public class PasswordDialog extends AppCompatDialogFragment {
     private EditText editTextPassword;
     private DialogListener listener;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -37,6 +38,7 @@ public class PasswordDialog extends AppCompatDialogFragment {
         editTextPassword = view.findViewById(R.id.edit_password);
         return builder.create();
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -47,6 +49,7 @@ public class PasswordDialog extends AppCompatDialogFragment {
                     "must implement ExampleDialogListener");
         }
     }
+
     public interface DialogListener {
         void applyTexts(String password);
     }

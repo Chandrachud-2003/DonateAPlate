@@ -87,6 +87,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
         this.listener = listener;
     }
 
+    public interface OnItemSelectedListener {
+        void onItemSelected(int position);
+    }
+
     static abstract class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private DrawerAdapter adapter;
@@ -100,9 +104,5 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
         public void onClick(View v) {
             adapter.setSelected(getAdapterPosition());
         }
-    }
-
-    public interface OnItemSelectedListener {
-        void onItemSelected(int position);
     }
 }

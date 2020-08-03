@@ -18,7 +18,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-public class RequestAdapter extends PagerAdapter{
+public class RequestAdapter extends PagerAdapter {
 
     private Context mContext;
     private List<OngoingItems> feedItemList;
@@ -31,7 +31,6 @@ public class RequestAdapter extends PagerAdapter{
     private TextView grainsPop;
     private TextView dairyPop;
     private TextView dishesPop;
-
 
 
     public RequestAdapter(List<OngoingItems> feedItemList, Context mContext) {
@@ -54,7 +53,6 @@ public class RequestAdapter extends PagerAdapter{
         View view = layoutInflater.inflate(R.layout.ongoing_layout_pager, container, false);
 
 
-
         Log.d("TAG", "instantiateItem: entered");
 
         name = view.findViewById(R.id.ongoingName);
@@ -68,38 +66,29 @@ public class RequestAdapter extends PagerAdapter{
 
         picture = view.findViewById(R.id.ongoingImage);
         name.setText(item.getName());
-        weights.setText(item.getWeight()+" kg");
+        weights.setText(item.getWeight() + " kg");
 
 
-
-
-
-        if (item.isFruits())
-        {
+        if (item.isFruits()) {
             fruitsPop.setVisibility(View.VISIBLE);
         }
 
-        if (item.isDairy())
-        {
+        if (item.isDairy()) {
             dairyPop.setVisibility(View.VISIBLE);
         }
 
-        if (item.isGrains())
-        {
+        if (item.isGrains()) {
             grainsPop.setVisibility(View.VISIBLE);
         }
 
-        if (item.isMeat())
-        {
+        if (item.isMeat()) {
             meatPop.setVisibility(View.VISIBLE);
         }
 
-        if (item.isVeggies())
-        {
+        if (item.isVeggies()) {
             veggiesPop.setVisibility(View.VISIBLE);
         }
-        if (item.isDishes())
-        {
+        if (item.isDishes()) {
             dishesPop.setVisibility(View.VISIBLE);
         }
 
@@ -108,16 +97,16 @@ public class RequestAdapter extends PagerAdapter{
                 .density;
 
         int width = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int height = (int) (((width)* 2) / 5);
-        char a = item.getOrderID().charAt(item.getOrderID().length()-1);
+        int height = (int) (((width) * 2) / 5);
+        char a = item.getOrderID().charAt(item.getOrderID().length() - 1);
         int res;
-        if(a=='1')
-           res = R.drawable.donation4;
-        else if(a=='2')
+        if (a == '1')
+            res = R.drawable.donation4;
+        else if (a == '2')
             res = R.drawable.donation5;
-        else if(a=='3')
+        else if (a == '3')
             res = R.drawable.donation2;
-        else if(a=='4')
+        else if (a == '4')
             res = R.drawable.donation;
         else
             res = R.drawable.donation3;
@@ -131,17 +120,17 @@ public class RequestAdapter extends PagerAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent((Activity)mContext, displayOrder.class);
+                Intent intent = new Intent((Activity) mContext, displayOrder.class);
 
                 intent.putExtra(Constants.orderId_intent, item.getOrderID());
-                intent.putExtra(Constants.isDairy_intent,item.isDairy() );
+                intent.putExtra(Constants.isDairy_intent, item.isDairy());
                 intent.putExtra(Constants.isGrains_intent, item.isGrains());
                 intent.putExtra(Constants.isFruits_intent, item.isFruits());
                 intent.putExtra(Constants.isVeggies_intent, item.isVeggies());
-                intent.putExtra(Constants.isMeat_intent,item.isMeat());
+                intent.putExtra(Constants.isMeat_intent, item.isMeat());
                 intent.putExtra(Constants.isDishes_intent, item.isDishes());
-                intent.putExtra(Constants.total_weight_intent,item.getWeight());
-                intent.putExtra("From","requestItem");
+                intent.putExtra(Constants.total_weight_intent, item.getWeight());
+                intent.putExtra("From", "requestItem");
 
                 mContext.startActivity(intent);
 
@@ -156,13 +145,13 @@ public class RequestAdapter extends PagerAdapter{
 
 
     @Override
-    public void destroyItem (ViewGroup container,int position, Object object){
-        Log.d("TAG", "destroyItem: entered, position: "+position+" Object: "+object.toString());
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        Log.d("TAG", "destroyItem: entered, position: " + position + " Object: " + object.toString());
         //container.removeView((View) object);
     }
 
     @Override
-    public boolean isViewFromObject (View view, Object object){
+    public boolean isViewFromObject(View view, Object object) {
         return view.equals(object);
     }
 }

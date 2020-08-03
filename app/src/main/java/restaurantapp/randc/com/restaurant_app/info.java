@@ -1,19 +1,19 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class info extends AppCompatActivity {
 
     private CardView watchButton;
     private ImageButton back_button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +31,7 @@ public class info extends AppCompatActivity {
         watchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(info.this,"Video coming soon..",Toast.LENGTH_LONG).show();
+                Toast.makeText(info.this, "Video coming soon..", Toast.LENGTH_LONG).show();
             }
         });
     }

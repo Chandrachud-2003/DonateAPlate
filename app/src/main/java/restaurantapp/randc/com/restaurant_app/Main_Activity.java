@@ -1,5 +1,6 @@
 package restaurantapp.randc.com.restaurant_app;
 //This is a comment
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -9,30 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-
-import me.ibrahimsn.lib.OnItemSelectedListener;
-import me.ibrahimsn.lib.SmoothBottomBar;
-
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
@@ -57,18 +38,32 @@ import com.wang.avi.AVLoadingIndicatorView;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import me.ibrahimsn.lib.OnItemSelectedListener;
+import me.ibrahimsn.lib.SmoothBottomBar;
+
 public class Main_Activity extends AppCompatActivity {
 
 
+    private static final int PAGE_START = 1;
     private SlidingRootNav slidingRootNav;
-
-
     private TextView ongiongtxt;
     private TextView pendingtxt;
     private TextView newdonationstxt;
@@ -77,28 +72,21 @@ public class Main_Activity extends AppCompatActivity {
     private TextView mainNameText;
     private TextView mainLocationText;
     private TextView noongoingdonations;
-
     private String[] screenTitles;
     private Drawable[] screenIcons;
-
     private ImageButton menuButton;
-
     private LinearLayout searchBarLayout;
-    private  RecyclerView filterView;
+    private RecyclerView filterView;
     private ArrayList<filterItem> filterItemList;
     private RecyclerView.LayoutManager RecyclerViewLayoutManager;
     private LinearLayoutManager HorizontalLayout;
     private RecyclerView searchRecycler;
     private ArrayList<searchItem> searchList;
     private searchAdapter searchAdapter;
-
-
     private LinearLayoutManager verticalLayout;
-    private  RecyclerView mainRecycler;
+    private RecyclerView mainRecycler;
     private MainAdapter mainAdapter;
     private ArrayList<MainItem> mainItems;
-
-    private static final int PAGE_START = 1;
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
 
@@ -107,7 +95,7 @@ public class Main_Activity extends AppCompatActivity {
     private AVLoadingIndicatorView mainRecyclerLoader;
     private String MyUID;
     private ArrayList<String> orderIds;
-    private FirebaseFirestore db ;
+    private FirebaseFirestore db;
     private double currectLat;
     private double currentLon;
 
@@ -129,7 +117,7 @@ public class Main_Activity extends AppCompatActivity {
     private CustomSmoothViewPager ongoingRecycler;
     private CustomSmoothViewPager requestedRecycler;
     private TextView nodonations;
-    private   DatabaseReference rootRef;
+    private DatabaseReference rootRef;
     private ArrayList<Boolean> allOrderNum;
     private String dis;
     private ArrayList<OngoingItems> ongoingItems;
@@ -138,14 +126,14 @@ public class Main_Activity extends AppCompatActivity {
     private DrawerAdapter adapter2;
     private int currentInputCode;
 
-    private int  requestsCount =0;
+    private int requestsCount = 0;
 
     private SmoothBottomBar switchBar;
 
     private int currentSwitchBarPos;
 
     private ArrayList<String> ongoingItems_NGO;
-    private  FirebaseUser user;
+    private FirebaseUser user;
 
     private PullRefreshLayout mRefreshLayout;
 
@@ -158,7 +146,6 @@ public class Main_Activity extends AppCompatActivity {
     private boolean openingForFirstTime;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,8 +156,8 @@ public class Main_Activity extends AppCompatActivity {
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        currectLat=0.0;
-        currentLon=0.0;
+        currectLat = 0.0;
+        currentLon = 0.0;
         searchBarLayout = findViewById(R.id.searchBarLayout);
         nestedScrollView = findViewById(R.id.mainNestedScrollView);
 
@@ -221,18 +208,15 @@ public class Main_Activity extends AppCompatActivity {
         ongoingAnim = findViewById(R.id.ongoingAnim);
 
         String collection = "";
-        if(user.getDisplayName().equals("NGO"))
-        {
+        if (user.getDisplayName().equals("NGO")) {
             collection = "NGO";
-        }
-        else
-        {
+        } else {
             collection = "Restaurant";
         }
         db.collection(collection).document(user.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     mainNameText.setText(documentSnapshot.get("Name").toString().trim());
-                    String text = documentSnapshot.get("Area")+", "+documentSnapshot.get("City");
+                    String text = documentSnapshot.get("Area") + ", " + documentSnapshot.get("City");
                     mainLocationText.setText(text);
                 })
                 .addOnFailureListener(e -> {
@@ -247,9 +231,7 @@ public class Main_Activity extends AppCompatActivity {
 
                     finish();
                     startActivity(getIntent());
-                }
-
-                else {
+                } else {
 
                     mRefreshLayout.setRefreshing(false);
                 }
@@ -257,9 +239,8 @@ public class Main_Activity extends AppCompatActivity {
             }
         });
         mRefreshLayout.setRefreshing(false);
-        boolean check = getIntent().getBooleanExtra("Registered",false);
-        if(check)
-        {
+        boolean check = getIntent().getBooleanExtra("Registered", false);
+        if (check) {
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Main_Activity.this);
             builder.setTitle("Almost done!");
             builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
@@ -268,7 +249,7 @@ public class Main_Activity extends AppCompatActivity {
                 }
             });
 
-            builder.setMessage("A verification Email has been sent to "+ user.getEmail() +"\n\nPlease click on the link in the email to unlock all the features of this app!");
+            builder.setMessage("A verification Email has been sent to " + user.getEmail() + "\n\nPlease click on the link in the email to unlock all the features of this app!");
 
             android.app.AlertDialog alertDialog = builder.create();
 
@@ -284,7 +265,7 @@ public class Main_Activity extends AppCompatActivity {
         instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.KEEP, periodicWork);
 
 
-        if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
+        if (user.getDisplayName().equals("Restaurant") || user.getDisplayName().equals("Individual")) {
             switchBar.setVisibility(View.GONE);
             ongoingRecycler.setVisibility(View.VISIBLE);
             ongoingRecycler.setPadding(150, 0, 150, 0);
@@ -310,7 +291,6 @@ public class Main_Activity extends AppCompatActivity {
             ongoingAnim.playAnimation();
 
 
-
             db.collection(Constants.rest_fire).document(MyUID).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
@@ -326,7 +306,7 @@ public class Main_Activity extends AppCompatActivity {
                                 }
                                 Log.d("tag", "Current IDS:" + currentOrderIds);
 
-                                myDonationsRetriever(0,currentOrderIds.size());
+                                myDonationsRetriever(0, currentOrderIds.size());
 
                             }
 
@@ -343,19 +323,14 @@ public class Main_Activity extends AppCompatActivity {
         }
 
 
-
-
-
-
-
-        if(user.getDisplayName().equals("NGO")) {
+        if (user.getDisplayName().equals("NGO")) {
             switchBar.setVisibility(View.VISIBLE);
             switchBar.setItemActiveIndex(0);
             newdonationstxt.setVisibility(View.VISIBLE);
             accepteddonationstxt.setVisibility(View.VISIBLE);
             currentSwitchBarPos = 0;
             mainRecycler.setVisibility(View.VISIBLE);
-         //   mainRecyclerLoader.setVisibility(View.VISIBLE);
+            //   mainRecyclerLoader.setVisibility(View.VISIBLE);
             ongiongtxt.setVisibility(View.GONE);
             pendingtxt.setVisibility(View.GONE);
             requestedRecycler.setVisibility(View.GONE);
@@ -396,7 +371,6 @@ public class Main_Activity extends AppCompatActivity {
             };
 
 
-
             nestedScrollView.getViewTreeObserver()
                     .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                         @Override
@@ -405,14 +379,7 @@ public class Main_Activity extends AppCompatActivity {
                             //int scrollX = nestedScrollView.getScrollX();
                             int scrollY = nestedScrollView.getScrollY();
 
-                            if (scrollY==0)
-                            {
-                                onTop = true;
-                            }
-                            else {
-                                onTop = false;
-                            }
-
+                            onTop = scrollY == 0;
 
 
                             if (nestedScrollView.getChildAt(0).getBottom()
@@ -467,41 +434,38 @@ public class Main_Activity extends AppCompatActivity {
             switchBar.setOnItemSelectedListener(new OnItemSelectedListener() {
                 @Override
                 public boolean onItemSelect(int i) {
-                    if (i==0 && currentSwitchBarPos!=i)
-                    {
-                            currentInputCode++;
-                            int size = mainItems.size();
-                            mainItems.clear();
-                            if (mainAdapter != null)
-                                mainAdapter.notifyItemRangeRemoved(0, size);
-                            newdonationstxt.setTextColor(getResources().getColor(R.color.white));
-                            accepteddonationstxt.setTextColor(getResources().getColor(R.color.black));
-                            currentSwitchBarPos = i;
-
-                            ongoingAnim.setVisibility(View.GONE);
-                            ongoingAnim.cancelAnimation();
-                            pendingAnim.setVisibility(View.GONE);
-                            pendingAnim.cancelAnimation();
-
-                            noongoingdonations.setVisibility(View.GONE);
-
-                            mainAnim.setAnimation(R.raw.loading_main);
-                            mainAnim.setRepeatMode(LottieDrawable.RESTART);
-                            mainAnim.setRepeatCount(LottieDrawable.INFINITE);
-                            mainAnim.setVisibility(View.VISIBLE);
-                            mainAnim.playAnimation();
-
-                            getOrderIDS();
-                            ongoingRecycler.setVisibility(View.GONE);
-                            mainRecycler.setVisibility(View.VISIBLE);
-                    }
-                    else if (i==1 && currentSwitchBarPos!=i)
-                    {
+                    if (i == 0 && currentSwitchBarPos != i) {
                         currentInputCode++;
                         int size = mainItems.size();
                         mainItems.clear();
-                        if(mainAdapter!=null)
-                            mainAdapter.notifyItemRangeRemoved(0,size);
+                        if (mainAdapter != null)
+                            mainAdapter.notifyItemRangeRemoved(0, size);
+                        newdonationstxt.setTextColor(getResources().getColor(R.color.white));
+                        accepteddonationstxt.setTextColor(getResources().getColor(R.color.black));
+                        currentSwitchBarPos = i;
+
+                        ongoingAnim.setVisibility(View.GONE);
+                        ongoingAnim.cancelAnimation();
+                        pendingAnim.setVisibility(View.GONE);
+                        pendingAnim.cancelAnimation();
+
+                        noongoingdonations.setVisibility(View.GONE);
+
+                        mainAnim.setAnimation(R.raw.loading_main);
+                        mainAnim.setRepeatMode(LottieDrawable.RESTART);
+                        mainAnim.setRepeatCount(LottieDrawable.INFINITE);
+                        mainAnim.setVisibility(View.VISIBLE);
+                        mainAnim.playAnimation();
+
+                        getOrderIDS();
+                        ongoingRecycler.setVisibility(View.GONE);
+                        mainRecycler.setVisibility(View.VISIBLE);
+                    } else if (i == 1 && currentSwitchBarPos != i) {
+                        currentInputCode++;
+                        int size = mainItems.size();
+                        mainItems.clear();
+                        if (mainAdapter != null)
+                            mainAdapter.notifyItemRangeRemoved(0, size);
                         newdonationstxt.setTextColor(getResources().getColor(R.color.black));
                         accepteddonationstxt.setTextColor(getResources().getColor(R.color.white));
                         currentSwitchBarPos = i;
@@ -529,7 +493,7 @@ public class Main_Activity extends AppCompatActivity {
                                         if (documentSnapshot.exists()) {
 
                                             ongoingItems_NGO = (ArrayList) documentSnapshot.get(Constants.ngo_ongoing_list_fire);
-                                            myDonationsRetriever_NGO(0,ongoingItems_NGO.size(), currentInputCode);
+                                            myDonationsRetriever_NGO(0, ongoingItems_NGO.size(), currentInputCode);
 
                                         }
 
@@ -542,7 +506,7 @@ public class Main_Activity extends AppCompatActivity {
                             }
                         });
                     }
-                    return  true;
+                    return true;
                 }
             });
         }
@@ -559,15 +523,14 @@ public class Main_Activity extends AppCompatActivity {
         DrawerAdapter adapter2;
         screenIcons = loadScreenIcons();
         screenTitles = loadScreenTitles();
-        if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
-           adapter2 = new DrawerAdapter(Arrays.asList(
+        if (user.getDisplayName().equals("Restaurant") || user.getDisplayName().equals("Individual")) {
+            adapter2 = new DrawerAdapter(Arrays.asList(
                     createItemFor(0).setChecked(true),
                     createItemFor(1),
                     createItemFor(2),
                     createItemFor(3),
                     createItemFor(4)));
-        }
-        else {
+        } else {
             adapter2 = new DrawerAdapter(Arrays.asList(
                     createItemFor(0).setChecked(true),
                     createItemFor(2),
@@ -615,7 +578,6 @@ public class Main_Activity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity
@@ -624,9 +586,8 @@ public class Main_Activity extends AppCompatActivity {
     public void onItemSelected(int position) {
 
 
-
         slidingRootNav.closeMenu();
-        if(user.getDisplayName().equals("Restaurant")||user.getDisplayName().equals("Individual")) {
+        if (user.getDisplayName().equals("Restaurant") || user.getDisplayName().equals("Individual")) {
             switch (position) {
                 case 0: {
                     slidingRootNav.closeMenu();
@@ -656,34 +617,32 @@ public class Main_Activity extends AppCompatActivity {
 
 
             }
-        }
-        else
-            {
-                switch (position) {
-                    case 0: {
-                        slidingRootNav.closeMenu();
-                        break;
-                    }
-                    case 1: {
-                        Intent intent = new Intent(Main_Activity.this, profileClass.class);
-                        intent.putExtra("From", "Navigation");
-                        startActivity(intent);
-                        break;
-                    }
-                    case 2: {
-                        Intent intent = new Intent(Main_Activity.this, info.class);
-                        startActivity(intent);
-                        break;
-                    }
-
-                    case 3: {
-                        logout();
-                        break;
-                    }
-
-
+        } else {
+            switch (position) {
+                case 0: {
+                    slidingRootNav.closeMenu();
+                    break;
                 }
+                case 1: {
+                    Intent intent = new Intent(Main_Activity.this, profileClass.class);
+                    intent.putExtra("From", "Navigation");
+                    startActivity(intent);
+                    break;
+                }
+                case 2: {
+                    Intent intent = new Intent(Main_Activity.this, info.class);
+                    startActivity(intent);
+                    break;
+                }
+
+                case 3: {
+                    logout();
+                    break;
+                }
+
+
             }
+        }
 
 
     }
@@ -718,8 +677,7 @@ public class Main_Activity extends AppCompatActivity {
         return ContextCompat.getColor(this, res);
     }
 
-    private void logout()
-    {
+    private void logout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(Main_Activity.this);
         builder.setCancelable(true);
         builder.setTitle("Log Out");
@@ -746,28 +704,26 @@ public class Main_Activity extends AppCompatActivity {
     }
 
 
-
     private void loadFirstPage(int code) {
         Log.d("TAG", "loadFirstPage: " + orderIds.size());
 
-        int max =10;
-        if (orderIds.size()<10)
-        {
+        int max = 10;
+        if (orderIds.size() < 10) {
             max = orderIds.size();
         }
         db = FirebaseFirestore.getInstance();
 
-        retriever(0,max, false, 0,code);
+        retriever(0, max, false, 0, code);
 
     }
-    public void myDonationsRetriever(int i, int num)
-    {
+
+    public void myDonationsRetriever(int i, int num) {
         if (i < num) {
             requestsCount = 0;
             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child("Info").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshotInfo) {
-                    if(snapshotInfo.exists()) {
+                    if (snapshotInfo.exists()) {
 
                         if (snapshotInfo.child("State").getValue().toString().equals("New")) {
 
@@ -775,14 +731,14 @@ public class Main_Activity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                    if(snapshot.exists())
+                                    if (snapshot.exists())
                                         requestsCount = (int) snapshot.getChildrenCount();
                                     else
                                         requestsCount = 0;
                                     rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshotFood) {
-                                            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes=false;
+                                            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes = false;
 
                                             if (snapshotFood.hasChild(Constants.dairyName_fire)) {
                                                 tempDairy = true;
@@ -806,7 +762,7 @@ public class Main_Activity extends AppCompatActivity {
                                             }
 
 
-                                            requestedItems.add(new OngoingItems(requestsCount+" Requests", null, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, tempDishes, currentOrderIds.get(i), MyUID, ""));
+                                            requestedItems.add(new OngoingItems(requestsCount + " Requests", null, snapshotInfo.child("Total Weight").getValue().toString(), tempVeg, tempFruit, tempDairy, tempGrain, tempMeat, tempDishes, currentOrderIds.get(i), MyUID, ""));
                                             myDonationsRetriever(i + 1, num);
                                         }
 
@@ -826,11 +782,11 @@ public class Main_Activity extends AppCompatActivity {
                                 }
                             });
 
-                        } else if (snapshotInfo.child("State").getValue().toString().equals("Ongoing")||snapshotInfo.child("State").getValue().toString().equals("CompletedNGO")||snapshotInfo.child("State").getValue().toString().equals("CompletedRest")) {
+                        } else if (snapshotInfo.child("State").getValue().toString().equals("Ongoing") || snapshotInfo.child("State").getValue().toString().equals("CompletedNGO") || snapshotInfo.child("State").getValue().toString().equals("CompletedRest")) {
                             rootRef.child(Constants.orderName_fire).child(currentOrderIds.get(i)).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshotFood) {
-                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg=tempDishes = false;
+                                    tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes = false;
 
                                     if (snapshotFood.hasChild(Constants.dairyName_fire)) {
                                         tempDairy = true;
@@ -847,8 +803,7 @@ public class Main_Activity extends AppCompatActivity {
                                     if (snapshotFood.hasChild(Constants.grainsName_fire)) {
                                         tempGrain = true;
                                     }
-                                    if (snapshotFood.hasChild(Constants.dishesName_fire))
-                                    {
+                                    if (snapshotFood.hasChild(Constants.dishesName_fire)) {
                                         Log.d("TAG", "onDataChange: tempDishes=true");
 
                                         tempDishes = true;
@@ -888,8 +843,7 @@ public class Main_Activity extends AppCompatActivity {
 
 
                         }
-                    }
-                    else
+                    } else
                         myDonationsRetriever(i + 1, num);
 
 
@@ -900,18 +854,14 @@ public class Main_Activity extends AppCompatActivity {
                     Log.d("TAG", "onFailure: " + error.toString());
                 }
             });
-        }
-        else
-        {
-            if(ongoingItems.size()>0) {
+        } else {
+            if (ongoingItems.size() > 0) {
                 ongoingRecycler.setVisibility(View.VISIBLE);
                 ongoingRecycler.setAdapter(new OngoingAdapter(ongoingItems, Main_Activity.this));
                 ongoingAnim.cancelAnimation();
                 ongoingAnim.setVisibility(View.GONE);
                 noongoingdonations.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 ongoingAnim.cancelAnimation();
                 ongoingAnim.setAnimation(R.raw.empty_box);
                 ongoingAnim.setRepeatCount(0);
@@ -920,15 +870,13 @@ public class Main_Activity extends AppCompatActivity {
                 ongoingRecycler.setVisibility(View.GONE);
                 noongoingdonations.setVisibility(View.VISIBLE);
             }
-            if(requestedItems.size()>0) {
+            if (requestedItems.size() > 0) {
                 requestedRecycler.setVisibility(View.VISIBLE);
-                requestedRecycler.setAdapter(new RequestAdapter(requestedItems,Main_Activity.this));
+                requestedRecycler.setAdapter(new RequestAdapter(requestedItems, Main_Activity.this));
                 nopendingdonations.setVisibility(View.GONE);
                 pendingAnim.cancelAnimation();
                 pendingAnim.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 pendingAnim.cancelAnimation();
                 pendingAnim.setAnimation(R.raw.empty_box);
                 pendingAnim.setRepeatCount(0);
@@ -942,13 +890,12 @@ public class Main_Activity extends AppCompatActivity {
     }
 
 
-    public void myDonationsRetriever_NGO(int i, int num , int code)
-    {
+    public void myDonationsRetriever_NGO(int i, int num, int code) {
         if (i < num) {
             String id = ongoingItems_NGO.get(i);
             String userId = id.substring(0, id.indexOf("-")).trim();
 
-            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg  = tempDishes= false;
+            tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes = false;
             tempName = tempUrl = tempType = "";
 
 
@@ -971,21 +918,20 @@ public class Main_Activity extends AppCompatActivity {
                                     tempLon = geoPoint.getLongitude();
 
 
-                                    if(currectLat!=0&&currentLon!=0) {
+                                    if (currectLat != 0 && currentLon != 0) {
                                         float[] results = new float[1];
                                         Location.distanceBetween(tempLat, tempLon,
                                                 currectLat, currentLon, results);
-                                        dis = Math. round(results[0] / 100) / 10.0+"KM";
+                                        dis = Math.round(results[0] / 100) / 10.0 + "KM";
                                     }
-                                }catch (Exception e) { }
-
-
+                                } catch (Exception e) {
+                                }
 
 
                                 rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists()) {
+                                        if (snapshot.exists()) {
                                             if (snapshot.hasChild(Constants.dairyName_fire)) {
                                                 tempDairy = true;
                                             }
@@ -1001,8 +947,7 @@ public class Main_Activity extends AppCompatActivity {
                                             if (snapshot.hasChild(Constants.grainsName_fire)) {
                                                 tempGrain = true;
                                             }
-                                            if(snapshot.hasChild(Constants.dishesName_fire))
-                                            {
+                                            if (snapshot.hasChild(Constants.dishesName_fire)) {
                                                 Log.d("TAG", "onDataChange: tempDishes=true");
 
                                                 tempDishes = true;
@@ -1015,10 +960,9 @@ public class Main_Activity extends AppCompatActivity {
                                                     tempTotalWeight = snapshot.getValue().toString();
 
                                                     Log.d("CHECK", "TEMP WEIGHT:" + tempTotalWeight);
-                                                    if(code== currentInputCode)
-                                                    {
+                                                    if (code == currentInputCode) {
                                                         mainItems.add(new MainItem(tempLoaction, tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
-                                                        myDonationsRetriever_NGO(i + 1, num,code);
+                                                        myDonationsRetriever_NGO(i + 1, num, code);
                                                     }
                                                 }
 
@@ -1027,10 +971,8 @@ public class Main_Activity extends AppCompatActivity {
                                                     Log.d("TAG", "onFailure: " + error.toString());
                                                 }
                                             });
-                                        }
-                                        else
-                                            myDonationsRetriever_NGO(i + 1, num,code);
-
+                                        } else
+                                            myDonationsRetriever_NGO(i + 1, num, code);
 
 
                                     }
@@ -1053,22 +995,18 @@ public class Main_Activity extends AppCompatActivity {
                     });
 
 
-        }
-
-        else {
-            if(code== currentInputCode) {
-                mainAdapter = new MainAdapter(Main_Activity.this, mainItems,"Accepted");
+        } else {
+            if (code == currentInputCode) {
+                mainAdapter = new MainAdapter(Main_Activity.this, mainItems, "Accepted");
                 mainRecycler.setLayoutManager(verticalLayout);
                 mainRecycler.setAdapter(mainAdapter);
                 mainRecycler.setItemAnimator(new DefaultItemAnimator());
 
-                if (ongoingItems_NGO.size()>0)
-                {
+                if (ongoingItems_NGO.size() > 0) {
                     ongoingAnim.setVisibility(View.GONE);
                     ongoingAnim.cancelAnimation();
                     noongoingdonations.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     ongoingAnim.cancelAnimation();
                     ongoingAnim.setAnimation(R.raw.empty_box);
                     ongoingAnim.setRepeatCount(0);
@@ -1081,19 +1019,13 @@ public class Main_Activity extends AppCompatActivity {
     }
 
 
-
-
-
-
-    public void retriever(int i, int max, boolean check, int intitialPos,int code) {
+    public void retriever(int i, int max, boolean check, int intitialPos, int code) {
         if (i < max) {
             String id = orderIds.get(i).trim();
             String userId = id.substring(0, id.indexOf("-")).trim();
 
             tempDairy = tempFruit = tempGrain = tempMeat = tempVeg = tempDishes = false;
             tempName = tempUrl = tempType = "";
-
-
 
 
             db.collection(Constants.rest_fire).document(
@@ -1114,21 +1046,20 @@ public class Main_Activity extends AppCompatActivity {
                                     tempLon = geoPoint.getLongitude();
 
 
-                                    if(currectLat!=0&&currentLon!=0) {
+                                    if (currectLat != 0 && currentLon != 0) {
                                         float[] results = new float[1];
                                         Location.distanceBetween(tempLat, tempLon,
                                                 currectLat, currentLon, results);
-                                        dis = Math. round(results[0] / 100) / 10.0+"KM";
+                                        dis = Math.round(results[0] / 100) / 10.0 + "KM";
                                     }
-                                }catch (Exception e) { }
-
-
+                                } catch (Exception e) {
+                                }
 
 
                                 rootRef.child(Constants.orderName_fire).child(id).child(Constants.foodName_fire).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists()) {
+                                        if (snapshot.exists()) {
                                             if (snapshot.hasChild(Constants.dairyName_fire)) {
                                                 tempDairy = true;
                                             }
@@ -1144,8 +1075,7 @@ public class Main_Activity extends AppCompatActivity {
                                             if (snapshot.hasChild(Constants.grainsName_fire)) {
                                                 tempGrain = true;
                                             }
-                                            if (snapshot.hasChild(Constants.dishesName_fire))
-                                            {
+                                            if (snapshot.hasChild(Constants.dishesName_fire)) {
                                                 Log.d("TAG", "onDataChange: tempDishes=true");
 
                                                 tempDishes = true;
@@ -1157,9 +1087,9 @@ public class Main_Activity extends AppCompatActivity {
 
                                                     tempTotalWeight = snapshot.getValue().toString();
 
-                                                    if(code== currentInputCode) {
+                                                    if (code == currentInputCode) {
                                                         mainItems.add(new MainItem(tempLoaction, tempType, dis, tempTotalWeight, tempName, tempFruit, tempVeg, tempMeat, tempDairy, tempGrain, tempDishes, tempUrl, userId, id, tempAddress));
-                                                        retriever(i + 1, max, check, intitialPos,code);
+                                                        retriever(i + 1, max, check, intitialPos, code);
                                                     }
 
                                                 }
@@ -1170,10 +1100,8 @@ public class Main_Activity extends AppCompatActivity {
                                                     Log.d("TAG", "onFailure: " + error.toString());
                                                 }
                                             });
-                                        }
-                                        else
-                                            retriever(i + 1, max, check, intitialPos,code);
-
+                                        } else
+                                            retriever(i + 1, max, check, intitialPos, code);
 
 
                                     }
@@ -1196,14 +1124,12 @@ public class Main_Activity extends AppCompatActivity {
                     });
 
 
-        }
-
-        else {
-            if(code== currentInputCode) {
+        } else {
+            if (code == currentInputCode) {
                 if (!check) {
 
 
-                    mainAdapter = new MainAdapter(Main_Activity.this, mainItems,"New");
+                    mainAdapter = new MainAdapter(Main_Activity.this, mainItems, "New");
                     mainRecycler.setLayoutManager(verticalLayout);
                     mainRecycler.setAdapter(mainAdapter);
                     mainRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -1223,48 +1149,43 @@ public class Main_Activity extends AppCompatActivity {
     private void loadNextPage(int code) {
 
 
-        if (mainItems != null && mainAdapter != null &&mainItems.size()<orderIds.size()) {
+        if (mainItems != null && mainAdapter != null && mainItems.size() < orderIds.size()) {
             Log.d("TAG", "loadNextPage: " + currentPage);
             //List<MainItem> newItems = new ArrayList<>();
 
 
             int intitialPos = mainItems.size() - 1;
             int listIntitialPos = currentPage * 10;
-            int listFinalPos = ((currentPage+1)*10-1);
+            int listFinalPos = ((currentPage + 1) * 10 - 1);
 
 
-            if (currentPage==(TOTAL_PAGES-1)) {
+            if (currentPage == (TOTAL_PAGES - 1)) {
 
-                listFinalPos = orderIds.size()-1;
+                listFinalPos = orderIds.size() - 1;
 
             }
-            currentPage+=1;
-            retriever(intitialPos, listFinalPos, true, intitialPos,code);
-        }
-        else
-        {
+            currentPage += 1;
+            retriever(intitialPos, listFinalPos, true, intitialPos, code);
+        } else {
             mainRecyclerLoader.hide();
             mainRecyclerLoader.setVisibility(View.GONE);
 
         }
     }
 
-    private void getOrderIDS()
-    {
+    private void getOrderIDS() {
         orderIds = new ArrayList<>();
         db.collection(Constants.orderName_fire).document(Constants.order_list_fire)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists())
-                {
+                if (documentSnapshot.exists()) {
                     orderIds = (ArrayList) documentSnapshot.get(Constants.order_list_field);
-                    if (orderIds!=null && orderIds.size()>0) {
+                    if (orderIds != null && orderIds.size() > 0) {
                         TOTAL_PAGES = (int) Math.ceil(orderIds.size() / (10.0f));
                         loadFirstPage(currentInputCode);
                         nodonations.setVisibility(View.GONE);
-                    }
-                    else {
+                    } else {
                         mainRecyclerLoader.hide();
                         mainRecyclerLoader.setVisibility(View.GONE);
                         mainAnim.cancelAnimation();
@@ -1279,38 +1200,39 @@ public class Main_Activity extends AppCompatActivity {
         });
     }
 
-    private void getDeviceLocation(){
+    private void getDeviceLocation() {
         Log.d("TAG", "getDeviceLocation: getting the devices current location");
 
         FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        try{
+        try {
 
 
             final Task location = mFusedLocationProviderClient.getLastLocation();
             location.addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Log.d("TAG", "onComplete: found location");
                         Location currentLocation = (Location) task.getResult();
 
-                        if(currentLocation!=null) {
+                        if (currentLocation != null) {
                             currectLat = currentLocation.getLatitude();
                             currentLon = currentLocation.getLongitude();
                         }
 
-                    }else{
+                    } else {
                         Log.d("TAG", "onComplete: current location is null");
                         Toast.makeText(Main_Activity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
-        }catch (SecurityException e){
-            Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage() );
+        } catch (SecurityException e) {
+            Log.e("TAG", "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();

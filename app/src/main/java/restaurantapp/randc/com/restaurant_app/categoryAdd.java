@@ -281,7 +281,6 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
                 });
 
 
-
         weightSlider.setPositionListener(pos -> {
 
             float value = (float) (Math.round(total * weightSlider.getPosition() * 0.5 * 2) / 2.0);

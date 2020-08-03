@@ -1,25 +1,14 @@
 package restaurantapp.randc.com.restaurant_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.L;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -29,6 +18,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailView;
     private EditText passwordView;
     private ProgressDialog lbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,12 +84,10 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (passwordView.getText().toString().trim().equals("")) {
                     Toast.makeText(LoginActivity.this, "Enter Email and Password", Toast.LENGTH_SHORT).show();
                     passwordView.setError("Enter Password");
-                }
-                else if(!(isEmailValid(email))){
+                } else if (!(isEmailValid(email))) {
                     emailView.setError("Invalid Email");
                     Toast.makeText(LoginActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
 
                     lbar.setCanceledOnTouchOutside(false);
                     lbar.setMessage("Logging in...");
@@ -106,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
 
                                         Log.d("TAG", "signInWithEmail:success");
-                                        FirebaseAuth auth = mAuth.getInstance();
+                                        FirebaseAuth auth = FirebaseAuth.getInstance();
 
                                         //getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE).edit().putString(Constants.userIdPref, mAuth.getUid()).apply();
 
@@ -123,32 +118,24 @@ public class LoginActivity extends AppCompatActivity {
                                         startActivity(intent);
 
 
-
                                         //   updateUI(user);
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         lbar.dismiss();
                                         Log.w("TAG", "signInWithEmail:failure", task.getException());
-                                        try
-                                        {
+                                        try {
                                             throw task.getException();
-                                        }
-                                        catch (FirebaseAuthInvalidUserException invalidEmail)
-                                        {
+                                        } catch (FirebaseAuthInvalidUserException invalidEmail) {
                                             Log.d("TAG", "onComplete: invalid_email");
                                             emailView.setError("Invalid Email");
                                             passwordView.setText("");
                                             Toast.makeText(LoginActivity.this, "Account with this email does not exist", Toast.LENGTH_LONG).show();
-                                        }
-                                        catch (FirebaseAuthInvalidCredentialsException wrongPassword)
-                                        {
+                                        } catch (FirebaseAuthInvalidCredentialsException wrongPassword) {
                                             Log.d("TAG", "onComplete: wrong_password");
                                             passwordView.setText("");
                                             passwordView.setError("Incorrect Password");
                                             Toast.makeText(LoginActivity.this, "Incorrect Password", Toast.LENGTH_LONG).show();
-                                        }
-                                        catch (Exception e)
-                                        {
+                                        } catch (Exception e) {
                                             Log.d("TAG", "onComplete: " + e.getMessage());
                                         }
                                     }
@@ -160,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity

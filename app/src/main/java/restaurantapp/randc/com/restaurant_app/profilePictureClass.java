@@ -45,8 +45,8 @@ import androidx.work.WorkManager;
 
 public class profilePictureClass extends AppCompatActivity {
 
-    private ImageView userProfileImage;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private ImageView userProfileImage;
     private Uri mImageUri;
     private ProgressDialog lbar;
     private StorageReference storageReference;
@@ -63,6 +63,7 @@ public class profilePictureClass extends AppCompatActivity {
     private String city;
     private String state;
     private String area;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class profilePictureClass extends AppCompatActivity {
         lbar = new ProgressDialog(this);
         userProfileImage = findViewById(R.id.dp);
         mAuth = FirebaseAuth.getInstance();
-        storageReference= FirebaseStorage.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         nextButton = findViewById(R.id.nextButton);
 
 
@@ -86,28 +87,25 @@ public class profilePictureClass extends AppCompatActivity {
                 .oval(false)
                 .build();
 
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.sharedPrefId, MODE_PRIVATE);
         dialog = new ProgressDialog(profilePictureClass.this);
-         width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
-        height = (int) ((width*2)/3);
-        if(sharedPreferences.getString("rType","").equals("Restaurant")) {
+        width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.8);
+        height = (int) ((width * 2) / 3);
+        if (sharedPreferences.getString("rType", "").equals("Restaurant")) {
             Picasso.get()
                     .load(R.drawable.default_restaurant)
                     .resize(width, height)
                     .transform(transformation)
                     .centerCrop()
                     .into(userProfileImage);
-        }
-        else if(sharedPreferences.getString("rType","").equals("NGO")) {
+        } else if (sharedPreferences.getString("rType", "").equals("NGO")) {
             Picasso.get()
                     .load(R.drawable.default_ngo)
                     .resize(width, height)
                     .transform(transformation)
                     .centerCrop()
                     .into(userProfileImage);
-        }
-        else
-        {
+        } else {
             Picasso.get()
                     .load(R.drawable.default_induvidual)
                     .resize(width, height)
@@ -132,7 +130,7 @@ public class profilePictureClass extends AppCompatActivity {
                 dialog.show();
 
 
-                mAuth.createUserWithEmailAndPassword(sharedPreferences.getString("rEmail","ERROR"), sharedPreferences.getString("rPass","ERROR"))
+                mAuth.createUserWithEmailAndPassword(sharedPreferences.getString("rEmail", "ERROR"), sharedPreferences.getString("rPass", "ERROR"))
 
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -145,7 +143,7 @@ public class profilePictureClass extends AppCompatActivity {
                                     user = FirebaseAuth.getInstance().getCurrentUser();
 
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                            .setDisplayName(sharedPreferences.getString("rType","ERROR")).build();
+                                            .setDisplayName(sharedPreferences.getString("rType", "ERROR")).build();
 
                                     user.updateProfile(profileUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -154,54 +152,51 @@ public class profilePictureClass extends AppCompatActivity {
                                             user = mAuth.getCurrentUser();
                                             //SEND VERIFICATION MAIL
                                             user.sendEmailVerification()
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Log.d("TAG", "Email sent.");
-                                                    }
-                                                }
-                                            });
-                                            Log.d("tag","UID:"+user.getUid());
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("TAG", "Email sent.");
+                                                            }
+                                                        }
+                                                    });
+                                            Log.d("tag", "UID:" + user.getUid());
                                             Map<String, Object> note = new HashMap<>();
-                                            note.put("Name",sharedPreferences.getString("rName","ERROR"));
-                                            note.put("Email",sharedPreferences.getString("rEmail","rEmail"));
-                                            GeoPoint location  = new GeoPoint(getIntent().getDoubleExtra("Lat",0.0f),getIntent().getDoubleExtra("Lon",0.0f));
-                                            note.put("Location",location);
-                                            note.put("Address",getIntent().getStringExtra("Add"));
-                                            note.put("Points",0);
-                                            note.put("Number of donations",0);
-                                            note.put("Phone Number",sharedPreferences.getString("rPhone","ERROR"));
+                                            note.put("Name", sharedPreferences.getString("rName", "ERROR"));
+                                            note.put("Email", sharedPreferences.getString("rEmail", "rEmail"));
+                                            GeoPoint location = new GeoPoint(getIntent().getDoubleExtra("Lat", 0.0f), getIntent().getDoubleExtra("Lon", 0.0f));
+                                            note.put("Location", location);
+                                            note.put("Address", getIntent().getStringExtra("Add"));
+                                            note.put("Points", 0);
+                                            note.put("Number of donations", 0);
+                                            note.put("Phone Number", sharedPreferences.getString("rPhone", "ERROR"));
                                             note.put("City", city);
                                             note.put("State", state);
-                                            note.put("Area",area);
-                                            ArrayList<String> ngoOngoingList=new ArrayList<>();
-                                            ArrayList<Boolean> orderArray=new ArrayList<>();
-                                            for (int i=0;i<=4;i++)
-                                            {
+                                            note.put("Area", area);
+                                            ArrayList<String> ngoOngoingList = new ArrayList<>();
+                                            ArrayList<Boolean> orderArray = new ArrayList<>();
+                                            for (int i = 0; i <= 4; i++) {
                                                 orderArray.add(false);
                                             }
 
-                                            if(sharedPreferences.getString("rType","null").equals("NGO")) {
-                                                note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultNGO.png?alt=media&token=b0de6cb2-bce8-4c5e-9441-e1edadf3cbdf");
-                                                note.put(Constants.ngo_ongoing_list_fire,ngoOngoingList);
-                                                CollectionType ="NGO";
-                                            }
-                                            else if (sharedPreferences.getString("rType","null").equals("Restaurant")) {
-                                                note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/defaultRestaurant.png?alt=media&token=31a9b9ce-03da-4e09-9128-b69c14c59322");
-                                                note.put(Constants.order_id_num,orderArray);
-                                            }
-                                            else {
-                                                note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/default_induvidual.png?alt=media&token=c618b327-8dfd-458f-84a1-19b8023436b2");
+                                            if (sharedPreferences.getString("rType", "null").equals("NGO")) {
+                                                note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/NGO_default.png?alt=media&token=fa6e00f3-fe31-48aa-85b6-09e2446f6444");
+                                                note.put(Constants.ngo_ongoing_list_fire, ngoOngoingList);
+                                                CollectionType = "NGO";
+                                            } else if (sharedPreferences.getString("rType", "null").equals("Restaurant")) {
+                                                note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/Rest_default.png?alt=media&token=8fd4d7cc-795e-415b-b2be-229be55cc2a7");
+                                                note.put(Constants.order_id_num, orderArray);
+                                            } else {
+                                                note.put("Url", "https://firebasestorage.googleapis.com/v0/b/restaurantapp-ab461.appspot.com/o/Individual_default.png?alt=media&token=1c2c9802-583a-4c84-b2ee-723ee5f6eeb6");
                                                 note.put(Constants.order_id_num, orderArray);
                                             }
-                                            if(sharedPreferences.getString("rType","null").equals("Individual")) {
+                                            if (sharedPreferences.getString("rType", "null").equals("Individual")) {
                                                 note.put("Type", "Individual");
-                                                CollectionType ="Restaurant";
+                                                CollectionType = "Restaurant";
                                             }
-                                            if(sharedPreferences.getString("rType","null").equals("Restaurant")) {
+                                            if (sharedPreferences.getString("rType", "null").equals("Restaurant")) {
                                                 note.put("Type", sharedPreferences.getString("rRestType", "ERROR"));
-                                                CollectionType ="Restaurant";
+                                                CollectionType = "Restaurant";
                                             }
 
                                             db.collection(CollectionType).document(user.getUid()).set(note)
@@ -211,7 +206,7 @@ public class profilePictureClass extends AppCompatActivity {
                                                             user.getUid();
 
 
-                                                            if(pictureChanged) {
+                                                            if (pictureChanged) {
                                                                 dialog.dismiss();
                                                                 lbar.setTitle("Uploading Image");
                                                                 lbar.setMessage("Please wait while your display picture is uploading..");
@@ -219,12 +214,10 @@ public class profilePictureClass extends AppCompatActivity {
                                                                 lbar.show();
                                                                 uploadImageToFirebase(mImageUri);
 
-                                                            }
-                                                            else
-                                                            {
+                                                            } else {
                                                                 dialog.dismiss();
                                                                 Toast.makeText(profilePictureClass.this, "Account Created!", Toast.LENGTH_SHORT).show();
-                                                                Intent intent = new Intent(profilePictureClass.this,Main_Activity.class);
+                                                                Intent intent = new Intent(profilePictureClass.this, Main_Activity.class);
                                                                 intent.putExtra("Registered", true);
                                                                 startActivity(intent);
                                                             }
@@ -233,8 +226,7 @@ public class profilePictureClass extends AppCompatActivity {
                                                                             TimeUnit.MINUTES);
                                                             PeriodicWorkRequest periodicWork = periodicWorkRequest.build();
                                                             WorkManager instance = WorkManager.getInstance();
-                                                            instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE , periodicWork);
-
+                                                            instance.enqueueUniquePeriodicWork(Constants.workManager_tag, ExistingPeriodicWorkPolicy.REPLACE, periodicWork);
 
 
                                                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -269,11 +261,6 @@ public class profilePictureClass extends AppCompatActivity {
                                     });
 
 
-
-
-
-
-
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     dialog.dismiss();
@@ -301,7 +288,7 @@ public class profilePictureClass extends AppCompatActivity {
     private void openGallery() {
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(3,2)
+                .setAspectRatio(3, 2)
                 .start(this);
     }
 
@@ -311,9 +298,9 @@ public class profilePictureClass extends AppCompatActivity {
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if(resultCode== RESULT_OK) {
-                pictureChanged =true;
-                mImageUri  = result.getUri();
+            if (resultCode == RESULT_OK) {
+                pictureChanged = true;
+                mImageUri = result.getUri();
                 Picasso.get()
                         .load(mImageUri)
                         .resize(width, height)
@@ -333,7 +320,7 @@ public class profilePictureClass extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         Log.d("tag", "ImageUploaded");
 
                         task.getResult().getMetadata().getReference().getDownloadUrl()
@@ -342,14 +329,14 @@ public class profilePictureClass extends AppCompatActivity {
                                     public void onSuccess(Uri uri) {
                                         String downloadurl = uri.toString();
                                         db.collection(CollectionType).document(user.getUid())
-                                                .update("Url",downloadurl)
+                                                .update("Url", downloadurl)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
                                                         Log.d("tag", "URLUploaded");
                                                         lbar.dismiss();
 
-                                                        Intent intent = new Intent(profilePictureClass.this,Main_Activity.class);
+                                                        Intent intent = new Intent(profilePictureClass.this, Main_Activity.class);
                                                         startActivity(intent);
                                                     }
                                                 })
@@ -357,7 +344,7 @@ public class profilePictureClass extends AppCompatActivity {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
                                                         Toast.makeText(profilePictureClass.this, "Error! Check internet connection!", Toast.LENGTH_SHORT).show();
-                                                        Log.d("tag","URLuplaodFail ---- Error:"+ e.toString());
+                                                        Log.d("tag", "URLuplaodFail ---- Error:" + e.toString());
                                                         lbar.dismiss();
                                                     }
                                                 });
@@ -365,11 +352,7 @@ public class profilePictureClass extends AppCompatActivity {
                                 });
 
 
-
-
-
-                    }
-                    else{
+                    } else {
                         Toast.makeText(profilePictureClass.this, "Error! Check internet connection!", Toast.LENGTH_SHORT).show();
                         lbar.dismiss();
                     }
@@ -383,6 +366,7 @@ public class profilePictureClass extends AppCompatActivity {
             lbar.dismiss();
         }
     }
+
     @Override
     public void onBackPressed() {
         // Disabling back button for current activity

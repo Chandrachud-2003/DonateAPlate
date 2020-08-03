@@ -22,29 +22,6 @@ public class filterAdapter1
 
     private View mView;
 
-    // View Holder class which
-    // extends RecyclerView.ViewHolder
-    public class MyView
-            extends RecyclerView.ViewHolder {
-
-        // Text View
-        TextView filterText;
-        ImageView filterImage;
-        CardView mCardView;
-
-        // parameterised constructor for View Holder class
-        // which takes the view as a parameter
-        public MyView(View view) {
-            super(view);
-
-            // initialise TextView with id
-            filterText = view
-                    .findViewById(R.id.filterText);
-            filterImage = view.findViewById(R.id.filterImage);
-            mCardView = view.findViewById(R.id.cardview);
-        }
-    }
-
     // Constructor for adapter class
     // which takes a list of String type
     public filterAdapter1(List<filterItem> horizontalList) {
@@ -205,5 +182,28 @@ public class filterAdapter1
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    // View Holder class which
+    // extends RecyclerView.ViewHolder
+    public class MyView
+            extends RecyclerView.ViewHolder {
+
+        // Text View
+        TextView filterText;
+        ImageView filterImage;
+        CardView mCardView;
+
+        // parameterised constructor for View Holder class
+        // which takes the view as a parameter
+        public MyView(View view) {
+            super(view);
+
+            // initialise TextView with id
+            filterText = view
+                    .findViewById(R.id.filterText);
+            filterImage = view.findViewById(R.id.filterImage);
+            mCardView = view.findViewById(R.id.cardview);
+        }
     }
 }

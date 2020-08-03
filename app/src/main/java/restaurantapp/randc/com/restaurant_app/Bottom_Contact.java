@@ -2,29 +2,19 @@ package restaurantapp.randc.com.restaurant_app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.airbnb.lottie.LottieAnimationView;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.database.DatabaseReference;
 import com.thekhaeng.pushdownanim.PushDownAnim;
+
+import androidx.annotation.NonNull;
 
 public class Bottom_Contact extends BottomSheetDialogFragment {
 
@@ -75,8 +65,7 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
 
     }
 
-    private void findViewsById(View v)
-    {
+    private void findViewsById(View v) {
         cancelButton = v.findViewById(R.id.cancelButton);
         phoneLayout = v.findViewById(R.id.phoneRippleLayout);
         whatsappLayout = v.findViewById(R.id.whatsappRippleLayout);
@@ -88,8 +77,7 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
 
     }
 
-    private void setOnClickListeners()
-    {
+    private void setOnClickListeners() {
         PushDownAnim.setPushDownAnimTo(cancelButton)
                 .setScale(PushDownAnim.MODE_SCALE, 0.8f)
                 .setOnClickListener(new View.OnClickListener() {
@@ -107,11 +95,10 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
 
-                phone.replaceAll(" ","");
+                phone.replaceAll(" ", "");
 
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                 startActivity(intent);
-
 
 
             }
@@ -122,7 +109,7 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
             public void onClick(View view) {
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri data = Uri.parse("mailto:"+email+"?subject=Food Donation App");
+                Uri data = Uri.parse("mailto:" + email + "?subject=Food Donation App");
                 intent.setData(data);
                 startActivity(intent);
 
@@ -133,7 +120,7 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
 
-                Uri sms_uri = Uri.parse("smsto:"+phone);
+                Uri sms_uri = Uri.parse("smsto:" + phone);
                 Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
                 startActivity(sms_intent);
 
@@ -148,12 +135,11 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
                 try {
 
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("http://api.whatsapp.com/send?phone="+phone));
+                    intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + phone));
                     startActivity(intent);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("TAG", "onClick: Error in whatsapp"+e.getMessage());
+                    Log.d("TAG", "onClick: Error in whatsapp" + e.getMessage());
                 }
 
             }
