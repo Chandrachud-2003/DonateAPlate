@@ -29,7 +29,7 @@ import kotlin.Unit;
 public class categoryAdd extends AppCompatActivity implements RecyclerViewClickListener, Bottom_Custom_Item.ButtonClickListener {
 
     private ImageView foodImage;
-    private EditText foodText;
+    private TextView foodText;
     private TextView TitleView;
     private Button customButtonText;
     private ImageButton customButton;
