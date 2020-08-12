@@ -109,7 +109,7 @@ public class Bottom_Contact extends BottomSheetDialogFragment {
             public void onClick(View view) {
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri data = Uri.parse("mailto:" + email + "?subject=Food Donation App");
+                Uri data = Uri.parse("mailto:" + email + "?subject=DonateAPlate");
                 intent.setData(data);
                 startActivity(intent);
 

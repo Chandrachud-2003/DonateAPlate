@@ -3,7 +3,10 @@ package restaurantapp.randc.com.restaurant_app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,12 +51,13 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
     private RecyclerView filterView;
 
     private ArrayList<categoryItem> mCategoryItems;
-
     private RecyclerView.LayoutManager RecyclerViewLayoutManager;
 
     private LinearLayoutManager HorizontalLayout;
 
     private categoryItemAdapter mCategoryItemAdapter;
+
+    private int screen_width;
 
     private int pos = 0;
 
@@ -79,6 +83,31 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
         customButton = findViewById(R.id.custom);
         foodImage = findViewById(R.id.foodPic);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        screen_width = displayMetrics.widthPixels;
+
+        foodImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                foodImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+
+                int newDimensions = (int) (screen_width * 0.417);
+
+                foodImage.getLayoutParams().width = newDimensions;
+
+
+                foodImage.getLayoutParams().height = newDimensions;
+
+                foodImage.requestLayout();
+
+
+            }
+        });
+
         foodText = findViewById(R.id.foodTextview);
         customButtonText = findViewById(R.id.addcustom);
         weightSlider = findViewById(R.id.weightSlider);
@@ -403,8 +432,10 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
             if (weights.get(pos) != 0.0f) {
                 int newPos = findItem(foodText.getText().toString());
                 int currentPos = findInNames(foodText.getText().toString());
+                Log.d("TAG", "Weight: newPos item removed :"+newPos);
                 mCategoryItems.remove(newPos);
                 mCategoryItemAdapter.notifyItemRemoved(newPos);
+                mCategoryItemAdapter.notifyDataSetChanged();
                 weights.set(pos, 0.0f);
             }
         } else {
@@ -482,6 +513,7 @@ public class categoryAdd extends AppCompatActivity implements RecyclerViewClickL
 
         mCategoryItems.remove(itemPos);
         mCategoryItemAdapter.notifyItemRemoved(itemPos);
+        mCategoryItemAdapter.notifyDataSetChanged();
 
     }
 

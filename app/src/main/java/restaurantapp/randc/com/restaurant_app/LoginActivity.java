@@ -3,9 +3,12 @@ package restaurantapp.randc.com.restaurant_app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailView;
     private EditText passwordView;
     private ProgressDialog lbar;
+    private ImageView icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,29 @@ public class LoginActivity extends AppCompatActivity {
             resetbutton = findViewById(R.id.forgotPass);
             emailView = findViewById(R.id.emailView);
             passwordView = findViewById(R.id.passwordView);
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screen_width = displayMetrics.widthPixels;
+
+            icon = findViewById(R.id.iconImage);
+            icon.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    icon.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+
+                    int newDimensions = (int) (screen_width * 0.556);
+
+                    icon.getLayoutParams().width = newDimensions;
+
+
+                    icon.getLayoutParams().height = newDimensions;
+
+                    icon.requestLayout();
+                }
+            });
+
             registrationbutton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

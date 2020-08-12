@@ -76,7 +76,7 @@
             android:background="@color/colorTransparent"
             android:padding="7dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/back_50"
+            android:src="@drawable/back_black"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp"
@@ -369,7 +369,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="25dp"
-
+                    android:visibility="gone"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp"
                     app:cardBackgroundColor="#DA4336"

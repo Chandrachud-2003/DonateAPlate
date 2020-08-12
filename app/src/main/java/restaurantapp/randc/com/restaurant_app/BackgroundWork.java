@@ -5,6 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
@@ -79,9 +82,12 @@ public class BackgroundWork extends Worker {
 
     private void showNotification(boolean success) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-
-        mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);
-        mBuilder.setContentTitle("Donation App");
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                R.mipmap.ic_launcher_round);
+        mBuilder.setSmallIcon(R.drawable.smallnotificationicon);
+        mBuilder.setLargeIcon(icon);
+        mBuilder.setColorized(true).setColor(Color.parseColor("#4781F9"));
+        mBuilder.setContentTitle("DonateAPlate");
 
         if (success) {
 

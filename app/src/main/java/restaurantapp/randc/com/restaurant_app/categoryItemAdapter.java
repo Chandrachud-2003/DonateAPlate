@@ -63,7 +63,6 @@ public class categoryItemAdapter
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TAG", "onClick: item is custom " + list.get(position).isCustom());
 
                 if (!(list.get(position).isCustom())) {
                     itemListener.recyclerViewListClicked(view, list.get(position).getFoodItem());
