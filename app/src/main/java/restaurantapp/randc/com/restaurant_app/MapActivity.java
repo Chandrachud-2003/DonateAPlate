@@ -82,7 +82,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d("TAG", "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-
         mapFragment.getMapAsync(MapActivity.this);
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
